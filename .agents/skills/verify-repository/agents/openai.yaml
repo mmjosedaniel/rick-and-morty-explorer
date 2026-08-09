@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify Repository"
+  short_description: "Run repository quality gates with evidence"
+  default_prompt: "Use $verify-repository to run the available quality gates and report evidence."

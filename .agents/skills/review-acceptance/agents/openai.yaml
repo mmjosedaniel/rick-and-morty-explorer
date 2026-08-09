@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Acceptance"
+  short_description: "Verify acceptance criteria with evidence"
+  default_prompt: "Use $review-acceptance to evaluate every acceptance criterion and report evidence."
