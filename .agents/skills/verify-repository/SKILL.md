@@ -31,6 +31,8 @@ Run the smallest authoritative set that covers the changed or requested scope. C
 
 If `.agents/skills/govern-adrs/scripts/validate_adrs.py` exists, run it whenever ADRs or architecture-dependent work are in scope.
 
+If `.agents/skills/verify-repository/scripts/validate_docs.py` exists, run it whenever local documentation changes or the task-closure documentation gate is in scope. It is the authoritative repository check for relative Markdown paths and anchors, stable requirement/ADR/gate/task/SPEC/HS/DPL references, readiness-selector tags, and static Gherkin structure.
+
 ## Execute safely
 
 - Prefer read-only or check modes.

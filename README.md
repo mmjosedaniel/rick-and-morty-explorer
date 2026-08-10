@@ -2,7 +2,7 @@
 
 ## Repository status
 
-This repository is currently in its requirements and architecture phase. It contains the assessment contract, accepted architecture decisions, and repository-specific workflow guidance. It does not yet contain an application scaffold, runnable web or API services, migrations, automated product tests, an ERD, or authoritative install, run, import, and API-usage commands.
+This repository is currently in its requirements and architecture phase. It contains the assessment contract, accepted architecture decisions, a dependency-ordered implementation plan, derived Gherkin specifications, execution records, and repository-specific workflow guidance. It does not yet contain an application scaffold, runnable web or API services, migrations, automated product tests, an ERD, or authoritative install, run, import, and API-usage commands.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
@@ -12,14 +12,34 @@ This README is the single documentation entry point and current-state summary fo
 
 | Artifact | Authoritative for | Not authoritative for |
 |---|---|---|
-| [Repository guidelines](./AGENTS.md) | Codex operating policy, language, evidence rules, TypeScript conventions, and TDD workflow | Product scope, architectural choices, or implementation status |
+| [Repository guidelines](./AGENTS.md) | Codex operating policy, language, evidence rules, KISS and clean-code rules, TypeScript conventions, and TDD workflow | Product scope, architectural choices, or implementation status |
 | [Technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) | Original assessment scope and mandatory-versus-optional classification | Repository-specific decisions or implementation evidence |
 | [Requirements specification](./docs/REQUIREMENTS.md) | Normalized functional, non-functional, optional, deliverable, and acceptance IDs | Architectural choices or implementation status |
 | [ADR index](./docs/adrs/README.md) and individual ADRs | Portfolio status, optional-scope disposition, architecture coverage, and accepted decision detail | Implementation or acceptance status |
-| [Implementation plan](./docs/IMPLEMENTATION_PLAN.md) | Work ordering, dependencies, decision gates, and future implementation tasks | New product scope or unapproved architectural choices |
+| [Implementation plan](./docs/IMPLEMENTATION_PLAN.md) | Stable `TASK-*` work items, dependency ordering, validation intent, and decision gates | New product scope, unapproved architectural choices, or implementation status |
+| [Gherkin specifications](./docs/specs/README.md), [SPEC](./docs/specs/SPEC.feature), and [HARD_SPEC](./docs/specs/HARD_SPEC.feature) | Derived behavioral examples, non-negotiable constraints, failure modes, and human decision guards | Source scope, architectural approval, implementation status, or passing evidence |
+| [Execution records](./docs/execution/README.md) and [decision and progress log](./docs/execution/decision-and-progress-log.md) | Stable navigation, reversible execution decisions, and chronological evidence links | Current repository status, product scope, architecture approval, gate resolution, or acceptance status |
+| [Review records](./docs/reviews/README.md) | Point-in-time evidence-based assessments, readiness matrices, gaps, and verification commands | Product scope, architectural approval, or permanent current status |
 | This README | Documentation routing, current repository phase, and current delivery-status summary | Requirement or architecture definition |
 | Source, manifests, migrations, tests, runtime observations, and Git history | Actual implementation and verification evidence | Requirement intent or approval of architectural changes |
 | [Repository skills](./.agents/skills) | Repeatable ADR, planning, acceptance, and verification procedures | Product scope, architectural approval, or passing evidence |
+
+### Codex reading hierarchy
+
+Use this dependency chain to gather context, not as a single global precedence rule:
+
+```text
+repository policy
+  -> source assessment
+  -> normalized requirement IDs
+  -> accepted decisions and optional disposition
+  -> active gates and exact TASK ID
+  -> exact SPEC/HS rules needed by that task
+  -> repository/runtime evidence
+  -> execution log and dated review
+```
+
+Authority remains domain-specific. For example, the assessment owns source classification, the requirements specification owns stable scope wording, an accepted ADR owns implementation direction, the implementation plan owns sequencing, and only repository/runtime evidence can prove behavior.
 
 ### Conflict rules
 
@@ -27,6 +47,8 @@ This README is the single documentation entry point and current-state summary fo
 - Optional requirements retain their source classification; only the ADR index records their repository adoption or deferral.
 - An individual accepted ADR owns decision detail, while the ADR index owns portfolio status and optional disposition.
 - The implementation plan cannot introduce scope or select an option controlled by a pending decision gate.
+- SPEC/HS selectors and examples cannot reclassify source scope or replace the requirement, ADR, or gate that they reference.
+- Execution logs and dated reviews cannot resolve gates, approve architecture, or become a second current-status owner.
 - Only repository or runtime evidence can establish that behavior exists or a criterion passes.
 - If documents conflict, identify the authority domain above and reconcile the inconsistency instead of choosing silently.
 
@@ -36,11 +58,22 @@ The source assessment's mandatory requirements and deliverables, together with t
 
 The current adopted and deferred optional scope is authoritative in the [optional-scope disposition table](./docs/adrs/README.md#optional-scope-decisions).
 
+## Readiness status
+
+The latest evidence-based [review](./docs/reviews/2026-08-09-latest-documentation-work-review.md) records:
+
+| View | Current result |
+|---|---|
+| Minimum assessment | Fail: 0 of 12 acceptance criteria pass because the required application behavior and deliverables have no implementation/runtime evidence. |
+| Repository baseline | Fail: the minimum assessment fails and the adopted optional commitments also have no implementation evidence. |
+
+Pending decision gates explain the next planning work; they do not convert missing implementation into `Blocked` or `Pass`.
+
 ## Delivery status
 
 | Required deliverable | Current evidence |
 |---|---|
-| [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Not yet demonstrated; the local repository has no committed application source or configured public remote. |
+| [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Partially demonstrated: anonymous read access to the configured [GitHub repository](https://github.com/mmjosedaniel/rick-and-morty-explorer) was verified on 2026-08-09 with `git ls-remote`, but no application source has been committed, so the deliverable does not pass. |
 | [DEL-002](./docs/REQUIREMENTS.md#del-002---entity-relationship-diagram) - Entity-relationship diagram | Not yet available because no migrations have been implemented. |
 | [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Not yet available because no authoritative application commands or executable GraphQL schema exist. |
 
@@ -51,11 +84,12 @@ This status section must be updated and supplemented with links to reproducible 
 | Task | Required reading order | Repository workflow |
 |---|---|---|
 | Interpret or change scope | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements specification](./docs/REQUIREMENTS.md) -> [optional-scope dispositions](./docs/adrs/README.md#optional-scope-decisions) -> relevant accepted ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | Preserve source classification, stable IDs, adopted commitments, and unresolved constraints. |
-| Review or change architecture | [AGENTS.md](./AGENTS.md) -> [requirements](./docs/REQUIREMENTS.md) -> [ADR index](./docs/adrs/README.md) -> relevant ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | [Govern ADRs](./.agents/skills/govern-adrs/SKILL.md) |
-| Plan implementation or resolve gates | [AGENTS.md](./AGENTS.md) -> [requirements](./docs/REQUIREMENTS.md) -> [architecture coverage](./docs/adrs/README.md#architecture-coverage) -> relevant accepted ADRs -> [implementation plan](./docs/IMPLEMENTATION_PLAN.md) | [Plan implementation](./.agents/skills/plan-implementation/SKILL.md) |
-| Implement behavior or fix a bug | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact requirement and AC IDs -> relevant accepted ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) -> repository evidence | Follow the required Red-Green-Refactor workflow. |
-| Review acceptance or readiness | [AGENTS.md](./AGENTS.md) -> [requirements and ACs](./docs/REQUIREMENTS.md) -> [optional-scope dispositions](./docs/adrs/README.md#optional-scope-decisions) -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) -> implementation and runtime evidence | [Review acceptance](./.agents/skills/review-acceptance/SKILL.md) |
-| Verify a handoff, milestone, or release | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> authoritative manifests and automation -> affected documentation | [Verify repository](./.agents/skills/verify-repository/SKILL.md) |
+| Review or change architecture | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [ADR index](./docs/adrs/README.md) -> relevant ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | [Govern ADRs](./.agents/skills/govern-adrs/SKILL.md) |
+| Plan implementation or resolve gates | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [architecture coverage](./docs/adrs/README.md#architecture-coverage) -> relevant accepted ADRs -> [implementation plan](./docs/IMPLEMENTATION_PLAN.md) | [Plan implementation](./.agents/skills/plan-implementation/SKILL.md) |
+| Implement behavior or fix a bug | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact requirement/AC IDs -> optional disposition -> relevant accepted ADRs -> exact [TASK](./docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence) and gates -> only the mapped [SPEC/HS rules](./docs/specs/README.md#codex-rule-routing) -> repository evidence | Follow the required Red-Green-Refactor workflow and update the task's evidence/documentation owners. |
+| Review acceptance or readiness | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements and ACs](./docs/REQUIREMENTS.md) -> [optional dispositions](./docs/adrs/README.md#optional-scope-decisions) -> relevant ADRs -> [active gates/tasks](./docs/IMPLEMENTATION_PLAN.md) -> implementation/runtime evidence -> [prior reviews](./docs/reviews/README.md) | [Review acceptance](./.agents/skills/review-acceptance/SKILL.md) |
+| Record execution progress | [AGENTS.md](./AGENTS.md) -> authoritative changed artifact -> exact [TASK](./docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence) -> [execution-record boundary](./docs/execution/README.md#authority-boundary) | Update the authority owner first, then append an evidence-linked chronological record. |
+| Verify a handoff, milestone, or release | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact task and affected requirements -> authoritative manifests and automation -> affected documentation -> [prior reviews](./docs/reviews/README.md) | [Verify repository](./.agents/skills/verify-repository/SKILL.md) |
 
 For implementation work, use this invariant route:
 
@@ -65,7 +99,8 @@ AGENTS.md
   -> exact requirement, deliverable, and acceptance IDs
   -> optional-scope disposition
   -> relevant accepted ADRs
-  -> active decision gates
+  -> active decision gates and exact TASK ID
+  -> exact mapped SPEC/HS rules
   -> repository evidence
   -> TDD and proportional verification
 ```
@@ -79,9 +114,11 @@ A workflow skill defines how Codex performs a task. It does not override the aut
 | Source clarification approved by the project owner | Technical assessment | Requirements, ADR portfolio, implementation plan, and this map |
 | Requirement, deliverable, or acceptance interpretation | Requirements specification | ADR metadata and index, optional disposition, and implementation plan |
 | ADR creation, status change, or supersession | Individual ADR | ADR index, architecture coverage, optional disposition, and related decision gate; run the ADR validator |
-| Decision-gate resolution | Implementation plan and the new ADR | ADR index, related ADR references, and any dependent work item |
-| Implementation behavior | Tests, source, and configuration | Plan mappings, setup/API/ERD documentation, and current delivery status |
-| Verification or readiness result | Repository and runtime evidence | Current delivery status or a separately requested review artifact |
+| Decision-gate or task change | Implementation plan and, for a resolved gate, the new ADR | ADR index, mapped SPEC/HS rules, execution log, and dependent work items |
+| Derived behavioral example or hard constraint | Requirements/ADR/plan owner first when semantics change; otherwise the exact SPEC/HS rule | Specification index routing, mapped tasks, and execution log; never promote derived wording to authority |
+| Implementation behavior | Tests, source, and configuration | Task mappings, relevant SPEC/HS rules, setup/API/ERD documentation, execution log, and current delivery status |
+| Reversible execution decision or progress evidence | Execution log | Governing task and authority owner; current status only when repository evidence materially changes it |
+| Verification or readiness result | Repository and runtime evidence | Dated review record and current delivery status when the result changes current readiness |
 
 Reviewing a document does not require changing it. Update only when the new information materially affects the document's authority domain, and link to the owner instead of duplicating normative prose.
 
@@ -92,8 +129,8 @@ Every completed repository task must include a documentation-impact review befor
 1. Compare the completed scope, changed paths, selected decisions, and new evidence with the change-impact table above.
 2. For a write-authorized task, update every materially affected authoritative document and add or repair navigation links when the change creates a new dependency, owner, artifact, command, or evidence location.
 3. For a read-only task, do not modify files; report the documentation changes that would be required if the findings are acted upon.
-4. Preserve stable requirement, deliverable, acceptance, ADR, decision-gate, and task IDs. Do not convert plans or documentation into implementation evidence.
-5. Validate every changed local path and Markdown anchor. Run the ADR validator when ADRs, architecture coverage, optional disposition, or decision gates are affected.
+4. Preserve stable requirement, deliverable, acceptance, ADR, decision-gate, task, SPEC, HS, and DPL decision IDs. Do not convert plans or documentation into implementation evidence.
+5. Run `python .agents/skills/verify-repository/scripts/validate_docs.py --repo .` to validate local paths, anchors, stable IDs, readiness tags, and static Gherkin structure. Run the ADR validator when ADRs, architecture coverage, optional disposition, or decision gates are affected.
 6. End the handoff with one explicit result: `Documentation impact: Updated ...`, `Documentation impact: None - ...`, or `Documentation impact: Proposed ...; not written because the task was read-only`.
 
 A task is not complete until this gate has been performed and the relevant documentation checks pass. `None` is valid only with a concrete reason; unrelated documents must not be edited merely to produce a change.

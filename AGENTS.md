@@ -14,15 +14,28 @@ Requirements, accepted ADRs, plans, examples, mocks, and stubs are evidence of i
 
 Start repository work from the [documentation map](README.md#documentation-map). Follow its authority domains and task-specific reading order before planning, editing, reviewing, or verifying work.
 
-- Use stable requirement, deliverable, acceptance, ADR, and decision-gate IDs in plans, tests, reviews, and handoffs.
+- Use stable requirement, deliverable, acceptance, ADR, decision-gate, `TASK-*`, `SPEC-*`, `HS-*`, and `DPL-DEC-*` IDs in plans, tests, reviews, execution records, and handoffs.
 - Read only the relevant ADRs for scoped work; read the full portfolio for portfolio-wide architecture reviews.
-- Before adding a dependency, configuration, migration, test, or application behavior, compare the intended artifact with each active gate's `Must be resolved before` condition in `docs/IMPLEMENTATION_PLAN.md` and resolve only the gate whose trigger covers that artifact.
+- Before adding a dependency, configuration, migration, test, or application behavior, select the exact `TASK-*` work item, read its mapped requirements and `SPEC-*`/`HS-*` rules, compare the intended artifact with each active gate's `Must be resolved before` condition in `docs/IMPLEMENTATION_PLAN.md`, and resolve only the gate whose trigger covers that artifact.
 - Follow the [documentation change-impact table](README.md#documentation-change-impact) after every scope, decision, planning, implementation, or evidence change.
 - Link to the authoritative owner instead of duplicating normative prose. If two authoritative documents conflict, surface and reconcile the conflict before continuing dependent work.
 
 ## Task Closure
 
 Every completed repository task must pass the [task-closure documentation gate](README.md#task-closure-documentation-gate). The agent responsible for the task owns the gate and may use a subagent only as an independent reviewer; delegation never transfers closure responsibility. For write-authorized work, update and link all materially affected documentation before handoff. For read-only work, report required documentation follow-ups without modifying files. Every final handoff must state the documentation impact explicitly, including a concrete reason when no documentation change was necessary.
+
+## Implementation Simplicity and Clean Code
+
+Implement the smallest complete change that satisfies the active `TASK-*`, its mapped requirements and specifications, the current failing test, and the accepted architecture. Preserve KISS by limiting the change surface to necessary behavior and artifacts, reusing established boundaries, and avoiding unrelated refactors, dependencies, configuration, indirection, or speculative generalization. Smallest means the simplest complete solution, not the fewest lines or files; never omit required tests, types, validation, failure handling, migrations, observability, or documentation. If correctness or an accepted constraint requires a broader change, state the concrete reason and verify the expanded scope.
+
+Follow clean-code principles throughout the changed scope:
+
+- Use intention-revealing names and focused, cohesive functions, modules, and components.
+- Keep inputs, outputs, state changes, side effects, and failure paths explicit; prefer clear control flow over clever or compressed code.
+- Preserve accepted dependency direction and separate domain, application, adapter, transport, and presentation responsibilities where the governing ADRs require those boundaries.
+- Remove dead code and avoid meaningful duplication when a simple local abstraction makes the current intent clearer; do not introduce abstractions for hypothetical reuse.
+- Write comments only when they explain rationale, a non-obvious constraint, or an external compatibility requirement; do not restate readable code.
+- Improve cleanliness only within the task's necessary change surface. Record unrelated cleanup separately instead of expanding the active task.
 
 ## JavaScript and TypeScript
 
