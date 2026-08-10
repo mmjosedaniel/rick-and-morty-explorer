@@ -17,8 +17,9 @@ Active task-scoped plans live directly in `docs/plans/`. After the authoritative
 | Task | Controlled gate | ExecPlan | Plan state | Authoritative task state |
 |---|---|---|---|---|
 | TASK-001 | DG-001 | [Resolve the TypeScript test-harness decision](./completed/TASK-001-test-harness-decision.md) | Complete | Complete |
+| TASK-002 | DG-002 | [Resolve the Sequelize migration-lifecycle decision](./TASK-002-sequelize-migration-lifecycle-decision.md) | Ready to execute | Pending |
 
-`Complete` means ADR-0011 is accepted, DG-001 is resolved, and TASK-001's relevance and documentation gates passed. It does not mean the harness is implemented or TASK-003 has started.
+`Complete` for TASK-001 means ADR-0011 is accepted, DG-001 is resolved, and TASK-001's relevance and documentation gates passed. `Ready to execute` for TASK-002 means its plan exists, but the task and DG-002 remain `Pending`. Neither state means that its planned tooling is implemented or that a downstream task has started.
 
 ## Maintenance
 
