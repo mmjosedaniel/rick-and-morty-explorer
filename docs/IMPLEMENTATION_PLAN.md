@@ -24,7 +24,9 @@ Use these rules when executing the graph:
 6. Mark a node `Complete` only after its falsifiable definition of done, task-specific validation, test-relevance review when applicable, and universal documentation gate all pass. Downstream assistants must not infer completion from plans, generated files, or another assistant's unverified handoff.
 7. If execution exposes a consequential choice outside an accepted ADR, stop only the dependent branch, create or activate the applicable decision gate, and continue other ready nodes when their scopes remain independent.
 
-This roadmap is not an ExecPlan. A substantial node may use a living, node-scoped ExecPlan for concrete commands, discoveries, decisions, and recovery steps after the repository adopts a root `PLANS.md` format. `TASK-003` is the first candidate. An ExecPlan may decompose its owning node but cannot replace this graph, change dependencies, resolve gates, or expand requirement scope.
+This roadmap is not an ExecPlan. The repository has adopted the root [ExecPlan convention](../PLANS.md), and node-scoped plans are registered in the [plan index](./plans/README.md). Active plans live directly under `docs/plans/`; completed plans remain as historical evidence under `docs/plans/completed/`. An ExecPlan may provide concrete commands, discoveries, decisions, and recovery steps for its owning node, but it cannot replace this graph, change dependencies, resolve gates, or expand requirement scope. The completed [TASK-001 ExecPlan](./plans/completed/TASK-001-test-harness-decision.md) is the first registered plan.
+
+The [project-scoped Codex agent guide](../.codex/README.md) defines reusable read-only research, decision-analysis, and independent-review roles. These roles are execution helpers, not graph nodes or task owners: the primary coordinating agent keeps repository write ownership, status and evidence integration, project-owner approval handling, and the universal documentation gate.
 
 ## Decision-gate policy
 
@@ -43,15 +45,15 @@ An accepted ADR records implementation direction only. Resolving a gate is not e
 
 | Gate | Status | Required decision | Must be resolved before | Governing context |
 |---|---|---|---|---|
-| DG-001 | Pending | Define the TypeScript test-harness strategy, including whether one or multiple runners are used, the browser-like DOM environment, workspace configuration model, unit-versus-integration command boundaries, and the boundary for one narrow real-browser application smoke. | Adding a test-runner dependency or configuration, binding a derived scenario to executable test code, writing the first executable application test, adding the walking-skeleton smoke, or beginning the first production-behavior Red-Green-Refactor cycle. Non-executable examples remain documentation rather than tests. | NFR-004; OR-001, OR-004, OR-007 (adopted optional); ADR-0001, ADR-0002, ADR-0010 |
+| DG-001 | Resolved | [ADR-0011](./adrs/0011-define-the-typescript-test-harness.md) selects Vitest projects, jsdom, milestone-aware unit/integration/application boundaries, and one Chromium-only Playwright process smoke. | Resolved direction may be implemented only by TASK-003 and later owning tasks; acceptance is not harness evidence. | NFR-004; OR-001, OR-004, OR-007 (adopted optional); ADR-0001, ADR-0002, ADR-0010, ADR-0011 |
 | DG-002 | Pending | Define the executable Sequelize migration lifecycle, including the runner, TypeScript source execution versus compiled-artifact execution, local and test invocation, rollback behavior, and concurrent-execution behavior. | Adding a migration runner or configuration, writing the first migration, exposing a root migration command, bootstrapping persistence tests, or deriving the ERD from migration state. | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012; OR-001 (adopted optional); ADR-0001, ADR-0002, ADR-0003, ADR-0008, ADR-0010 |
 | DG-003 | Pending | Select the frontend GraphQL client and query-cache implementation, including operation type generation, error handling, cache behavior, explicit post-mutation refetching, and its test boundary. | Adding the client dependency or provider, generating client operation artifacts, writing the first frontend data-access test that depends on the selected client or cache, or writing frontend query, mutation, hook, or cache configuration code. | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, OR-003 (adopted optional), AC-001, AC-002, AC-003, AC-004, AC-005; ADR-0002, ADR-0006, ADR-0009, ADR-0010 |
 | DG-004 | Pending | Select the character-image delivery boundary: copy assets during ingestion, serve them through an application-owned proxy or asset boundary, or explicitly allow narrowly scoped browser requests to the upstream image host. | Adding persistence or ingestion behavior for image locations, defining runtime GraphQL or cached `imageUrl` values, adding an image proxy or asset route, or implementing browser image requests in TASK-010. | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003; ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009 |
 
 ## Gate sequence and parallelism
 
-1. Resolve DG-001 at repository-foundation time because every production behavior must begin with an executable failing test under ADR-0010.
-2. DG-002 and DG-004 may be evaluated in parallel with DG-001. Database-backed persistence artifacts cannot begin until DG-002 is resolved, and import or API mapping must not assume an image-delivery strategy while DG-004 is pending.
+1. DG-001 was resolved by ADR-0011 at repository-foundation time because every production behavior must begin with an executable failing test under ADR-0010. The harness remains unimplemented until TASK-003.
+2. DG-002 and DG-004 remain pending. Database-backed persistence artifacts cannot begin until DG-002 is resolved, and import or API mapping must not assume an image-delivery strategy while DG-004 is pending.
 3. Resolve DG-003 after the project-owned GraphQL operations are stable and before frontend data-access implementation. It does not block backend schema, service, repository, or static frontend layout work.
 4. Resolve DG-004 before TASK-005 imports image locations, TASK-006 gives `imageUrl` its runtime meaning, or TASK-010 loads character images. The decision must preserve or explicitly supersede the browser and upstream-data boundaries in ADR-0004 and ADR-0006.
 
@@ -65,6 +67,7 @@ Every future implementation work item inherits the repository [task-closure docu
 
 ### DG-001 - TypeScript test harness
 
+- **Status:** Resolved by accepted [ADR-0011](./adrs/0011-define-the-typescript-test-harness.md); no harness implementation exists yet.
 - The accepted ADR compares at least three credible runner strategies and explains the selected ESM and strict-TypeScript integration.
 - It defines the browser-like DOM environment for React tests and the process boundary for PostgreSQL and Redis integration tests.
 - It defines distinct, reproducible unit, integration, application, and root test scopes without claiming the commands already exist.
@@ -151,17 +154,17 @@ flowchart TD
     T014 --> T015
 ```
 
-`TASK-001`, `TASK-002`, and `TASK-016` are the immediately ready planning nodes. `TASK-003` is the first implementation node, but it cannot start until `TASK-001` resolves DG-001 because its visible shell and liveness response are production behavior governed by TDD. `TASK-002` may continue in parallel and joins at `TASK-004`; `TASK-016` joins the importer and GraphQL branches at `TASK-005` and `TASK-006`.
+TASK-001 is complete and has resolved DG-001 through accepted ADR-0011. TASK-002 and TASK-016 remain immediately ready planning nodes. TASK-003 is now ready by dependency, but it remains `Pending` and has not started. TASK-002 joins TASK-003 at TASK-004, while TASK-016 joins the importer and GraphQL branches at TASK-005 and TASK-006.
 
 The operational walking skeleton is deliberately thinner than the first product vertical slice. `TASK-003` proves that the repository, web process, API process, infrastructure, test boundary, and developer workflow are wired. It does not prove GraphQL character behavior, persistence, Redis readiness, or an acceptance criterion. The first browser-to-backend product flow is `TASK-010`, after the GraphQL contract, imported data, and frontend-client gate are ready.
 
 ### Task status and dependency index
 
-This table is the canonical current status for `TASK-*` work. `Pending` means prerequisites or work remain; `In progress` requires an evidence-linked execution-log entry; `Complete` requires the task's falsifiable definition of done and documentation gate. `Blocked` means an external condition prevents further progress after safe in-scope alternatives have been exhausted; the execution log must identify the condition, evidence, owner or dependency, and smallest next action. All tasks are currently pending because no implementation work has begun.
+This table is the canonical current status for `TASK-*` work. `Pending` means prerequisites or work remain; `In progress` requires an evidence-linked execution-log entry; `Complete` requires the task's falsifiable definition of done and documentation gate. `Blocked` means an external condition prevents further progress after safe in-scope alternatives have been exhausted; the execution log must identify the condition, evidence, owner or dependency, and smallest next action. TASK-001 is complete; no implementation work has begun.
 
 | Task | Status | May start after | Additional completion join or approval |
 |---|---|---|---|
-| TASK-001 | Pending | None | Project-owner approval of the gate-resolution ADR |
+| TASK-001 | Complete | None | Project-owner approval received for ADR-0011; closure gates passed |
 | TASK-002 | Pending | None | Project-owner approval of the gate-resolution ADR |
 | TASK-016 | Pending | None | Project-owner approval of the gate-resolution ADR |
 | TASK-003 | Pending | TASK-001 | None |
@@ -178,22 +181,23 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-014 | Pending | TASK-013 | Clean-clone delivery verification |
 | TASK-015 | Pending | TASK-014 | No unresolved release-blocking gate or ADR follow-up |
 
-The first actionable work is to prepare owner-reviewed decisions for TASK-001, TASK-002, and TASK-016. TASK-001 then unlocks the operational walking skeleton in TASK-003; TASK-002 joins TASK-003 before TASK-004, while TASK-016 joins before TASK-005 and TASK-006. After those dependencies complete, TASK-005 and TASK-006 may proceed in parallel. TASK-007 and TASK-008 branch from the backend path; TASK-009 selects the frontend client after stable GraphQL operations exist; TASK-010 joins the imported-data, GraphQL, client, and walking-skeleton branches for the first product vertical slice. TASK-008 then joins TASK-009 and TASK-010 before TASK-011, and every implementation branch joins before TASK-013 through TASK-015. Production-behavior work remains gated and must not start until DG-001 and any other gate named by the task are resolved. Each production task must complete one observable Red-Green-Refactor cycle at a time under ADR-0010.
+TASK-003 is ready by dependency after TASK-001 completion and DG-001 resolution, but it remains `Pending` until separately started. TASK-002 and TASK-016 are also ready planning work. TASK-002 joins TASK-003 before TASK-004, while TASK-016 joins before TASK-005 and TASK-006. After those dependencies complete, TASK-005 and TASK-006 may proceed in parallel. TASK-007 and TASK-008 branch from the backend path; TASK-009 selects the frontend client after stable GraphQL operations exist; TASK-010 joins the imported-data, GraphQL, client, and walking-skeleton branches for the first product vertical slice. TASK-008 then joins TASK-009 and TASK-010 before TASK-011, and every implementation branch joins before TASK-013 through TASK-015. Production-behavior work must not start until every gate named by the task is resolved. Each production task must complete one observable Red-Green-Refactor cycle at a time under ADR-0010.
 
-TASK-001, TASK-002, and TASK-016 may evaluate options in parallel, but creation of their ADR files must coordinate the next unused sequential ADR number so two branches or agents never claim the same ID. The `TASK-016` identifier is the next unused stable task ID; its graph position is controlled by dependencies rather than numeric order.
+TASK-001 allocated ADR-0011. TASK-002 and TASK-016 may evaluate options in parallel, but creation of their ADR files must coordinate the next unused sequential ADR number so two branches or agents never claim the same ID. The `TASK-016` identifier is a stable task ID; its graph position is controlled by dependencies rather than numeric order.
 
 Reversible execution choices that are not controlled by a decision gate, such as URL parameter names and the default sort direction, must be recorded in the [decision and progress log](./execution/decision-and-progress-log.md) before dependent implementation begins. Such a record cannot change requirement scope, optional disposition, accepted architecture, or gate status.
 
 ### TASK-001 - Resolve the TypeScript test-harness gate
 
 - **Outcome:** DG-001 has an owner-approved accepted ADR that defines executable unit, integration, application, real-browser smoke, and root test boundaries without claiming that a harness already exists.
+- **Execution plan:** The completed [TASK-001 test-harness decision ExecPlan](./plans/completed/TASK-001-test-harness-decision.md) records research, approval, validation, and documentation closure without implementing the harness.
 - **Mapped scope:** NFR-004; OR-001, OR-004, and OR-007 (adopted optional); AC-001 through AC-012 validation support.
-- **Governing decisions:** ADR-0001, ADR-0002, ADR-0010.
-- **Prerequisites and gates:** None; this task resolves DG-001 and requires project-owner approval before acceptance.
-- **Expected artifacts:** The next unused ADR, updated [ADR index](./adrs/README.md), this gate record, and directly affected specification guidance.
-- **Validation:** Run `python .agents/skills/govern-adrs/scripts/validate_adrs.py --repo .`; inspect that runner, DOM, unit, integration, application, narrow real-browser smoke, and root command boundaries are falsifiable without introducing broad end-to-end coverage.
+- **Governing decisions:** ADR-0001, ADR-0002, ADR-0010, ADR-0011.
+- **Prerequisites and gates:** None; project-owner approval has accepted ADR-0011 and resolved DG-001.
+- **Expected artifacts:** Accepted ADR-0011, updated [ADR index](./adrs/README.md), this resolved gate record, and directly affected specification guidance.
+- **Validation:** The ADR and documentation validators and `git diff --check` pass; the test-relevance and negative-artifact searches find no application/test source, disabled tests, harness configuration, manifest, lockfile, browser binary, or application scaffold. ADR-0011 makes runner, DOM, milestone-aware unit/integration/application, narrow real-browser smoke, and root command boundaries falsifiable without introducing broad end-to-end coverage.
 - **Documentation impact:** ADR index, implementation plan, specification execution state, and execution log.
-- **Done when:** The ADR is accepted by the project owner, DG-001 is marked `Resolved` with a link, and no test dependency or command is described as implemented without repository evidence.
+- **Done when:** Achieved on 2026-08-10: the project owner accepted ADR-0011, DG-001 is `Resolved` with a link, the documentation and relevance gates pass, and no test dependency or command is described as implemented without repository evidence.
 
 ### TASK-002 - Resolve the Sequelize migration-lifecycle gate
 

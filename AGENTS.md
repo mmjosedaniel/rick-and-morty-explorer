@@ -20,6 +20,22 @@ Start repository work from the [documentation map](README.md#documentation-map).
 - Follow the [documentation change-impact table](README.md#documentation-change-impact) after every scope, decision, planning, implementation, or evidence change.
 - Link to the authoritative owner instead of duplicating normative prose. If two authoritative documents conflict, surface and reconcile the conflict before continuing dependent work.
 
+## ExecPlans
+
+For substantial `TASK-*` work or when the project owner explicitly requests one, use a living, task-scoped ExecPlan stored under `docs/plans/` and maintain it according to [PLANS.md](PLANS.md). Keep active plans directly in that directory and move a plan to `docs/plans/completed/` only after its owning task passes the task-closure documentation gate. An ExecPlan may decompose its owning task into research, milestones, commands, evidence, decisions, and recovery steps, but it cannot replace `docs/IMPLEMENTATION_PLAN.md`, change task dependencies or scope, approve an ADR, resolve a decision gate, or count as implementation evidence.
+
+Keep the ExecPlan's `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` sections current at every stopping point. Update authoritative task, gate, ADR, requirement, specification, status, and execution-record owners before reflecting those changes in the ExecPlan or its index.
+
+## Documentation Preservation
+
+Do not silently delete, replace, move, rename, or consolidate repository documentation.
+
+- Update active authoritative documents in place when the documented truth changes, unless their authority-specific lifecycle requires a successor.
+- Preserve accepted ADRs, dated reviews, execution chronology, and other point-in-time records as historical evidence. Supersede or append according to their governing workflow instead of rewriting history.
+- When a document is superseded or retired, retain it with an explicit status and a link to its successor or current authoritative owner.
+- Delete documentation only when it is an accidental duplicate, a reproducible non-authoritative generated artifact, fully consolidated without losing history or traceability, or must be removed for security, privacy, or legal reasons.
+- Before an authorized replacement, supersession, retirement, deletion, consolidation, move, or rename, repair inbound links and indexes, preserve stable IDs and relevant history, record the rationale and, when applicable, the successor or current authoritative owner in the task's documentation impact and, when durable chronology is materially affected, in the execution log, then run documentation validation.
+
 ## Task Closure
 
 Every completed repository task must pass the [task-closure documentation gate](README.md#task-closure-documentation-gate). The agent responsible for the task owns the gate and may use a subagent only as an independent reviewer; delegation never transfers closure responsibility. For write-authorized work, update and link all materially affected documentation before handoff. For read-only work, report required documentation follow-ups without modifying files. Every final handoff must state the documentation impact explicitly, including a concrete reason when no documentation change was necessary.

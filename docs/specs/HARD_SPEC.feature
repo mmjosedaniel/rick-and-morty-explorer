@@ -8,23 +8,24 @@ Feature: Non-negotiable application and delivery constraints
   isolation, validation, and evidence boundaries. Human-controlled decisions
   must not proceed until their governing decision gates are resolved.
 
-  @HS-001 @repository_baseline @human_decision @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0010
-  Rule: An agent must not select the test harness while DG-001 is pending
+  @HS-001 @repository_baseline @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0010 @ADR-0011
+  Rule: Test-harness work must follow accepted ADR-0011
 
-    Scenario Outline: Prevent work controlled by the pending test-harness gate
-      Given DG-001 has status "Pending"
+    Scenario Outline: Keep controlled work inside the accepted harness boundary
+      Given DG-001 has status "Resolved"
+      And ADR-0011 has status "Accepted"
       When a change proposes <controlledWork>
-      Then the change must not proceed
-      And no tool, dependency, command boundary, or DOM environment is selected implicitly
-      And work may continue only after a project-owner-approved ADR resolves DG-001
+      Then the change must use <acceptedBoundary>
+      And the artifact must be added only by its owning TASK after every other controlling gate is resolved
+      And no selected command, dependency, configuration, test, or browser binary is claimed as implemented without repository evidence
 
       Examples:
-        | controlledWork                                       |
-        | a test-runner dependency or configuration            |
-        | an executable binding for a derived scenario         |
-        | the first executable application test                |
-        | the walking-skeleton real-browser smoke               |
-        | the first production-behavior Red-Green-Refactor cycle |
+        | controlledWork                                         | acceptedBoundary                                                      |
+        | a test-runner dependency or configuration              | Vitest projects with explicit Node or jsdom environments               |
+        | an executable check for a derived scenario             | an ordinary test mapped to stable traceability IDs                      |
+        | the first executable application test                  | a task-registered application project with separate strict type-checking |
+        | the walking-skeleton real-browser smoke                | one Chromium-only Playwright project with two owned processes           |
+        | the first production-behavior Red-Green-Refactor cycle | the smallest registered scope owned by the active implementation task   |
 
   @HS-002 @repository_baseline @human_decision @DG-002 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012
   Rule: An agent must not select the migration lifecycle while DG-002 is pending
