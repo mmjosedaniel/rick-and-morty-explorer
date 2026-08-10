@@ -2,9 +2,13 @@
 
 Start from the repository [documentation map](../../README.md#documentation-map). This directory contains dated, evidence-based assessments. A review reports what repository and runtime evidence demonstrated at one point in time; it does not own requirements, architecture, implementation sequencing, or permanent current status.
 
-## Current Records
+## Current Review
 
-- [2026-08-09 latest documentation work review](./2026-08-09-latest-documentation-work-review.md) — evaluates the latest working-tree documentation batch, records corrections, and establishes the initial `0/12` implementation-readiness baseline.
+- [2026-08-09 documentation consistency review](./2026-08-09-documentation-consistency-review.md) — evaluates the current walking-skeleton roadmap, AI-assistant DAG, target module view, UI guidance, specifications, and execution records.
+
+## Historical Records
+
+- [2026-08-09 initial documentation work review](./2026-08-09-latest-documentation-work-review.md) — establishes the initial `0/12` readiness baseline and records the earlier TASK-001-through-TASK-015 documentation batch. Its filename is retained for stable historical links; it predates DG-004, TASK-016, HS-020, the UI documentation, and the target system diagram.
 
 ## Review Rules
 

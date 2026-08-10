@@ -2,7 +2,7 @@
 
 This directory contains the architectural decisions derived from the [requirements specification](../REQUIREMENTS.md) and the [technical assessment](../FULL_STACK_TECHNICAL_ASSESSMENT.md).
 
-For documentation authority and Codex task routing, start from the repository [documentation map](../../README.md#documentation-map). Pending architectural choices remain in the [implementation plan](../IMPLEMENTATION_PLAN.md#active-decision-gates) until they are evaluated as ADRs.
+For documentation authority and Codex task routing, start from the repository [documentation map](../../README.md#documentation-map). The [target system module diagram](../SYSTEM_DIAGRAM.md) provides a derived overview of the accepted decisions and unresolved module boundaries. Pending architectural choices remain in the [implementation plan](../IMPLEMENTATION_PLAN.md#active-decision-gates) until they are evaluated as ADRs.
 
 The records describe the architectural direction. They do not claim that the corresponding code has already been implemented, and an `Accepted` status is never implementation or acceptance evidence by itself.
 

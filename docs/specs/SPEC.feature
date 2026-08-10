@@ -9,7 +9,7 @@ Feature: Rick and Morty character application behavior
   Scenarios describe observable success paths without selecting tooling
   controlled by pending decision gates.
 
-  @SPEC-001 @repository_baseline @mandatory @FR-FE-001 @AC-001 @ADR-0006 @ADR-0009
+  @SPEC-001 @repository_baseline @mandatory @FR-FE-001 @AC-001 @ADR-0006 @ADR-0009 @DG-004
   Rule: Visitors can browse character cards
 
     @minimum_assessment
@@ -35,7 +35,7 @@ Feature: Rick and Morty character application behavior
         | A-Z       | Beth Smith, Morty Smith, Rick Sanchez |
         | Z-A       | Rick Sanchez, Morty Smith, Beth Smith |
 
-  @SPEC-003 @repository_baseline @mandatory @FR-FE-003 @AC-003 @ADR-0006 @ADR-0009
+  @SPEC-003 @repository_baseline @mandatory @FR-FE-003 @AC-003 @ADR-0006 @ADR-0009 @DG-004
   Rule: Visitors can open an addressable character detail
 
     @minimum_assessment
@@ -49,7 +49,22 @@ Feature: Rick and Morty character application behavior
       Given character 1 is available in the character list
       When the visitor selects the card for character 1
       Then the browser location identifies character 1
-      And the detail shows the accepted descriptive fields
+      And the detail shows the character name
+      And the detail shows the character image
+      And the detail shows the character species
+      And the detail shows the character status
+      And the detail shows the character gender
+      And the detail shows the character origin name
+
+    Scenario: Show a non-empty character type
+      Given character 1 has a non-empty character type
+      When the visitor opens the detail for character 1
+      Then the detail shows the character type
+
+    Scenario: Omit an empty character type row
+      Given character 1 has an empty character type
+      When the visitor opens the detail for character 1
+      Then the detail does not show an empty character type row
 
     Scenario: Open a character detail directly
       Given character 1 exists
@@ -141,13 +156,14 @@ Feature: Rick and Morty character application behavior
         | empty   | empty   |
         | error   | error   |
 
+    @DG-004
     Scenario: Preserve the layout when a character image fails
       Given a character image cannot be loaded
       When the character card or detail is rendered
       Then meaningful alternative text identifies the character
       And a layout-safe fallback preserves the interface structure
 
-  @SPEC-008 @repository_baseline @mandatory @FR-BE-001 @AC-007 @ADR-0004 @ADR-0006
+  @SPEC-008 @repository_baseline @mandatory @FR-BE-001 @AC-007 @ADR-0004 @ADR-0006 @DG-004
   Rule: The Express application exposes the project GraphQL use cases
 
     @minimum_assessment
@@ -213,7 +229,7 @@ Feature: Rick and Morty character application behavior
       Then the characters query returns an empty list
       And the response contains no GraphQL error
 
-  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @DG-002
+  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @DG-002 @DG-004
   Rule: PostgreSQL is created through migrations and initialized
 
     @minimum_assessment

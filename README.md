@@ -2,7 +2,7 @@
 
 ## Repository status
 
-This repository is currently in its requirements and architecture phase. It contains the assessment contract, accepted architecture decisions, a dependency-ordered implementation plan, derived Gherkin specifications, execution records, and repository-specific workflow guidance. It does not yet contain an application scaffold, runnable web or API services, migrations, automated product tests, an ERD, or authoritative install, run, import, and API-usage commands.
+This repository is currently in its requirements and architecture phase. It contains the assessment contract, accepted architecture decisions, a target system module diagram, a graph-oriented implementation plan whose first implementation node is an operational walking skeleton, derived Gherkin specifications, UI field-visibility and visual-foundation specifications, a proposed non-blocking Storybook pilot, execution records, and repository-specific workflow guidance. It does not yet contain UI mockups, an application scaffold, Storybook configuration or stories, runnable web or API services, migrations, automated product tests, an ERD, or authoritative install, run, import, and API-usage commands.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
@@ -16,9 +16,12 @@ This README is the single documentation entry point and current-state summary fo
 | [Technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) | Original assessment scope and mandatory-versus-optional classification | Repository-specific decisions or implementation evidence |
 | [Requirements specification](./docs/REQUIREMENTS.md) | Normalized functional, non-functional, optional, deliverable, and acceptance IDs | Architectural choices or implementation status |
 | [ADR index](./docs/adrs/README.md) and individual ADRs | Portfolio status, optional-scope disposition, architecture coverage, and accepted decision detail | Implementation or acceptance status |
-| [Implementation plan](./docs/IMPLEMENTATION_PLAN.md) | Stable `TASK-*` work items, dependency ordering, validation intent, and decision gates | New product scope, unapproved architectural choices, or implementation status |
+| [System module diagram](./docs/SYSTEM_DIAGRAM.md) | Derived high-level target modules and principal data flows | New architecture, resolution of pending gates, implementation status, or acceptance evidence |
+| [Implementation plan](./docs/IMPLEMENTATION_PLAN.md) | Stable `TASK-*` work items, the canonical dependency graph, AI-assistant execution rules, validation intent, and decision gates | New product scope, unapproved architectural choices, or implementation status |
 | [Gherkin specifications](./docs/specs/README.md), [SPEC](./docs/specs/SPEC.feature), and [HARD_SPEC](./docs/specs/HARD_SPEC.feature) | Derived behavioral examples, non-negotiable constraints, failure modes, and human decision guards | Source scope, architectural approval, implementation status, or passing evidence |
-| [Execution records](./docs/execution/README.md) and [decision and progress log](./docs/execution/decision-and-progress-log.md) | Stable navigation, reversible execution decisions, and chronological evidence links | Current repository status, product scope, architecture approval, gate resolution, or acceptance status |
+| [UI design documentation](./docs/ui/README.md) and [visual foundations](./docs/ui/visual-foundations.md) | Detailed specification and navigation for the UI choices recorded in the execution log, including field visibility and visual foundations | Product scope, architectural approval, decision status or rationale, implementation status, or acceptance evidence |
+| [Proposed Storybook pilot workflow](./docs/ui/storybook-workflow.md) | Implementation guidance for the reversible pilot recorded by DPL-DEC-007 | Product scope, architectural approval, task definitions, gate resolution, implementation status, or acceptance evidence |
+| [Execution records](./docs/execution/README.md) and [decision and progress log](./docs/execution/decision-and-progress-log.md) | Stable navigation, reversible decision status and rationale, and chronological evidence links | Current repository status, product scope, architecture approval, gate resolution, detailed design specification, or acceptance status |
 | [Review records](./docs/reviews/README.md) | Point-in-time evidence-based assessments, readiness matrices, gaps, and verification commands | Product scope, architectural approval, or permanent current status |
 | This README | Documentation routing, current repository phase, and current delivery-status summary | Requirement or architecture definition |
 | Source, manifests, migrations, tests, runtime observations, and Git history | Actual implementation and verification evidence | Requirement intent or approval of architectural changes |
@@ -60,7 +63,7 @@ The current adopted and deferred optional scope is authoritative in the [optiona
 
 ## Readiness status
 
-The latest evidence-based [review](./docs/reviews/2026-08-09-latest-documentation-work-review.md) records:
+The current evidence-based [documentation consistency review](./docs/reviews/2026-08-09-documentation-consistency-review.md) records:
 
 | View | Current result |
 |---|---|
@@ -84,9 +87,9 @@ This status section must be updated and supplemented with links to reproducible 
 | Task | Required reading order | Repository workflow |
 |---|---|---|
 | Interpret or change scope | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements specification](./docs/REQUIREMENTS.md) -> [optional-scope dispositions](./docs/adrs/README.md#optional-scope-decisions) -> relevant accepted ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | Preserve source classification, stable IDs, adopted commitments, and unresolved constraints. |
-| Review or change architecture | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [ADR index](./docs/adrs/README.md) -> relevant ADRs -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | [Govern ADRs](./.agents/skills/govern-adrs/SKILL.md) |
-| Plan implementation or resolve gates | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [architecture coverage](./docs/adrs/README.md#architecture-coverage) -> relevant accepted ADRs -> [implementation plan](./docs/IMPLEMENTATION_PLAN.md) | [Plan implementation](./.agents/skills/plan-implementation/SKILL.md) |
-| Implement behavior or fix a bug | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact requirement/AC IDs -> optional disposition -> relevant accepted ADRs -> exact [TASK](./docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence) and gates -> only the mapped [SPEC/HS rules](./docs/specs/README.md#codex-rule-routing) -> repository evidence | Follow the required Red-Green-Refactor workflow and update the task's evidence/documentation owners. |
+| Review or change architecture | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [ADR index](./docs/adrs/README.md) -> relevant ADRs -> [derived system module view](./docs/SYSTEM_DIAGRAM.md) -> [active decision gates](./docs/IMPLEMENTATION_PLAN.md#active-decision-gates) | [Govern ADRs](./.agents/skills/govern-adrs/SKILL.md) |
+| Plan implementation or resolve gates | [AGENTS.md](./AGENTS.md) -> [this map](#documentation-map) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements](./docs/REQUIREMENTS.md) -> [architecture coverage](./docs/adrs/README.md#architecture-coverage) -> relevant accepted ADRs -> [derived system module view](./docs/SYSTEM_DIAGRAM.md) -> [implementation plan](./docs/IMPLEMENTATION_PLAN.md) | [Plan implementation](./.agents/skills/plan-implementation/SKILL.md) |
+| Implement behavior or fix a bug | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact requirement/AC IDs -> optional disposition -> relevant accepted ADRs -> exact [TASK](./docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence) and gates -> only the mapped [SPEC/HS rules](./docs/specs/README.md#codex-rule-routing) -> applicable [UI design documents](./docs/ui/README.md) and recorded reversible decisions -> repository evidence | Follow the required Red-Green-Refactor workflow and update the task's evidence/documentation owners. |
 | Review acceptance or readiness | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> [technical assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) -> [requirements and ACs](./docs/REQUIREMENTS.md) -> [optional dispositions](./docs/adrs/README.md#optional-scope-decisions) -> relevant ADRs -> [active gates/tasks](./docs/IMPLEMENTATION_PLAN.md) -> implementation/runtime evidence -> [prior reviews](./docs/reviews/README.md) | [Review acceptance](./.agents/skills/review-acceptance/SKILL.md) |
 | Record execution progress | [AGENTS.md](./AGENTS.md) -> authoritative changed artifact -> exact [TASK](./docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence) -> [execution-record boundary](./docs/execution/README.md#authority-boundary) | Update the authority owner first, then append an evidence-linked chronological record. |
 | Verify a handoff, milestone, or release | [AGENTS.md](./AGENTS.md) -> [current status](#repository-status) -> exact task and affected requirements -> authoritative manifests and automation -> affected documentation -> [prior reviews](./docs/reviews/README.md) | [Verify repository](./.agents/skills/verify-repository/SKILL.md) |
@@ -101,6 +104,7 @@ AGENTS.md
   -> relevant accepted ADRs
   -> active decision gates and exact TASK ID
   -> exact mapped SPEC/HS rules
+  -> applicable design documents and recorded reversible decisions
   -> repository evidence
   -> TDD and proportional verification
 ```
@@ -113,9 +117,10 @@ A workflow skill defines how Codex performs a task. It does not override the aut
 |---|---|---|
 | Source clarification approved by the project owner | Technical assessment | Requirements, ADR portfolio, implementation plan, and this map |
 | Requirement, deliverable, or acceptance interpretation | Requirements specification | ADR metadata and index, optional disposition, and implementation plan |
-| ADR creation, status change, or supersession | Individual ADR | ADR index, architecture coverage, optional disposition, and related decision gate; run the ADR validator |
-| Decision-gate or task change | Implementation plan and, for a resolved gate, the new ADR | ADR index, mapped SPEC/HS rules, execution log, and dependent work items |
+| ADR creation, status change, or supersession | Individual ADR | ADR index, architecture coverage, system module diagram, optional disposition, and related decision gate; run the ADR validator |
+| Decision-gate or task change | Implementation plan and, for a resolved gate, the new ADR | ADR index, system module diagram when a module boundary changes, mapped SPEC/HS rules, execution log, and dependent work items |
 | Derived behavioral example or hard constraint | Requirements/ADR/plan owner first when semantics change; otherwise the exact SPEC/HS rule | Specification index routing, mapped tasks, and execution log; never promote derived wording to authority |
+| UI field mapping, design annotation, or mockup | UI design documentation | Governing requirement, ADR, or plan owner first when semantics change; mapped SPEC/HS rules and execution log when affected |
 | Implementation behavior | Tests, source, and configuration | Task mappings, relevant SPEC/HS rules, setup/API/ERD documentation, execution log, and current delivery status |
 | Reversible execution decision or progress evidence | Execution log | Governing task and authority owner; current status only when repository evidence materially changes it |
 | Verification or readiness result | Repository and runtime evidence | Dated review record and current delivery status when the result changes current readiness |
