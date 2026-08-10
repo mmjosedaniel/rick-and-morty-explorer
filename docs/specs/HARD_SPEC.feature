@@ -6,15 +6,15 @@
 Feature: Non-negotiable application and delivery constraints
   The implementation must preserve explicit scope, data ownership, failure,
   isolation, validation, and evidence boundaries. Human-controlled decisions
-  remain blocked until their governing decision gates are resolved.
+  must not proceed until their governing decision gates are resolved.
 
   @HS-001 @repository_baseline @human_decision @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0010
   Rule: An agent must not select the test harness while DG-001 is pending
 
-    Scenario Outline: Block work controlled by the pending test-harness gate
+    Scenario Outline: Prevent work controlled by the pending test-harness gate
       Given DG-001 has status "Pending"
       When a change proposes <controlledWork>
-      Then the change remains blocked
+      Then the change must not proceed
       And no tool, dependency, command boundary, or DOM environment is selected implicitly
       And work may continue only after a project-owner-approved ADR resolves DG-001
 
@@ -23,15 +23,16 @@ Feature: Non-negotiable application and delivery constraints
         | a test-runner dependency or configuration            |
         | an executable binding for a derived scenario         |
         | the first executable application test                |
+        | the walking-skeleton real-browser smoke               |
         | the first production-behavior Red-Green-Refactor cycle |
 
   @HS-002 @repository_baseline @human_decision @DG-002 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012
   Rule: An agent must not select the migration lifecycle while DG-002 is pending
 
-    Scenario Outline: Block work controlled by the pending migration gate
+    Scenario Outline: Prevent work controlled by the pending migration gate
       Given DG-002 has status "Pending"
       When a change proposes <controlledWork>
-      Then the change remains blocked
+      Then the change must not proceed
       And migration execution, rollback, failure, and concurrency semantics are not invented
       And work may continue only after a project-owner-approved ADR resolves DG-002
 
@@ -46,10 +47,10 @@ Feature: Non-negotiable application and delivery constraints
   @HS-003 @repository_baseline @human_decision @DG-003 @FR-FE-001 @FR-FE-002 @FR-FE-003 @FR-FE-004 @FR-FE-005 @OR-003
   Rule: An agent must not select the frontend GraphQL client while DG-003 is pending
 
-    Scenario Outline: Block work controlled by the pending frontend data gate
+    Scenario Outline: Prevent work controlled by the pending frontend data gate
       Given DG-003 has status "Pending"
       When a change proposes <controlledWork>
-      Then the change remains blocked
+      Then the change must not proceed
       And no GraphQL client, query-cache library, generation tool, or client error policy is selected implicitly
       And work may continue only after a project-owner-approved ADR resolves DG-003
 
@@ -100,8 +101,8 @@ Feature: Non-negotiable application and delivery constraints
       And DG-001 has been resolved with authoritative command boundaries
       When the documented strict type-check scope runs
       Then all application and test source passes strict TypeScript checks
-      And generated GraphQL types match the version-controlled schema
-      And generated artifacts have not been edited by hand
+      And any generated GraphQL types present match the version-controlled schema
+      And any generated artifacts present have not been edited by hand
 
     Scenario: Keep language and asynchronous control flow within the accepted baseline
       When application and test source is inspected
@@ -614,3 +615,21 @@ Feature: Non-negotiable application and delivery constraints
       When application and test source is reviewed
       Then comments explain relevant non-obvious constraints or decisions
       And comments do not restate self-explanatory code or preserve obsolete behavior
+
+  @HS-020 @repository_baseline @human_decision @DG-004 @FR-FE-001 @FR-FE-003 @NFR-001 @NFR-005 @AC-001 @AC-003 @ADR-0001 @ADR-0003 @ADR-0004 @ADR-0006 @ADR-0007 @ADR-0008 @ADR-0009
+  Rule: An agent must not select character-image delivery while DG-004 is pending
+
+    Scenario Outline: Prevent work controlled by the pending image-delivery gate
+      Given DG-004 has status "Pending"
+      When a change proposes <controlledWork>
+      Then the change must not proceed
+      And no copied-asset, application-delivery, or external-browser-request strategy is selected implicitly
+      And work may continue only after a project-owner-approved ADR resolves DG-004
+
+      Examples:
+        | controlledWork                                      |
+        | persisting copied character image locations         |
+        | mapping runtime GraphQL imageUrl values              |
+        | caching a character-summary imageUrl value           |
+        | an application-owned image proxy or asset route      |
+        | a browser request to the upstream character API host |

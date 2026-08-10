@@ -26,9 +26,9 @@ This distinction is a repository convention rather than a new product-scope clas
 
 The feature files intentionally have no runner configuration, step definitions, or authoritative execution command. They are documentation rather than application tests. [DG-001](../IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) must be resolved before a runner dependency or configuration, executable binding, application test, or production-behavior Red-Green-Refactor cycle is added.
 
-[DG-002](../IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) must be resolved before migration artifacts or their integration harness are added. [DG-003](../IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) must be resolved before frontend GraphQL client, cache, generated operation, or dependent test code is added.
+[DG-002](../IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) must be resolved before migration artifacts or their integration harness are added. [DG-003](../IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) must be resolved before frontend GraphQL client, cache, generated operation, or dependent test code is added. [DG-004](../IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) must be resolved before import, GraphQL mapping, or browser code selects how character images are delivered.
 
-Every scenario remains `Specified, not executed` until DG-001 and that scenario's other applicable gate tags are resolved, an executable binding or equivalent automated check exists, and the authoritative validation command passes. DG-002 does not block unrelated API or frontend work, and DG-003 does not block backend or static-layout work.
+Every scenario remains `Specified, not executed` until DG-001 and that scenario's other applicable gate tags are resolved, an executable binding or equivalent automated check exists, and the authoritative validation command passes. DG-002 does not block unrelated API or frontend work, DG-003 does not block backend or static-layout work, and DG-004 does not block the operational walking skeleton.
 
 ## Tag Convention
 
@@ -55,6 +55,7 @@ The scenarios deliberately avoid selecting:
 - the test runner, DOM environment, or test command boundaries controlled by DG-001;
 - the migration runner and TypeScript artifact lifecycle controlled by DG-002;
 - the frontend GraphQL client, query-cache library, generation tool, or error-handling integration controlled by DG-003;
+- the character-image copy, application-delivery, or external-browser-request strategy controlled by DG-004;
 - URL parameter names or a default sort direction. These are reversible TASK-010 execution choices that must be recorded in the [decision and progress log](../execution/decision-and-progress-log.md) before dependent code is written; they do not require a new ADR unless their scope becomes consequential.
 
 ## Codex Rule Routing
@@ -63,7 +64,8 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 
 | Work area | Derived rules | Planned owner |
 |---|---|---|
-| Decision gates | HS-001 through HS-003 | TASK-001, TASK-002, TASK-009 |
+| Decision gates | HS-001 through HS-003 and HS-020 | TASK-001, TASK-002, TASK-009, TASK-016 |
+| Character-image delivery | HS-020 and the DG-004-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, and SPEC-010 | TASK-016 for the decision; TASK-005, TASK-006, TASK-010, and TASK-012 for affected behavior |
 | Deferred-scope and deployment guards | HS-004, HS-005 | Applicable future scope decision; TASK-008 for current single-user semantics |
 | Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 and TASK-013 |
 | Character list, sorting, and interface filters | SPEC-001, SPEC-002, SPEC-006, HS-015, HS-016 | TASK-010 and TASK-012 |
@@ -75,6 +77,8 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 | Responsive and resilient UI | SPEC-007, HS-016 | TASK-012 |
 | Test portfolio | HS-017 | TASK-004 through TASK-008 and TASK-010 through TASK-012 contribute applicable scenario evidence; TASK-013 owns portfolio closure |
 | Technology and delivery evidence | SPEC-014 through SPEC-017, HS-018 | TASK-003, TASK-014, TASK-015 |
+
+The `TASK-003` web shell, `GET /healthz` response, and application smoke are task-local operational evidence. They intentionally have no product `SPEC-*` rule, do not make the browser call the liveness route, and do not satisfy AC-007, SPEC-008, SPEC-014, SPEC-017, or any product acceptance criterion.
 
 ## Maintenance
 

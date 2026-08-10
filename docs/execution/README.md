@@ -7,6 +7,7 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 - The root [README](../../README.md#repository-status) owns the current repository and delivery-status summary.
 - The [requirements specification](../REQUIREMENTS.md) owns requirement, deliverable, and acceptance IDs.
 - The [ADR index](../adrs/README.md) and individual ADRs own accepted architecture and optional-scope disposition.
+- The [target system module diagram](../SYSTEM_DIAGRAM.md) provides a derived overview of those decisions and the unresolved boundaries in the plan.
 - The [implementation plan](../IMPLEMENTATION_PLAN.md) owns decision gates, dependency order, and `TASK-*` work items.
 - The [Gherkin specification index](../specs/README.md) routes derived `SPEC-*` and `HS-*` examples.
 - Dated [review records](../reviews/README.md) report point-in-time evidence and gaps.
