@@ -61,12 +61,13 @@ An ADR cannot be recommended for acceptance if it contradicts a mandatory requir
 | [ADR-0008](./0008-use-deterministic-bootstrap-and-idempotent-sync.md) | Use deterministic bootstrap and idempotent synchronization | Accepted | 90 | Accept | FR-BE-004, AC-009 |
 | [ADR-0009](./0009-keep-frontend-state-close-to-its-owner.md) | Keep frontend state close to its owner | Accepted | 90 | Accept | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-002, OR-003 |
 | [ADR-0010](./0010-use-a-targeted-automated-testing-strategy.md) | Use a targeted automated testing strategy | Accepted | 89 | Accept | NFR-004, OR-004, OR-007 |
+| [ADR-0011](./0011-define-the-typescript-test-harness.md) | Define the TypeScript test harness | Accepted | 92 | Accept | NFR-004, OR-001, OR-004, OR-007 |
 
-Consequential choices that have not yet reached ADR evaluation are tracked as pending gates in the [implementation plan](../IMPLEMENTATION_PLAN.md#active-decision-gates). They are not accepted decisions and do not reserve ADR numbers.
+Consequential choices that have not yet reached ADR evaluation are tracked as pending gates in the [implementation plan](../IMPLEMENTATION_PLAN.md#active-decision-gates). They are not accepted decisions and do not reserve ADR numbers. ADR-0011 is accepted and resolves DG-001; acceptance defines implementation direction but does not prove that the harness exists.
 
 ## Portfolio evaluation
 
-The accepted decisions form one consistent baseline. ADR-0001 through ADR-0010 are accepted:
+The accepted decisions form one consistent baseline. ADR-0001 through ADR-0011 are accepted:
 
 1. ADR-0001 and ADR-0002 establish a small, typed repository structure without introducing distributed-system complexity.
 2. ADR-0003 defines the relational engine and minimal data model.
@@ -76,6 +77,7 @@ The accepted decisions form one consistent baseline. ADR-0001 through ADR-0010 a
 6. ADR-0007 caches only stable search projections and falls back to ADR-0004 when Redis is unavailable.
 7. ADR-0009 gives URL, server, and transient UI state distinct owners and reserves Zustand for demonstrated cross-cutting client-only state.
 8. ADR-0010 defines the TDD workflow, audits test relevance at plan completion, and validates the boundaries and failure modes introduced by the other decisions.
+9. ADR-0011 maps that testing strategy to Vitest projects, jsdom, milestone-aware scope activation, external PostgreSQL and Redis isolation, and one Chromium-only Playwright process smoke.
 
 No decision conflicts with a mandatory requirement. ADR-0005 is accepted with an explicit follow-up because the requirements omit identity and authentication. Its single-user assumption must be superseded before user accounts enter scope; before anonymous public writes are deployed, the deployment-control follow-up defined by ADR-0005 must be completed through a new or superseding decision as appropriate.
 
@@ -92,6 +94,7 @@ This area-level table helps readers locate relevant ADRs. It is not end-to-end r
 | Redis search caching | ADR-0007, ADR-0010 |
 | Responsive frontend and prescribed frontend stack | ADR-0001, ADR-0002, ADR-0009 |
 | Code quality | ADR-0001, ADR-0002, ADR-0006, ADR-0007, ADR-0010 |
+| Automated test harness and execution boundaries | ADR-0010, ADR-0011 |
 | Request logging | ADR-0006, ADR-0010 |
 | Public source repository (DEL-001) | ADR-0001; verify public accessibility and Git evidence separately |
 | Git usage (NFR-006) | Delivery and evaluation constraint; verify through repository history and review rather than an ADR |

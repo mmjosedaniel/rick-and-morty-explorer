@@ -24,11 +24,11 @@ This distinction is a repository convention rather than a new product-scope clas
 
 ## Execution State
 
-The feature files intentionally have no runner configuration, step definitions, or authoritative execution command. They are documentation rather than application tests. [DG-001](../IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) must be resolved before a runner dependency or configuration, executable binding, application test, or production-behavior Red-Green-Refactor cycle is added.
+The feature files intentionally have no runner configuration, step definitions, or authoritative execution command. They are documentation rather than application tests. [ADR-0011](../adrs/0011-define-the-typescript-test-harness.md) has resolved [DG-001](../IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) by selecting Vitest projects, jsdom, ordinary-test traceability, milestone-aware scope activation, and one Chromium-only Playwright process smoke. No selected dependency, configuration, command, test, or browser binary exists until TASK-003 or a later owning task implements its registered scope.
 
 [DG-002](../IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) must be resolved before migration artifacts or their integration harness are added. [DG-003](../IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) must be resolved before frontend GraphQL client, cache, generated operation, or dependent test code is added. [DG-004](../IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) must be resolved before import, GraphQL mapping, or browser code selects how character images are delivered.
 
-Every scenario remains `Specified, not executed` until DG-001 and that scenario's other applicable gate tags are resolved, an executable binding or equivalent automated check exists, and the authoritative validation command passes. DG-002 does not block unrelated API or frontend work, DG-003 does not block backend or static-layout work, and DG-004 does not block the operational walking skeleton.
+Every scenario remains `Specified, not executed` until its owning task implements an ordinary automated check through the ADR-0011 boundary, every other applicable gate is resolved, and the authoritative validation command passes. The feature files themselves remain non-executable. DG-002 does not block unrelated API or frontend work, DG-003 does not block backend or static-layout work, and DG-004 does not block the operational walking skeleton.
 
 ## Tag Convention
 
@@ -44,15 +44,15 @@ Every scenario remains `Specified, not executed` until DG-001 and that scenario'
 | `@human_decision` | Controlled by a pending gate or required project-owner decision. |
 | `@SPEC-*`, `@HS-*` | Stable rule IDs for the functional and hard specifications. |
 | `@FR-*`, `@NFR-*`, `@OR-*`, `@DEL-*`, `@AC-*` | Traceability to stable requirement, deliverable, and acceptance IDs. |
-| `@ADR-*`, `@DG-*` | Traceability to accepted architecture or a pending decision gate. |
+| `@ADR-*`, `@DG-*` | Traceability to accepted architecture or a decision gate, regardless of whether that gate is pending or resolved. |
 
 ## Coverage Boundary
 
 `SPEC.feature` covers the mandatory frontend and backend behavior, prescribed technology outcomes, required deliverables, AC-001 through AC-012, and the adopted OR-003 interface filters. `HARD_SPEC.feature` hardens those paths and covers adopted OR-001, OR-004, OR-007, and OR-008 commitments, plus guards for deferred OR-002, OR-005, OR-006, and OR-009.
 
-The scenarios deliberately avoid selecting:
+The scenarios deliberately avoid introducing:
 
-- the test runner, DOM environment, or test command boundaries controlled by DG-001;
+- a test runner, DOM environment, command boundary, or executable Gherkin layer that conflicts with ADR-0011;
 - the migration runner and TypeScript artifact lifecycle controlled by DG-002;
 - the frontend GraphQL client, query-cache library, generation tool, or error-handling integration controlled by DG-003;
 - the character-image copy, application-delivery, or external-browser-request strategy controlled by DG-004;
@@ -64,7 +64,7 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 
 | Work area | Derived rules | Planned owner |
 |---|---|---|
-| Decision gates | HS-001 through HS-003 and HS-020 | TASK-001, TASK-002, TASK-009, TASK-016 |
+| Decision guards and accepted test-harness boundary | HS-001 through HS-003 and HS-020 | TASK-001 for the accepted HS-001 boundary; TASK-002, TASK-009, and TASK-016 for the remaining pending gates |
 | Character-image delivery | HS-020 and the DG-004-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, and SPEC-010 | TASK-016 for the decision; TASK-005, TASK-006, TASK-010, and TASK-012 for affected behavior |
 | Deferred-scope and deployment guards | HS-004, HS-005 | Applicable future scope decision; TASK-008 for current single-user semantics |
 | Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 and TASK-013 |
@@ -84,7 +84,7 @@ The `TASK-003` web shell, `GET /healthz` response, and application smoke are tas
 
 - Change the authoritative owner first when product scope, optional disposition, architecture, or a decision gate changes.
 - Update affected scenarios and tags in the same task after the authority change is accepted.
-- Bind scenarios to automated checks only through the test strategy selected after DG-001 is resolved.
+- Map scenarios to ordinary automated checks only through the accepted ADR-0011 boundary and the task that owns each executable scope; do not add feature-file bindings without a later accepted decision.
 - Preserve scenario-level `@minimum_assessment` and inherited `@repository_baseline` axes so acceptance reviews can report the two required readiness views without treating an ADR-only constraint as source-mandatory.
 - Keep scenario outcomes observable and keep implementation details in future step definitions or focused lower-level tests.
 - Never mark a scenario passing without reproducible repository or runtime evidence.
