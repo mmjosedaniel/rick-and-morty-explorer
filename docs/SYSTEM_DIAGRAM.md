@@ -49,7 +49,7 @@ flowchart LR
     end
 
     subgraph SETUP["Initialization and ingestion"]
-        MIGRATIONS["Version-controlled migrations<br/>Runner selected by DG-002"]
+        MIGRATIONS["Version-controlled migrations<br/>Build-first programmatic Umzug<br/>Immutable emitted ESM (ADR-0012)"]
         IMPORT_COMMAND["Explicit import command"]
         PUBLIC_API["Public Rick and Morty REST API<br/>Ingestion source only"]
     end
@@ -81,7 +81,7 @@ flowchart LR
 - The public Rick and Morty API is accessed by the explicit importer, not by normal character queries or API startup.
 - Imported character attributes are source-owned. Favorites and comments are application-owned, and a repeated import must not overwrite or delete them.
 - The [`TASK-003` `GET /healthz` contract](./IMPLEMENTATION_PLAN.md#task-003---establish-the-operational-walking-skeleton) proves only that the Express process is alive; it does not claim GraphQL, PostgreSQL, or Redis readiness.
-- [DG-002](./IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) and [DG-003](./IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) remain generic until their owner-approved ADRs select the migration runner and frontend GraphQL client.
+- Accepted [ADR-0012](./adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md) resolves [DG-002](./IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) and defines the target build-first programmatic migration boundary; no runner or migration exists yet. [DG-003](./IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) remains generic until an owner-approved ADR selects the frontend GraphQL client.
 - Character-image delivery is represented as a neutral boundary because [DG-004](./IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) has not selected whether images are copied, served by the application, or requested from an external asset host.
 - Favorites and comments use the global single-user demonstration semantics accepted by ADR-0005. Public anonymous writes or user accounts require its security and ownership follow-up before deployment.
 - [ADR-0010](./adrs/0010-use-a-targeted-automated-testing-strategy.md) and [DG-001](./IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) govern verification and the future test harness; they are intentionally not represented as runtime modules.
@@ -101,4 +101,6 @@ flowchart LR
 - [ADR-0008: Deterministic bootstrap and import](./adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0009: Frontend state ownership](./adrs/0009-keep-frontend-state-close-to-its-owner.md)
 - [ADR-0010: Targeted automated testing strategy](./adrs/0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0011: TypeScript test harness](./adrs/0011-define-the-typescript-test-harness.md)
+- [ADR-0012: Build-first programmatic migration lifecycle](./adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md)
 - [Active decision gates](./IMPLEMENTATION_PLAN.md#active-decision-gates)

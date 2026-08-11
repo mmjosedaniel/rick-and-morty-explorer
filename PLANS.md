@@ -76,6 +76,16 @@ State what the owning task includes and what remains outside it. Preserve mandat
 
 Describe the dependency-ordered sequence of edits and additions in prose. For each milestone, state what will exist afterward, what did not exist before, what evidence will be captured, and what condition permits the next milestone to start. Use approval checkpoints only where repository policy requires a human decision.
 
+### Decision Review Contract (decision work only)
+
+When the owning task compares consequential options, prepares an ADR, or resolves a decision gate, create a living Decision Review Contract inside the ExecPlan before option research starts. This is a workflow contract, not a new authority document or a substitute for the ADR. Link to authoritative wording instead of copying it wholesale.
+
+The contract must identify the exact task, decision gate, proposed artifact, approval boundary, and forbidden scope; common comparison criteria and evidence classes; required artifact-local sections and outputs; hard gates and score, recommendation, and status invariants; decision semantics that must be fixed before drafting versus downstream evidence that may prove an already-defined contract; applicable adversarial properties; and correction, escalation, and stopping conditions.
+
+Define a compact cumulative invariant packet. Each invariant needs a plan-local ID, trigger or fixture, expected result, evidence or actual result, and responsible reviewer. Every packet includes artifact coverage, evidence honesty, and authority-state consistency. Add triggered invariants for state transitions or concurrency, integrity or identity, deterministic or canonical bytes, cross-platform equivalence, recovery, or ownership when the proposed decision contains those properties.
+
+After the research barrier, the decision analyst maps every contract item and returns exactly `DRAFT READY`, `RETURN FOR RESEARCH`, or `OWNER DIRECTION`. `DRAFT READY` permits drafting but does not approve an ADR or resolve a decision gate. Apply the risk triggers, contract checkpoint, fresh evidence checkpoint, material-change invalidation rule, bounded correction protocol, and post-verdict reconciliation barrier defined by [.codex/README.md](.codex/README.md).
+
 ### Concrete Steps
 
 Give exact commands and the working directory. Commands must match current repository evidence or be explicitly labeled as commands that will become authoritative only after their implementation task creates them. Include short expected results so the executor can recognize success and failure.
@@ -83,6 +93,8 @@ Give exact commands and the working directory. Commands must match current repos
 ### Validation and Acceptance
 
 Define observable acceptance in terms of behavior, authoritative state, or reproducible validator output. For production behavior, include the exact Red failure, Green pass, and post-Refactor validation required by ADR-0010. For declarative or decision work with no production behavior, explain why a TDD cycle does not apply and define the structural, semantic, and negative checks that replace it.
+
+For decision work, record both the contract-checkpoint result when risk triggers require it and the fresh evidence-checkpoint result for the exact final artifact. Re-run the complete applicable invariant packet after every material revision, and reconcile the final verdict with the score, recommendation, artifact status, task and gate states, and next action before an owner-approval request.
 
 ### Idempotence and Recovery
 

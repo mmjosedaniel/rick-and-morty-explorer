@@ -26,9 +26,9 @@ This distinction is a repository convention rather than a new product-scope clas
 
 The feature files intentionally have no runner configuration, step definitions, or authoritative execution command. They are documentation rather than application tests. [ADR-0011](../adrs/0011-define-the-typescript-test-harness.md) has resolved [DG-001](../IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) by selecting Vitest projects, jsdom, ordinary-test traceability, milestone-aware scope activation, and one Chromium-only Playwright process smoke. No selected dependency, configuration, command, test, or browser binary exists until TASK-003 or a later owning task implements its registered scope.
 
-[DG-002](../IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) must be resolved before migration artifacts or their integration harness are added. [DG-003](../IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) must be resolved before frontend GraphQL client, cache, generated operation, or dependent test code is added. [DG-004](../IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) must be resolved before import, GraphQL mapping, or browser code selects how character images are delivered.
+[ADR-0012](../adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md) has resolved [DG-002](../IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle) by selecting the build-first programmatic migration boundary. No migration artifact or integration harness exists until TASK-004 implements and validates that boundary. [DG-003](../IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) must be resolved before frontend GraphQL client, cache, generated operation, or dependent test code is added. [DG-004](../IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) must be resolved before import, GraphQL mapping, or browser code selects how character images are delivered.
 
-Every scenario remains `Specified, not executed` until its owning task implements an ordinary automated check through the ADR-0011 boundary, every other applicable gate is resolved, and the authoritative validation command passes. The feature files themselves remain non-executable. DG-002 does not block unrelated API or frontend work, DG-003 does not block backend or static-layout work, and DG-004 does not block the operational walking skeleton.
+Every scenario remains `Specified, not executed` until its owning task implements an ordinary automated check through the ADR-0011 boundary, every other applicable gate is resolved, and the authoritative validation command passes. The feature files themselves remain non-executable. Acceptance of ADR-0012 does not make a migration scenario executed or passing. DG-002 does not block unrelated API or frontend work, DG-003 does not block backend or static-layout work, and DG-004 does not block the operational walking skeleton.
 
 ## Tag Convention
 
@@ -53,7 +53,7 @@ Every scenario remains `Specified, not executed` until its owning task implement
 The scenarios deliberately avoid introducing:
 
 - a test runner, DOM environment, command boundary, or executable Gherkin layer that conflicts with ADR-0011;
-- the migration runner and TypeScript artifact lifecycle controlled by DG-002;
+- a migration runner or TypeScript artifact lifecycle that conflicts with accepted ADR-0012;
 - the frontend GraphQL client, query-cache library, generation tool, or error-handling integration controlled by DG-003;
 - the character-image copy, application-delivery, or external-browser-request strategy controlled by DG-004;
 - URL parameter names or a default sort direction. These are reversible TASK-010 execution choices that must be recorded in the [decision and progress log](../execution/decision-and-progress-log.md) before dependent code is written; they do not require a new ADR unless their scope becomes consequential.
@@ -64,7 +64,7 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 
 | Work area | Derived rules | Planned owner |
 |---|---|---|
-| Decision guards and accepted test-harness boundary | HS-001 through HS-003 and HS-020 | TASK-001 for the accepted HS-001 boundary; TASK-002, TASK-009, and TASK-016 for the remaining pending gates |
+| Decision guards and accepted test and migration boundaries | HS-001 through HS-003 and HS-020 | TASK-001 and TASK-002 for the accepted HS-001 and HS-002 boundaries; TASK-009 and TASK-016 for the remaining pending gates |
 | Character-image delivery | HS-020 and the DG-004-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, and SPEC-010 | TASK-016 for the decision; TASK-005, TASK-006, TASK-010, and TASK-012 for affected behavior |
 | Deferred-scope and deployment guards | HS-004, HS-005 | Applicable future scope decision; TASK-008 for current single-user semantics |
 | Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 and TASK-013 |
