@@ -65,7 +65,7 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 | Work area | Derived rules | Planned owner |
 |---|---|---|
 | Decision guards and accepted test and migration boundaries | HS-001 through HS-003 and HS-020 | TASK-001 and TASK-002 for the accepted HS-001 and HS-002 boundaries; TASK-009 and TASK-016 for the remaining pending gates |
-| Character-image delivery | HS-020 and the DG-004-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, and SPEC-010 | TASK-016 for the decision; TASK-005, TASK-006, TASK-010, and TASK-012 for affected behavior |
+| Character-image delivery | HS-020 and the DG-004-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, and SPEC-010 | TASK-016 for the decision; TASK-005, TASK-006, TASK-007, TASK-010, TASK-011, and TASK-012 for affected behavior |
 | Deferred-scope and deployment guards | HS-004, HS-005 | Applicable future scope decision; TASK-008 for current single-user semantics |
 | Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 and TASK-013 |
 | Character list, sorting, and interface filters | SPEC-001, SPEC-002, SPEC-006, HS-015, HS-016 | TASK-010 and TASK-012 |

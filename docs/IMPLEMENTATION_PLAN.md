@@ -48,14 +48,14 @@ An accepted ADR records implementation direction only. Resolving a gate is not e
 | DG-001 | Resolved | [ADR-0011](./adrs/0011-define-the-typescript-test-harness.md) selects Vitest projects, jsdom, milestone-aware unit/integration/application boundaries, and one Chromium-only Playwright process smoke. | Resolved direction may be implemented only by TASK-003 and later owning tasks; acceptance is not harness evidence. | NFR-004; OR-001, OR-004, OR-007 (adopted optional); ADR-0001, ADR-0002, ADR-0010, ADR-0011 |
 | DG-002 | Resolved | [ADR-0012](./adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md) selects a private build-first programmatic Umzug 3 lifecycle on stable Sequelize 6, with strict TypeScript authoring and one verified immutable native-ESM build for every execution context. | Resolved direction may be implemented only by TASK-004 and later owning tasks; acceptance is not runner, migration, migrated-database, or ERD evidence. | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012; OR-001 (adopted optional); ADR-0001, ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0012 |
 | DG-003 | Pending | Select the frontend GraphQL client and query-cache implementation, including operation type generation, error handling, cache behavior, explicit post-mutation refetching, and its test boundary. | Adding the client dependency or provider, generating client operation artifacts, writing the first frontend data-access test that depends on the selected client or cache, or writing frontend query, mutation, hook, or cache configuration code. | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, OR-003 (adopted optional), AC-001, AC-002, AC-003, AC-004, AC-005; ADR-0002, ADR-0006, ADR-0009, ADR-0010 |
-| DG-004 | Pending | Select the character-image delivery boundary: copy assets during ingestion, serve them through an application-owned proxy or asset boundary, or explicitly allow narrowly scoped browser requests to the upstream image host. | Adding persistence or ingestion behavior for image locations, defining runtime GraphQL or cached `imageUrl` values, adding an image proxy or asset route, or implementing browser image requests in TASK-010. | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003; ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009 |
+| DG-004 | Pending | Select the character-image delivery boundary: copy assets during ingestion, serve them through an application-owned proxy or asset boundary, or explicitly allow narrowly scoped browser requests to the upstream image host. | Adding persistence or ingestion behavior for image locations, defining runtime GraphQL or cached `imageUrl` values, adding an image proxy or asset route, or implementing browser image requests in TASK-010. | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003; ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012 |
 
 ## Gate sequence and parallelism
 
 1. DG-001 was resolved by ADR-0011 at repository-foundation time because every production behavior must begin with an executable failing test under ADR-0010. The harness remains unimplemented until TASK-003.
 2. DG-002 is resolved by accepted ADR-0012. Its database-backed persistence artifacts remain owned by TASK-004 after that task's dependencies are complete. DG-004 remains pending, so import or API mapping must not assume an image-delivery strategy.
 3. Resolve DG-003 after the project-owned GraphQL operations are stable and before frontend data-access implementation. It does not block backend schema, service, repository, or static frontend layout work.
-4. Resolve DG-004 before TASK-005 imports image locations, TASK-006 gives `imageUrl` its runtime meaning, or TASK-010 loads character images. The decision must preserve or explicitly supersede the browser and upstream-data boundaries in ADR-0004 and ADR-0006.
+4. Resolve DG-004 before TASK-005 imports image locations, TASK-006 gives `imageUrl` its runtime meaning, or TASK-010 loads character images. The decision must explicitly reconcile the browser and upstream boundaries in ADR-0001 and ADR-0004, preserve the project-data API boundary in ADR-0006, and apply the ADR lifecycle to any required supersession.
 
 Neutral requirements and architecture documentation may continue while a gate is pending. Declarative workspace or infrastructure work may proceed only when it does not select or depend on an option controlled by a pending gate.
 
@@ -93,7 +93,7 @@ Every future implementation work item inherits the repository [task-closure docu
 
 - The accepted ADR compares copying assets during ingestion, an application-owned image proxy or asset boundary, and a narrowly scoped direct-browser asset exception.
 - It states whether stored `imageUrl` values remain upstream URLs or become application-owned locations and identifies any migration, ingestion, storage, cache, security, or cleanup consequences.
-- It preserves the project GraphQL API as the only browser data API; if direct external asset requests are selected, it explicitly supersedes the conflicting portion of ADR-0004 rather than silently weakening it.
+- It preserves the project GraphQL API as the only browser character-data API and keeps any application route asset-only rather than an arbitrary proxy or product REST surface; direct external asset requests explicitly reconcile the conflicting portions of ADR-0001 and ADR-0004, and any conflict with ADR-0006 follows the ADR lifecycle rather than silently weakening an accepted boundary.
 - Its validation proves the selected path with deterministic fixtures, a layout-safe image failure, no runtime character-data query to the public API, and no undocumented product REST surface.
 
 ## Implementation work sequence
@@ -215,11 +215,12 @@ Reversible execution choices that are not controlled by a decision gate, such as
 ### TASK-016 - Resolve the character-image delivery gate
 
 - **Outcome:** DG-004 has an owner-approved accepted ADR defining how browser-visible character images cross the upstream, ingestion, storage, GraphQL, and web boundaries.
+- **Execution plan:** The active [TASK-016 character-image delivery decision ExecPlan](./plans/TASK-016-character-image-delivery-decision.md) defines contract-first research, approval, validation, and closure without selecting or implementing a strategy.
 - **Mapped scope:** FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003.
-- **Governing decisions:** ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009.
-- **Prerequisites and gates:** None; this task may run in parallel with TASK-001 and TASK-002 and resolves DG-004.
+- **Governing decisions:** ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, and ADR-0012 when the selected boundary has migration consequences.
+- **Prerequisites and gates:** None; this task is immediately ready, may run alongside TASK-003, and resolves DG-004.
 - **Expected artifacts:** The next unused ADR coordinated with other active gate tasks, the updated ADR index, this gate record, the affected image-delivery guidance, and directly affected specification routing.
-- **Validation:** Run the ADR validator and verify that the selected path defines URL ownership, ingestion and persistence effects, browser request boundaries, deterministic tests, failure behavior, and any required supersession of ADR-0004 or ADR-0006.
+- **Validation:** Run the ADR validator and verify that the selected path defines URL and byte ownership, ingestion and persistence effects, browser and server request boundaries, deterministic tests, failure and recovery behavior, downstream task ownership, and the exact preservation or governed supersession relationship to ADR-0001, ADR-0004, and ADR-0006.
 - **Documentation impact:** ADR index, implementation plan, system module diagram, image-delivery guidance, specifications, and execution log.
 - **Done when:** The ADR is accepted by the project owner and DG-004 is marked `Resolved` with a link before TASK-005 imports image locations, TASK-006 maps runtime `imageUrl` values, or TASK-010 implements image loading; no asset strategy is described as implemented without repository evidence.
 
