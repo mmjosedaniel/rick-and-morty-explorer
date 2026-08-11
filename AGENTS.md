@@ -14,7 +14,7 @@ Requirements, accepted ADRs, plans, examples, mocks, and stubs are evidence of i
 
 Start repository work from the [documentation map](README.md#documentation-map). Follow its authority domains and task-specific reading order before planning, editing, reviewing, or verifying work.
 
-- Use stable requirement, deliverable, acceptance, ADR, decision-gate, `TASK-*`, `SPEC-*`, `HS-*`, and `DPL-DEC-*` IDs in plans, tests, reviews, execution records, and handoffs.
+- Use stable requirement, deliverable, acceptance, ADR, decision-gate, authorization, `TASK-*`, `SPEC-*`, `HS-*`, and `DPL-DEC-*` IDs in plans, tests, reviews, execution records, and handoffs.
 - Read only the relevant ADRs for scoped work; read the full portfolio for portfolio-wide architecture reviews.
 - Before adding a dependency, configuration, migration, test, or application behavior, select the exact `TASK-*` work item, read its mapped requirements and `SPEC-*`/`HS-*` rules, compare the intended artifact with each active gate's `Must be resolved before` condition in `docs/IMPLEMENTATION_PLAN.md`, and resolve only the gate whose trigger covers that artifact.
 - Follow the [documentation change-impact table](README.md#documentation-change-impact) after every scope, decision, planning, implementation, or evidence change.

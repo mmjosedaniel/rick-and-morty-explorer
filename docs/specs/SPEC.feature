@@ -9,7 +9,7 @@ Feature: Rick and Morty character application behavior
   Scenarios describe observable success paths without selecting tooling
   controlled by pending decision gates.
 
-  @SPEC-001 @repository_baseline @mandatory @FR-FE-001 @AC-001 @ADR-0006 @ADR-0009 @DG-004
+  @SPEC-001 @repository_baseline @mandatory @FR-FE-001 @AC-001 @ADR-0006 @ADR-0009 @ADR-0014 @DG-006 @AUTH-001
   Rule: Visitors can browse character cards
 
     @minimum_assessment
@@ -20,6 +20,12 @@ Feature: Rick and Morty character application behavior
       And every card shows the character name
       And every card shows the character image
       And every card shows the character species
+
+    Scenario: Use the stored avatar URL as the card image destination
+      Given a character summary contains its exact validated absolute image URL
+      When the character card is rendered
+      Then the native image source equals that GraphQL image URL
+      And the application does not replace it with an asset or proxy route
 
   @SPEC-002 @repository_baseline @mandatory @FR-FE-002 @AC-002 @ADR-0009
   Rule: Visitors can sort the visible character list
@@ -35,7 +41,7 @@ Feature: Rick and Morty character application behavior
         | A-Z       | Beth Smith, Morty Smith, Rick Sanchez |
         | Z-A       | Rick Sanchez, Morty Smith, Beth Smith |
 
-  @SPEC-003 @repository_baseline @mandatory @FR-FE-003 @AC-003 @ADR-0006 @ADR-0009 @DG-004
+  @SPEC-003 @repository_baseline @mandatory @FR-FE-003 @AC-003 @ADR-0006 @ADR-0009 @ADR-0014 @DG-006 @AUTH-001
   Rule: Visitors can open an addressable character detail
 
     @minimum_assessment
@@ -71,7 +77,13 @@ Feature: Rick and Morty character application behavior
       When the visitor directly opens the location for character 1
       Then the application displays the detail view for character 1
 
-  @SPEC-004 @repository_baseline @mandatory @FR-FE-004 @AC-004 @ADR-0004 @ADR-0005 @ADR-0006 @ADR-0009
+    Scenario: Use the stored avatar URL as the detail image destination
+      Given character 1 detail contains its exact validated absolute image URL
+      When the visitor opens the detail for character 1
+      Then the native image source equals that GraphQL image URL
+      And the application does not replace it with an asset or proxy route
+
+  @SPEC-004 @repository_baseline @mandatory @FR-FE-004 @AC-004 @ADR-0005 @ADR-0006 @ADR-0009 @ADR-0014
   Rule: Visitors can manage favorite state
 
     @minimum_assessment
@@ -156,14 +168,16 @@ Feature: Rick and Morty character application behavior
         | empty   | empty   |
         | error   | error   |
 
-    @DG-004
+    @DG-006 @AUTH-001 @ADR-0014
     Scenario: Preserve the layout when a character image fails
       Given a character image cannot be loaded
       When the character card or detail is rendered
       Then meaningful alternative text identifies the character
-      And a layout-safe fallback preserves the interface structure
+      And one DOM and CSS "Image unavailable" fallback preserves the fixed square image region
+      And the fallback preserves the same accessible character identity
+      And the component does not try an alternate image source or application retry
 
-  @SPEC-008 @repository_baseline @mandatory @FR-BE-001 @AC-007 @ADR-0004 @ADR-0006 @DG-004
+  @SPEC-008 @repository_baseline @mandatory @FR-BE-001 @AC-007 @ADR-0006 @ADR-0014 @DG-006 @AUTH-001
   Rule: The Express application exposes the project GraphQL use cases
 
     @minimum_assessment
@@ -178,11 +192,13 @@ Feature: Rick and Morty character application behavior
       When a GraphQL client requests characters without a filter
       Then the API returns a list of character summaries
       And every summary contains only the character ID, name, image URL, and species
+      And every image URL equals the exact absolute image URL stored for that character
 
     Scenario: Query one character detail
       Given character 1 exists in PostgreSQL
       When a GraphQL client requests character 1
       Then the API returns character 1 with descriptive fields, origin, favorite state, and bounded comments
+      And its image URL equals the exact absolute image URL stored for character 1
 
     Scenario: Change favorite state through GraphQL
       Given character 1 exists in PostgreSQL
@@ -229,13 +245,14 @@ Feature: Rick and Morty character application behavior
       Then the characters query returns an empty list
       And the response contains no GraphQL error
 
-  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @ADR-0012 @DG-002 @DG-004
+  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @ADR-0012 @ADR-0014 @DG-002 @DG-005 @DG-006 @AUTH-001
   Rule: PostgreSQL is created through migrations and initialized
 
     @minimum_assessment
     Scenario: Create and initialize an empty application database with 15 API characters
       Given an empty PostgreSQL database
       And the accepted ADR-0012 migration lifecycle has been implemented and is available
+      And DG-005 was resolved before TASK-004 began
       When Sequelize migrations and database initialization are run
       Then the application schema is created through Sequelize migrations
       And exactly 15 distinct characters obtained from the public Rick and Morty API are stored
@@ -243,11 +260,14 @@ Feature: Rick and Morty character application behavior
     Scenario: Use the deterministic accepted baseline
       Given an empty PostgreSQL database
       And the accepted ADR-0012 migration lifecycle has been implemented and is available
+      And DG-005 was resolved before TASK-004 began
       When the version-controlled migrations and explicit character import are run
       Then exactly the upstream character IDs 1 through 15 are stored
       And their source-owned fields come from validated public Rick and Morty API payloads
+      And each character stores its exact validated absolute Character.image URL in image_url
+      And the schema contains no image relation, image bytes, or image-lifecycle metadata
 
-  @SPEC-011 @repository_baseline @mandatory @FR-BE-001 @FR-BE-003 @FR-BE-004 @ADR-0004 @ADR-0008
+  @SPEC-011 @repository_baseline @mandatory @FR-BE-001 @FR-BE-003 @FR-BE-004 @ADR-0008 @ADR-0014
   Rule: PostgreSQL is the runtime source of truth
 
     Scenario: Use initialized data while the public API is unavailable
@@ -255,8 +275,9 @@ Feature: Rick and Morty character application behavior
       And the public Rick and Morty API is unavailable
       When clients list, view, favorite, or comment on stored characters
       Then the project GraphQL API serves those use cases from PostgreSQL
+      But PostgreSQL product-data availability does not guarantee that the third-party image body can be displayed
 
-  @SPEC-012 @repository_baseline @mandatory @FR-BE-005 @NFR-003 @AC-010 @ADR-0004 @ADR-0007
+  @SPEC-012 @repository_baseline @mandatory @FR-BE-005 @NFR-003 @AC-010 @ADR-0007 @ADR-0014
   Rule: Redis caches character searches
 
     @minimum_assessment
@@ -272,6 +293,7 @@ Feature: Rick and Morty character application behavior
       Given Redis has no entry for a character search
       When the character search is requested for the first time
       Then Redis stores the character-summary result with a finite TTL
+      And the cached summary contains the exact stored absolute image URL rather than image bytes
       When an equivalent character search is requested again
       Then Redis provides the result without repeating the PostgreSQL search
 
@@ -290,7 +312,7 @@ Feature: Rick and Morty character application behavior
       Then standard output contains one structured request record
       And the record includes a request ID, method, path, safely available operation name, status, duration, and error count
 
-  @SPEC-014 @repository_baseline @mandatory @NFR-001 @NFR-003 @ADR-0001 @ADR-0002 @ADR-0003 @ADR-0006 @ADR-0007 @ADR-0009
+  @SPEC-014 @repository_baseline @mandatory @NFR-001 @NFR-003 @ADR-0002 @ADR-0003 @ADR-0006 @ADR-0007 @ADR-0009 @ADR-0014
   Rule: The delivered applications use the prescribed technology baseline
 
     @minimum_assessment
@@ -305,7 +327,7 @@ Feature: Rick and Morty character application behavior
       When its authoritative manifests, source, configuration, and integration behavior are inspected
       Then it uses Express, GraphQL, Sequelize, PostgreSQL, and Redis
 
-  @SPEC-015 @repository_baseline @mandatory @DEL-001 @NFR-006 @AC-012 @ADR-0001
+  @SPEC-015 @repository_baseline @mandatory @DEL-001 @NFR-006 @AC-012 @ADR-0014
   Rule: Reviewers can access the source repository
 
     @minimum_assessment
@@ -315,7 +337,7 @@ Feature: Rick and Morty character application behavior
       Then the complete source is accessible
       And the Git history demonstrates appropriate version-control usage
 
-  @SPEC-016 @repository_baseline @mandatory @DEL-002 @AC-012 @ADR-0003 @ADR-0008 @ADR-0012 @DG-002
+  @SPEC-016 @repository_baseline @mandatory @DEL-002 @AC-012 @ADR-0003 @ADR-0008 @ADR-0012 @ADR-0014 @DG-002 @DG-006 @AUTH-001
   Rule: Reviewers can understand the implemented data model
 
     @minimum_assessment
@@ -324,7 +346,13 @@ Feature: Rick and Morty character application behavior
       When a reviewer compares the entity-relationship diagram with a freshly migrated database
       Then the ERD describes the implemented tables, keys, constraints, and relationships
 
-  @SPEC-017 @repository_baseline @mandatory @DEL-003 @AC-012 @ADR-0001 @ADR-0006 @ADR-0008
+    Scenario: Document URL-only image persistence
+      Given the accepted character-image boundary has been implemented
+      When a reviewer inspects the ERD and a freshly migrated database
+      Then characters have one non-null image_url field
+      And no image relation, image byte store, or image-lifecycle table is documented or present
+
+  @SPEC-017 @repository_baseline @mandatory @DEL-003 @AC-012 @ADR-0006 @ADR-0008 @ADR-0014
   Rule: Reviewers can run and use the application from documentation
 
     @minimum_assessment
@@ -333,3 +361,9 @@ Feature: Rick and Morty character application behavior
       When a reviewer follows the documented prerequisites, configuration, installation, infrastructure, migration, import, development, test, build, and GraphQL usage instructions
       Then every documented command maps to an authoritative executable repository command
       And the reviewer can run the application and exercise all four GraphQL use cases
+
+    Scenario: Document the third-party avatar boundary
+      Given direct character-image delivery has been implemented after AUTH-001 was recorded as "Authorized"
+      When a reviewer reads the operating documentation
+      Then it explains the exact URL contract, enforcing CSP, anonymous CORS, no-referrer policy, and visitor metadata disclosure
+      And it explains provider-controlled caching, availability and redirect limits, the layout-safe fallback, and AUTH-001's recorded status and evidence limits
