@@ -27,23 +27,24 @@ Feature: Non-negotiable application and delivery constraints
         | the walking-skeleton real-browser smoke                | one Chromium-only Playwright project with two owned processes           |
         | the first production-behavior Red-Green-Refactor cycle | the smallest registered scope owned by the active implementation task   |
 
-  @HS-002 @repository_baseline @human_decision @DG-002 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012
-  Rule: An agent must not select the migration lifecycle while DG-002 is pending
+  @HS-002 @repository_baseline @DG-002 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0012
+  Rule: Migration-lifecycle work must follow accepted ADR-0012
 
-    Scenario Outline: Prevent work controlled by the pending migration gate
-      Given DG-002 has status "Pending"
+    Scenario Outline: Keep controlled work inside the accepted migration boundary
+      Given DG-002 has status "Resolved"
+      And ADR-0012 has status "Accepted"
       When a change proposes <controlledWork>
-      Then the change must not proceed
-      And migration execution, rollback, failure, and concurrency semantics are not invented
-      And work may continue only after a project-owner-approved ADR resolves DG-002
+      Then the change must use <acceptedBoundary>
+      And the artifact must be added only by its owning TASK after every other controlling gate is resolved
+      And no runner, migration, migrated database, test result, or ERD is claimed as implemented without repository evidence
 
       Examples:
-        | controlledWork                               |
-        | a migration runner or configuration          |
-        | the first migration                          |
-        | a root migration command                     |
-        | a database-backed migration test harness     |
-        | an ERD derived from intended rather than migrated state |
+        | controlledWork                               | acceptedBoundary |
+        | a migration runner or configuration          | private programmatic Umzug 3 on stable Sequelize 6 |
+        | the first migration                          | strict TypeScript source mapped to authenticated immutable emitted ESM |
+        | a root migration command                     | the ADR-0012 factory and command facade over one selected build |
+        | a database-backed migration test harness     | ADR-0011 isolation invoking the ADR-0012 boundary in TASK-004 |
+        | an ERD                                       | migrated-state evidence produced only after TASK-004 implementation |
 
   @HS-003 @repository_baseline @human_decision @DG-003 @FR-FE-001 @FR-FE-002 @FR-FE-003 @FR-FE-004 @FR-FE-005 @OR-003
   Rule: An agent must not select the frontend GraphQL client while DG-003 is pending
@@ -260,11 +261,11 @@ Feature: Non-negotiable application and delivery constraints
         | '     |
         | %_'   |
 
-  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0004 @DG-002
+  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0004 @ADR-0012 @DG-002
   Rule: Relational persistence enforces the accepted model
 
     Scenario: Apply schema migrations without external network access
-      Given DG-002 has been resolved
+      Given the accepted ADR-0012 migration lifecycle has been implemented
       And an empty PostgreSQL database is available
       And external network access is disabled
       When all version-controlled migrations are applied
@@ -568,7 +569,7 @@ Feature: Non-negotiable application and delivery constraints
       And residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests are removed or have an explicit current consumer
       And affected and complete test scopes pass after justified maintenance
 
-  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0001 @ADR-0003 @ADR-0006 @ADR-0008
+  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0001 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0012
   Rule: Delivery claims require reproducible evidence
 
     Scenario: Do not infer implementation from planning artifacts

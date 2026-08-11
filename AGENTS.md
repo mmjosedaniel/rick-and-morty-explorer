@@ -26,6 +26,8 @@ For substantial `TASK-*` work or when the project owner explicitly requests one,
 
 Keep the ExecPlan's `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` sections current at every stopping point. Update authoritative task, gate, ADR, requirement, specification, status, and execution-record owners before reflecting those changes in the ExecPlan or its index.
 
+When an ExecPlan compares consequential options or prepares an ADR, follow the risk-tiered, contract-first collaboration policy in [.codex/README.md](.codex/README.md). Keep the Decision Review Contract inside the owning ExecPlan, preserve the primary thread as the sole writer and closure owner, complete every applicable contract and evidence checkpoint, and stop at owner-controlled approval boundaries.
+
 ## Documentation Preservation
 
 Do not silently delete, replace, move, rename, or consolidate repository documentation.
