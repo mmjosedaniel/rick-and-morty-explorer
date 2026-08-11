@@ -1,11 +1,13 @@
 # ADR-0004: Use the Database as the Runtime Source of Truth
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-09
 - Decision owners: Project maintainers
 - Related requirements: FR-BE-001, FR-BE-003, FR-BE-004, FR-BE-005, AC-007, AC-009, AC-010
 - Supersedes: None
-- Superseded by: None
+- Superseded by: ADR-0013
+
+ADR-0013 superseded this record on 2026-08-11. This file remains unchanged below as historical decision and rationale. [ADR-0013](./superseded/0013-materialize-character-images-during-ingestion.md) preserves the direct supersession link, while accepted [ADR-0014](./0014-persist-and-deliver-character-image-urls-directly.md) is the current authority carrying forward PostgreSQL product-data authority and replacing the character-image delivery boundary.
 
 ## Context
 

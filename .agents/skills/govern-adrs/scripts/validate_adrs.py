@@ -42,7 +42,7 @@ PLACEHOLDER_RE = re.compile(r"\b(?:TODO|TBD|FIXME)\b", re.IGNORECASE)
 @dataclass(frozen=True)
 class AdrResult:
     number: str
-    filename: str
+    relative_path: str
     status: str | None
     score: int | None
     recommendation: str | None
@@ -155,7 +155,7 @@ def parse_score(path: Path, text: str, reporter: Reporter) -> int | None:
     return computed
 
 
-def validate_adr(path: Path, reporter: Reporter) -> AdrResult | None:
+def validate_adr(path: Path, adr_dir: Path, reporter: Reporter) -> AdrResult | None:
     match = ADR_FILENAME_RE.fullmatch(path.name)
     if not match:
         reporter.error(path, "filename must use NNNN-english-kebab-case.md")
@@ -217,7 +217,14 @@ def validate_adr(path: Path, reporter: Reporter) -> AdrResult | None:
         if not related:
             reporter.error(path, "Related requirements contains no recognized requirement IDs")
 
-    return AdrResult(number, path.name, status, score, recommendation, related)
+    return AdrResult(
+        number,
+        path.relative_to(adr_dir).as_posix(),
+        status,
+        score,
+        recommendation,
+        related,
+    )
 
 
 def recommendation_class(value: str | None) -> str | None:
@@ -263,9 +270,12 @@ def validate_index(
         if entry is None:
             reporter.error(readme, f"decision index is missing ADR-{number}")
             continue
-        filename, status, score, recommendation = entry
-        if filename != result.filename:
-            reporter.error(readme, f"ADR-{number} links to {filename}; expected {result.filename}")
+        relative_path, status, score, recommendation = entry
+        if relative_path != result.relative_path:
+            reporter.error(
+                readme,
+                f"ADR-{number} links to {relative_path}; expected {result.relative_path}",
+            )
         if result.status is not None and status != result.status:
             reporter.error(readme, f"ADR-{number} status is {status}; document says {result.status}")
         if result.score is not None and score != result.score:
@@ -312,15 +322,18 @@ def main() -> int:
     if not requirements_path.is_file():
         reporter.error(requirements_path, "requirements specification does not exist")
 
-    adr_paths = sorted(adr_dir.glob("*.md")) if adr_dir.is_dir() else []
-    adr_paths = [path for path in adr_paths if path.name != "README.md"]
+    adr_paths = (
+        sorted(path for path in adr_dir.rglob("*.md") if path != readme)
+        if adr_dir.is_dir()
+        else []
+    )
     results = [
         result
         for path in adr_paths
-        if (result := validate_adr(path, reporter)) is not None
+        if (result := validate_adr(path, adr_dir, reporter)) is not None
     ]
 
-    numbers = [int(result.number) for result in results]
+    numbers = sorted(int(result.number) for result in results)
     if len(numbers) != len(set(numbers)):
         reporter.error(adr_dir, "ADR numbers are not unique")
     if numbers and numbers != list(range(1, max(numbers) + 1)):

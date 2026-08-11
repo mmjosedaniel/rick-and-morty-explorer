@@ -15,19 +15,21 @@ The [requirements specification](../REQUIREMENTS.md) owns UI scope. Accepted ADR
 
 ## Runtime data path
 
-The public Rick and Morty REST API is an ingestion source, not a browser dependency:
+The upstream character JSON API is an ingestion source, not a browser product-data dependency. The accepted avatar representation is a separate native browser request:
 
 ```text
 Rick and Morty REST API
   -> explicit import of character IDs 1 through 15
-  -> PostgreSQL
-  -> project GraphQL API
+  -> PostgreSQL character data plus exact validated image URL
+  -> project GraphQL API returns that absolute URL
   -> React UI
+       -> native anonymous, no-referrer image request
+       -> https://rickandmortyapi.com/api/character/avatar/<id>.jpeg
 ```
 
-The browser must communicate only with the project GraphQL API. PostgreSQL is authoritative at runtime, and the public API is accessed only by the explicit ingestion flow defined by [ADR-0004](../adrs/0004-use-the-database-as-the-runtime-source-of-truth.md) and [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md).
+The browser communicates with the project GraphQL API for product data. PostgreSQL remains authoritative for the character-to-image-locator association, while a native image element requests the exact validated upstream avatar URL directly under anonymous CORS, a no-referrer policy, and an enforcing path-qualified CSP. The application does not acquire, store, proxy, cache, or serve image bytes. [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns character ingestion and accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) owns the image boundary.
 
-The [target system module diagram](../SYSTEM_DIAGRAM.md#module-view) shows this path in the complete modular context. It represents character-image delivery as a neutral boundary because DG-004 may preserve this browser boundary or explicitly supersede the affected portion through an owner-approved ADR.
+The [target system module diagram](../SYSTEM_DIAGRAM.md#module-view) shows these distinct product-data and avatar-representation paths in the complete modular context. ADR-0014 resolves DG-006 and supersedes ADR-0001 and ADR-0013 as whole records while carrying their unaffected architecture forward. ADR-0004 remains Superseded history, and GraphQL remains the only product-data API.
 
 ## Official API field audit
 
@@ -43,7 +45,7 @@ The official character schema exposes the following fields. The application pers
 | `gender` | String: `Female`, `Male`, `Genderless`, or `unknown` | Persist, expose on detail, and accept as a filter | Selected repository-baseline detail value and adopted gender-filter input |
 | `origin.name` | String | Persist and expose as `origin.name` on detail | Selected repository-baseline detail value and supported backend origin-filter data |
 | `origin.url` | URL string, which can be empty when the origin is unknown | Persist and expose as `origin.url` on detail | Do not show in the current UI |
-| `image` | URL string; official images are 300 by 300 pixels | Validate the source reference and expose an `imageUrl` on summary and detail types; DG-004 owns the persisted value and delivery mechanism | Required card/detail image with meaningful alternative text and a layout-safe failure state |
+| `image` | URL string; official images are 300 by 300 pixels | Persist the exact strictly validated absolute `Character.image` URL; summary and detail `imageUrl` return that same value, and native image elements request it directly under ADR-0014 | Required card/detail image with meaningful alternative text, fixed square geometry, and a one-way layout-safe failure state |
 | `location` | Object containing name and URL | Do not persist or expose | Not required by the current UI or project GraphQL contract |
 | `episode` | Array of episode URLs | Do not persist or expose | Not required by the current UI or project GraphQL contract |
 | `url` | Character endpoint URL | Do not persist or expose | Redundant because the application owns routing and GraphQL identity |
@@ -133,15 +135,15 @@ The visible detail controls are a favorite toggle reflecting `isFavorite`, a com
 - `unknown` is a valid value for status, gender, and origin name. It must not be treated as a transport failure.
 - `species` is open text rather than a documented closed enumeration. A species control must not encode a supposedly exhaustive enum without an explicit data source.
 - `origin.url` can be empty. The UI must not depend on it or create an upstream API hyperlink from it.
-- Character images are nominally square, but the UI must preserve its layout when an image request fails.
+- Character images are nominally square. The UI must reserve fixed square geometry and transition at most once on failure to an accessible DOM/CSS fallback without another image source or application retry.
 - GraphQL transports the positive integer character identity through the `ID` scalar. The UI should treat it as an opaque route and operation identifier.
 - Favorite and comment fields never come from the public API and must not be added to the ingestion mapping.
 
 ## Architecture follow-up
 
-The upstream payload supplies an avatar URL, the accepted persistence model includes an image URL field, and the GraphQL contract exposes `imageUrl`. Those decisions do not determine whether the stored and returned value remains the upstream URL or becomes an application-owned location. A direct `<img>` request to an upstream URL would contact the public API host from the browser, while ADR-0004 states that the browser communicates only with the project GraphQL API and that the public API is accessed only by ingestion. The accepted decisions do not currently say whether avatars are copied during import, proxied by the application, or allowed as a narrowly scoped external asset request.
+Accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) resolves [DG-006](../IMPLEMENTATION_PLAN.md#dg-006---character-image-url-successor-boundary). The explicit importer must bind the requested ID, payload ID, and exact `Character.image` URL; PostgreSQL stores only that locator; GraphQL and the finite Redis summary projection return the same absolute value; and native list and detail images request it with anonymous CORS, no referrer, and the enforcing path-qualified `img-src`. The browser must not call the upstream character JSON API, and the application must not add image bytes, a proxy, or an asset route. Provider availability, redirects, final content, cache freshness, revocation, request telemetry, and visitor metadata disclosure remain documented limitations. ADR-0001 and ADR-0013 are retained as Superseded history, and ADR-0004 remains Superseded through that chronology.
 
-This field audit does not select an option. Resolve [DG-004](../IMPLEMENTATION_PLAN.md#dg-004---character-image-delivery-boundary) through [TASK-016](../IMPLEMENTATION_PLAN.md#task-016---resolve-the-character-image-delivery-gate) before TASK-005 imports image locations, TASK-006 maps runtime `imageUrl` values, or TASK-010 implements image loading. Mockups may define the required square image and failure presentation without assuming its runtime delivery mechanism.
+This field audit records the accepted target, not implementation evidence. No migration, importer, URL mapping, CSP header, browser request, fallback, or executable image test exists. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized`; the implementation plan owns its continuity policy, while ADR-0014 independently owns the current direct-URL technical boundary. Mockups and deterministic local fixtures may define the required square image and failure presentation, but authorization does not make them a production path or prove live runtime behavior.
 
 ## Open UI decisions
 
@@ -175,13 +177,16 @@ If the non-blocking [Storybook pilot](./storybook-workflow.md) is activated and 
 - [Requirements specification](../REQUIREMENTS.md)
 - [Target system module diagram](../SYSTEM_DIAGRAM.md)
 - [ADR-0003: Use PostgreSQL for Relational Persistence](../adrs/0003-use-postgresql-for-relational-persistence.md)
-- [ADR-0004: Use the Database as the Runtime Source of Truth](../adrs/0004-use-the-database-as-the-runtime-source-of-truth.md)
+- [ADR-0001: Use a Modular Monolith Workspace (`Superseded`)](../adrs/0001-use-a-modular-monolith-workspace.md)
+- [ADR-0004: Use the Database as the Runtime Source of Truth (`Superseded`)](../adrs/0004-use-the-database-as-the-runtime-source-of-truth.md)
 - [ADR-0005: Use Single-User Persistence for Character Interactions](../adrs/0005-use-single-user-persistence-for-character-interactions.md)
 - [ADR-0006: Define a Use-Case-Oriented GraphQL Contract](../adrs/0006-define-a-use-case-oriented-graphql-contract.md)
 - [ADR-0008: Use Deterministic Bootstrap and Idempotent Synchronization](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md)
+- [ADR-0013: Materialize Character Images During Ingestion (`Superseded`)](../adrs/superseded/0013-materialize-character-images-during-ingestion.md)
+- [ADR-0014: Persist and Deliver Character Image URLs Directly (`Accepted`)](../adrs/0014-persist-and-deliver-character-image-urls-directly.md)
 - [ADR-0009: Keep Frontend State Close to Its Owner](../adrs/0009-keep-frontend-state-close-to-its-owner.md)
 - [DPL-DEC-005: Define current UI field visibility](../execution/decision-and-progress-log.md#decision-log)
-- [DPL-DEC-007: Evaluate a development-only Storybook component-workshop pilot](../execution/decision-and-progress-log.md#decision-log)
-- [TASK-010 through TASK-012](../IMPLEMENTATION_PLAN.md#task-010---deliver-the-character-list-sorting-and-adopted-interface-filters)
+- [DPL-DEC-013: Retain the development-only Storybook component-workshop pilot](../execution/decision-and-progress-log.md#decision-log)
+- [TASK-010](../IMPLEMENTATION_PLAN.md#task-010---deliver-the-character-list-sorting-and-adopted-interface-filters), [TASK-011](../IMPLEMENTATION_PLAN.md#task-011---deliver-character-detail-favorites-and-comments), and [TASK-012](../IMPLEMENTATION_PLAN.md#task-012---complete-responsive-and-resilient-ui-states)
 - [UI specification routing](../specs/README.md#codex-rule-routing)
 - [Proposed Storybook pilot workflow](./storybook-workflow.md)

@@ -27,12 +27,13 @@ Feature: Non-negotiable application and delivery constraints
         | the walking-skeleton real-browser smoke                | one Chromium-only Playwright project with two owned processes           |
         | the first production-behavior Red-Green-Refactor cycle | the smallest registered scope owned by the active implementation task   |
 
-  @HS-002 @repository_baseline @DG-002 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0012
-  Rule: Migration-lifecycle work must follow accepted ADR-0012
+  @HS-002 @repository_baseline @DG-002 @DG-005 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0012
+  Rule: Migration-lifecycle work must follow ADR-0012 and the accepted DG-005 successor
 
     Scenario Outline: Keep controlled work inside the accepted migration boundary
       Given DG-002 has status "Resolved"
-      And ADR-0012 has status "Accepted"
+      And DG-005 has status "Resolved"
+      And an accepted successor carries forward ADR-0012 without the prohibited migrations:v1 lock identity
       When a change proposes <controlledWork>
       Then the change must use <acceptedBoundary>
       And the artifact must be added only by its owning TASK after every other controlling gate is resolved
@@ -43,6 +44,7 @@ Feature: Non-negotiable application and delivery constraints
         | a migration runner or configuration          | private programmatic Umzug 3 on stable Sequelize 6 |
         | the first migration                          | strict TypeScript source mapped to authenticated immutable emitted ESM |
         | a root migration command                     | the ADR-0012 factory and command facade over one selected build |
+        | the PostgreSQL namespace migration lock      | the owner-approved ADR-0012 successor selected by DG-005 instead of the NFC-based migrations:v1 identity |
         | a database-backed migration test harness     | ADR-0011 isolation invoking the ADR-0012 boundary in TASK-004 |
         | an ERD                                       | migrated-state evidence produced only after TASK-004 implementation |
 
@@ -95,7 +97,7 @@ Feature: Non-negotiable application and delivery constraints
       And comments have no user owner
       And no user, credential, session, or authorization table is introduced
 
-  @HS-006 @repository_baseline @adopted_optional @OR-001 @ADR-0001 @ADR-0002 @DG-001
+  @HS-006 @repository_baseline @adopted_optional @OR-001 @ADR-0002 @ADR-0014 @DG-001
   Rule: Application and test source use strict TypeScript
 
     Scenario: Type-check every implemented workspace without emitting files
@@ -119,13 +121,14 @@ Feature: Non-negotiable application and delivery constraints
       Then each value is validated at runtime before use
       And static TypeScript assertions are not treated as runtime validation
 
-  @HS-007 @repository_baseline @adopted_optional @OR-008 @ADR-0001 @ADR-0006 @ADR-0007
+  @HS-007 @repository_baseline @adopted_optional @OR-008 @ADR-0006 @ADR-0007 @ADR-0014
   Rule: The modular monolith preserves ownership boundaries
 
     Scenario: Keep browser and server dependencies separated
       When workspace dependencies are inspected
       Then the browser imports no Sequelize model or server-only type
-      And the browser has no direct PostgreSQL, Redis, or public character API dependency
+      And the browser has no direct PostgreSQL, Redis, or upstream character JSON API dependency
+      And only native image elements may contact the exact governed upstream avatar URLs
       And the shared package contains contract-level artifacts rather than backend domain models
 
     Scenario: Keep GraphQL transport thin
@@ -140,13 +143,14 @@ Feature: Non-negotiable application and delivery constraints
       Then transport, application, and persistence modules communicate in process
       And no microservice, event bus, or other cross-process application boundary exists without a superseding ADR
 
-  @HS-008 @repository_baseline @mandatory @FR-BE-001 @ADR-0006
+  @HS-008 @repository_baseline @mandatory @FR-BE-001 @ADR-0006 @ADR-0014
   Rule: GraphQL exposes only the approved use-case contract
 
     Scenario: Separate list and detail projections
       When the version-controlled GraphQL schema is inspected
       Then CharacterSummary exposes only id, name, imageUrl, and species
       And CharacterDetail exposes the approved detail, favorite, and bounded-comment fields
+      And both imageUrl fields return the exact stored absolute URL for that character
       And persistence-only fields are not exposed automatically
 
     Scenario Outline: Reject an invalid character identifier
@@ -261,11 +265,12 @@ Feature: Non-negotiable application and delivery constraints
         | '     |
         | %_'   |
 
-  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0004 @ADR-0012 @DG-002
+  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0012 @ADR-0014 @DG-002 @DG-005 @DG-006 @AUTH-001
   Rule: Relational persistence enforces the accepted model
 
     Scenario: Apply schema migrations without external network access
       Given the accepted ADR-0012 migration lifecycle has been implemented
+      And DG-005 was resolved before TASK-004 began
       And an empty PostgreSQL database is available
       And external network access is disabled
       When all version-controlled migrations are applied
@@ -280,9 +285,14 @@ Feature: Non-negotiable application and delivery constraints
     Scenario: Store searchable character data in explicit columns
       When the migrated character table is inspected
       Then status, species, gender, name, origin name, and origin URL use explicit columns
+      And image_url is a non-null text column containing the exact validated absolute Character.image URL
       And the required search data is not hidden in one opaque payload
 
-  @HS-012 @repository_baseline @mandatory @FR-BE-004 @AC-009 @ADR-0004 @ADR-0008
+    Scenario: Exclude an application-owned image subsystem from the relational model
+      When the migrated schema and Sequelize models are inspected
+      Then no image relation, image bytes, media metadata, digest, history, lifecycle state, acquisition lock, or image-serving table exists
+
+  @HS-012 @repository_baseline @mandatory @FR-BE-004 @AC-009 @ADR-0008 @ADR-0014 @DG-006 @AUTH-001
   Rule: Character ingestion is deterministic, atomic, and idempotent
 
     Scenario: Repeating the baseline import does not duplicate data
@@ -296,6 +306,21 @@ Feature: Non-negotiable application and delivery constraints
       When the character is imported again with changed source-owned fields
       Then the source-owned character fields are updated
       But the favorite value and comments remain unchanged
+
+    Scenario: Bind each imported avatar URL to the requested and payload character identity
+      Given the importer requested a canonical character ID from 1 through 15
+      And the response payload ID equals that requested ID
+      When the payload is validated before publication
+      Then Character.image equals the byte-exact concatenation of "https://rickandmortyapi.com/api/character/avatar/", that canonical requested ID, and ".jpeg"
+      And the importer never substitutes Character.url
+      And the stored image_url equals that exact Character.image value
+
+    Scenario: Reject a non-canonical or mismatched avatar destination atomically
+      Given any baseline payload has a missing image value, a mismatched payload or path ID, or a URL with a different scheme, host, host case, credential, port, path, query, fragment, encoding, backslash, or Unicode-confusable host
+      When the baseline import validates the complete response
+      Then the import exits with a non-zero result before publication
+      And the previously committed dataset remains unchanged
+      And no partial replacement dataset is visible
 
     Scenario Outline: Roll back an incomplete import
       Given a previously committed character dataset
@@ -325,7 +350,7 @@ Feature: Non-negotiable application and delivery constraints
       And the command exits with a clear non-zero result
       And no partial dataset is committed
 
-  @HS-013 @repository_baseline @mandatory @FR-BE-005 @AC-010 @ADR-0004 @ADR-0007
+  @HS-013 @repository_baseline @mandatory @FR-BE-005 @AC-010 @ADR-0007 @ADR-0014
   Rule: Cache-aside behavior remains bounded, isolated, and non-authoritative
 
     Scenario: Use the accepted default cache bounds
@@ -352,7 +377,9 @@ Feature: Non-negotiable application and delivery constraints
     Scenario: Cache only the stable summary projection
       When a character search result is serialized for Redis
       Then the cached value conforms to CharacterSummary
+      And its imageUrl equals the exact absolute URL stored for that character
       And it contains no favorite value, comment, or detail-only field
+      And it contains no image bytes or image-lifecycle metadata
 
     Scenario: Do not invalidate searches after interaction mutations
       Given the cached summary projection contains no favorite or comment data
@@ -519,7 +546,7 @@ Feature: Non-negotiable application and delivery constraints
         | 768   |
         | 1280  |
 
-  @HS-017 @repository_baseline @adopted_optional @OR-004 @OR-007 @ADR-0001 @ADR-0010 @DG-001
+  @HS-017 @repository_baseline @adopted_optional @OR-004 @OR-007 @ADR-0010 @ADR-0014 @DG-001
   Rule: The automated test portfolio covers the selected risks
 
     Scenario: Drive each production behavior through one TDD cycle
@@ -569,7 +596,7 @@ Feature: Non-negotiable application and delivery constraints
       And residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests are removed or have an explicit current consumer
       And affected and complete test scopes pass after justified maintenance
 
-  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0001 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0012
+  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0012 @ADR-0014
   Rule: Delivery claims require reproducible evidence
 
     Scenario: Do not infer implementation from planning artifacts
@@ -588,14 +615,16 @@ Feature: Non-negotiable application and delivery constraints
       When DEL-002 is evaluated
       Then the ERD matches a freshly migrated PostgreSQL schema
       And it claims no unimplemented table, key, constraint, or relationship
+      And it shows only characters.image_url for image persistence and no image relation or byte store
 
     Scenario: Keep documented commands authoritative and reproducible
       Given run and GraphQL usage documentation exists
       When DEL-003 is evaluated from a clean clone
       Then every documented command maps to an executable repository command
       And the instructions cover prerequisites, non-secret configuration, installation, infrastructure, migration, import, development, test, build, and all four GraphQL use cases
+      And the instructions describe the third-party avatar URL, CSP, CORS, referrer, privacy, cache, outage, fallback, and rights boundaries when image delivery exists
 
-  @HS-019 @repository_baseline @mandatory @NFR-004 @ADR-0001 @ADR-0002 @ADR-0006 @ADR-0010
+  @HS-019 @repository_baseline @mandatory @NFR-004 @ADR-0002 @ADR-0006 @ADR-0010 @ADR-0014
   Rule: Mandatory code quality remains structured and reviewable
 
     @minimum_assessment
@@ -618,20 +647,27 @@ Feature: Non-negotiable application and delivery constraints
       Then comments explain relevant non-obvious constraints or decisions
       And comments do not restate self-explanatory code or preserve obsolete behavior
 
-  @HS-020 @repository_baseline @human_decision @DG-004 @FR-FE-001 @FR-FE-003 @NFR-001 @NFR-005 @AC-001 @AC-003 @ADR-0001 @ADR-0003 @ADR-0004 @ADR-0006 @ADR-0007 @ADR-0008 @ADR-0009
-  Rule: An agent must not select character-image delivery while DG-004 is pending
+  @HS-020 @repository_baseline @human_decision @DG-006 @AUTH-001 @FR-FE-001 @FR-FE-003 @NFR-001 @NFR-005 @AC-001 @AC-003 @ADR-0003 @ADR-0006 @ADR-0007 @ADR-0008 @ADR-0009 @ADR-0014
+  Rule: Character-image delivery must follow accepted ADR-0014
 
-    Scenario Outline: Prevent work controlled by the pending image-delivery gate
-      Given DG-004 has status "Pending"
-      When a change proposes <controlledWork>
-      Then the change must not proceed
-      And no copied-asset, application-delivery, or external-browser-request strategy is selected implicitly
-      And work may continue only after a project-owner-approved ADR resolves DG-004
+    Scenario: Keep controlled work inside the accepted direct-URL boundary
+      Given DG-006 has status "Resolved"
+      And ADR-0014 has status "Accepted"
+      And AUTH-001 has status "Authorized"
+      When a change proposes image-specific persistence, import, GraphQL, Redis, browser, CSP, fallback, test, or documentation work
+      Then it must preserve the exact requested-ID, payload-ID, and Character.image URL binding
+      And PostgreSQL, GraphQL, and finite Redis projections must use the same exact absolute URL
+      And no image relation, image bytes, decoder, durable image cache, proxy route, asset route, image lock, retention, purge, or withdrawal artifact may be added
+      And image-specific work may begin only in its owning downstream task after that task's remaining prerequisites
+      And provider, scope, condition, delivery-mechanism, or disposition changes must not require review, reopening, or renewal of AUTH-001
+      And any proposed departure from ADR-0014's accepted direct-URL technical semantics must remain prohibited until the applicable ADR is approved and synchronized
+      And no behavior may be claimed without evidence from its owning downstream task
 
-      Examples:
-        | controlledWork                                      |
-        | persisting copied character image locations         |
-        | mapping runtime GraphQL imageUrl values              |
-        | caching a character-summary imageUrl value           |
-        | an application-owned image proxy or asset route      |
-        | a browser request to the upstream character API host |
+    Scenario: Constrain direct browser avatar requests
+      Given a downstream task is authorized to implement the accepted image boundary
+      When a list or detail image is rendered
+      Then its native image source is the exact GraphQL imageUrl
+      And the request uses anonymous CORS and a no-referrer policy without credentials, authorization, tracking parameters, JavaScript byte fetching, or an application retry loop
+      And an enforcing path-qualified img-src permits only the reviewed avatar path while connect-src prohibits upstream character JSON requests
+      And one accessible fixed-square DOM and CSS fallback replaces a failed image without another image source
+      And the implementation documents that redirects, final bytes, provider availability, browser caching, and visitor metadata disclosure remain outside application control

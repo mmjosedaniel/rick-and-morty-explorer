@@ -23,6 +23,7 @@ REFERENCE_PATTERNS = {
     "requirement": REQUIREMENT_RE,
     "ADR": re.compile(r"\bADR-\d{4}\b"),
     "decision gate": re.compile(r"\bDG-\d{3}\b"),
+    "authorization": re.compile(r"\bAUTH-\d{3}\b"),
     "task": re.compile(r"\bTASK-\d{3}\b"),
     "SPEC rule": re.compile(r"\bSPEC-\d{3}\b"),
     "HS rule": re.compile(r"\bHS-\d{3}\b"),
@@ -392,11 +393,21 @@ def definitions(repo: Path, texts: dict[Path, str], reporter: Reporter) -> dict[
     )
     adr_ids = {
         f"ADR-{match.group(1)}"
-        for path in (repo / "docs" / "adrs").glob("[0-9][0-9][0-9][0-9]-*.md")
+        for path in (repo / "docs" / "adrs").rglob("[0-9][0-9][0-9][0-9]-*.md")
         if (match := re.match(r"(\d{4})-", path.name))
     }
     plan_text = texts.get(plan_path, "")
     gate_ids = set(re.findall(r"^\|\s*(DG-\d{3})\s*\|", plan_text, re.MULTILINE))
+    authorization_matches = re.findall(
+        r"^###\s+AUTH-(\d{3})\s+-", plan_text, re.MULTILINE
+    )
+    require_contiguous(
+        plan_path,
+        "authorization",
+        [int(value) for value in authorization_matches],
+        reporter,
+    )
+    authorization_ids = {f"AUTH-{value}" for value in authorization_matches}
     task_matches = re.findall(r"^###\s+TASK-(\d{3})\s+-", plan_text, re.MULTILINE)
     require_contiguous(plan_path, "TASK", [int(value) for value in task_matches], reporter)
     task_ids = {f"TASK-{value}" for value in task_matches}
@@ -419,6 +430,7 @@ def definitions(repo: Path, texts: dict[Path, str], reporter: Reporter) -> dict[
         "requirement": requirement_ids,
         "ADR": adr_ids,
         "decision gate": gate_ids,
+        "authorization": authorization_ids,
         "task": task_ids,
         "SPEC rule": spec_ids,
         "HS rule": hard_ids,
@@ -458,7 +470,7 @@ def main() -> int:
 
     repo = Path(args.repo).resolve()
     reporter = Reporter()
-    owned_paths = {repo / "README.md", repo / "AGENTS.md"}
+    owned_paths = {repo / "README.md", repo / "AGENTS.md", repo / "PLANS.md"}
     docs_dir = repo / "docs"
     if docs_dir.is_dir():
         owned_paths.update(docs_dir.rglob("*.md"))
@@ -466,6 +478,9 @@ def main() -> int:
     skills_dir = repo / ".agents" / "skills"
     if skills_dir.is_dir():
         owned_paths.update(skills_dir.rglob("SKILL.md"))
+    codex_dir = repo / ".codex"
+    if codex_dir.is_dir():
+        owned_paths.update(codex_dir.rglob("*.md"))
     content_paths = sorted(path.resolve() for path in owned_paths if path.is_file())
     texts: dict[Path, str] = {}
     for path in content_paths:
@@ -502,6 +517,7 @@ def main() -> int:
         "Documentation validation passed: "
         f"{len(markdown_paths)} Markdown file(s), "
         f"{len(defined['requirement'])} requirement ID(s), "
+        f"{len(defined['authorization'])} authorization(s), "
         f"{len(defined['task'])} task(s), "
         f"{len(defined['SPEC rule'])} SPEC rule(s), "
         f"{len(defined['HS rule'])} HS rule(s), "

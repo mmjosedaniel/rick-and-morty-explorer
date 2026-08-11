@@ -1,11 +1,13 @@
 # ADR-0001: Use a Modular Monolith Workspace
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-09
 - Decision owners: Project maintainers
 - Related requirements: NFR-001, NFR-003, NFR-004, OR-008, AC-007, AC-012
 - Supersedes: None
-- Superseded by: None
+- Superseded by: ADR-0014
+
+[ADR-0014](./0014-persist-and-deliver-character-image-urls-directly.md) superseded this record on 2026-08-11. The body below remains historical evidence; ADR-0014 carries forward the unaffected workspace, modular-monolith, infrastructure, isolation, command, and no-microservice rules while narrowing only the browser avatar boundary.
 
 ## Context
 

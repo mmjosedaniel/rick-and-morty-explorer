@@ -2,20 +2,20 @@
 
 - Status: Proposed non-blocking pilot; not implemented
 - Date: 2026-08-09
-- Decision owner: [DPL-DEC-007](../execution/decision-and-progress-log.md#decision-log)
+- Decision owner: [DPL-DEC-013](../execution/decision-and-progress-log.md#decision-log); DPL-DEC-007 is Superseded history
 - Related UI scope: NFR-001, NFR-002, NFR-005, AC-001 through AC-006, DPL-DEC-005, DPL-DEC-006, SPEC-001 through SPEC-007, TASK-010 through TASK-012
-- Planning guardrails: ADR-0001, ADR-0002, ADR-0004, ADR-0006, ADR-0009, ADR-0010, DG-001, DG-003, DG-004
+- Planning guardrails: ADR-0001 (Superseded history), ADR-0002, ADR-0004 (Superseded history), ADR-0006, ADR-0009, ADR-0010, ADR-0013 (Superseded history), ADR-0014, DG-001, DG-003, DG-006
 - UI documentation index: [UI design documentation](./README.md)
 
 ## Document role
 
-This document provides implementation guidance for the reversible Storybook pilot owned by DPL-DEC-007. It does not independently own the decision, add product scope, approve architecture, change a task definition of done, resolve a decision gate, select a package version, add a dependency, or prove that Storybook or any UI component exists. If this guidance conflicts with the decision log or implementation plan, reconcile the guidance with those authoritative owners before dependent work continues.
+This document provides implementation guidance for the reversible Storybook pilot owned by DPL-DEC-013. It does not independently own the decision, add product scope, approve architecture, change a task definition of done, resolve a decision gate, select a package version, add a dependency, or prove that Storybook or any UI component exists. If this guidance conflicts with the decision log or implementation plan, reconcile the guidance with those authoritative owners before dependent work continues.
 
 The [requirements specification](../REQUIREMENTS.md) remains authoritative for product behavior. Accepted ADRs own application boundaries, the [implementation plan](../IMPLEMENTATION_PLAN.md) owns task sequencing and gates, and source plus runtime evidence will be required before any story or component is reported as implemented.
 
 ## Pilot summary
 
-After TASK-003 creates the React application scaffold and TASK-010's gates and prerequisites are satisfied, TASK-010 may run a non-blocking Storybook pilot inside `apps/web` for building and reviewing isolated list UI components and their approved states. Candidate story files use strict TypeScript, remain colocated with the components they describe, and render deterministic local fixtures rather than call the public Rick and Morty API.
+After TASK-003 creates the React application scaffold and TASK-010's gates and prerequisites are satisfied, TASK-010 may run a non-blocking Storybook pilot inside `apps/web` for building and reviewing isolated list UI components and their approved states. Candidate story files use strict TypeScript, remain colocated with the components they describe, and render deterministic local fixtures or intercepted exact avatar URLs rather than contact the live public API.
 
 The candidate boundary includes component development, responsive inspection, state enumeration, and local design review. It does not include a published catalog, hosted visual-regression service, CI quality gate, test-runner selection, or production runtime dependency. The current implementation plan does not require Storybook for TASK-010, TASK-011, or TASK-012 completion.
 
@@ -25,7 +25,7 @@ The candidate boundary includes component development, responsive inspection, st
 - TASK-010 is the only initial pilot owner. If activated, it may add base configuration plus list-card, list-state, sorting, and filter stories within that task's existing behavior scope.
 - If the pilot is retained, TASK-011 may add detail, favorite, and comment stories, and TASK-012 may add responsive and resilient-state variants within their existing scopes.
 - TASK-009 remains the owner of DG-003 resolution and is not a Storybook implementation task.
-- TASK-016 remains the owner of DG-004 resolution. Local story fixtures neither select nor prove the runtime character-image delivery boundary.
+- TASK-016 and DG-004 preserve the Superseded ADR-0013 decision history. TASK-017 resolved DG-006 through accepted ADR-0014, and AUTH-001 is separately Authorized under disposition A. Local story fixtures neither prove the direct runtime character-image boundary nor constitute authorization evidence.
 - TASK-013 remains the owner of adopted automated-test closure. Stories do not contribute to OR-004 or automated-test evidence unless the accepted DG-001 decision and implementation plan explicitly make them part of the test boundary.
 - Storybook is not an expected artifact or completion gate in the current implementation plan. Choosing not to activate the pilot, or removing it after evaluation, does not block TASK-010 through TASK-012.
 
@@ -60,7 +60,7 @@ apps/web/
     ComponentName.stories.tsx
 ```
 
-- Keep Storybook configuration inside the web application boundary established by ADR-0001.
+- Keep Storybook configuration inside the web application boundary carried forward by ADR-0014.
 - Use `*.stories.tsx` and strict TypeScript in accordance with ADR-0002.
 - Colocate a story with the component it documents unless a page-level composition has a clearer existing owner.
 - Do not create a shared workspace package solely for stories or fixtures.
@@ -87,6 +87,7 @@ Do not add stories merely to increase their count. Each story must protect a nam
 
 - Use deterministic local fixtures shaped by the project-owned GraphQL projections in ADR-0006.
 - Do not fetch the public Rick and Morty API, require a running PostgreSQL or Redis service, or make Storybook a browser path to upstream data.
+- Intercept an exact ADR-0014 avatar URL with a deterministic local response when a story needs image success or failure; do not rewrite the component input to a same-origin production-style asset path.
 - Display only the fields accepted by the [UI field-visibility decision](./README.md#ui-field-visibility-decision). Do not invent comment authors, timestamps, counts, or upstream-only fields to make a story appear more complete.
 - Include normal baseline values such as empty `type` and literal `unknown` where the state is relevant.
 - Prefer component inputs and small local adapters for stories that can remain independent of GraphQL client behavior.
@@ -103,9 +104,9 @@ AI-generated images may support mood, illustration, or decorative exploration. T
 
 ## Decision-gate boundaries
 
-### DG-001 - TypeScript test harness
+### DG-001 - Resolved TypeScript test harness
 
-TASK-001 must resolve DG-001 before TASK-003 and therefore before the TASK-010 pilot can begin. DPL-DEC-007 does not influence or anticipate the harness selection. When DG-001 is evaluated, treat Storybook testing as outside this pilot unless the accepted gate-resolution ADR explicitly includes it.
+TASK-001 resolved DG-001 through accepted ADR-0011. ADR-0011 did not select Storybook stories as an executable test boundary, and DPL-DEC-013 does not change that decision. The pilot remains outside unit, integration, application, browser-smoke, root-command, and CI evidence unless a future project-owner-approved decision and the implementation plan explicitly promote it.
 
 The pilot boundary prohibits the following unless that accepted decision and the implementation plan authorize them:
 
@@ -114,19 +115,19 @@ The pilot boundary prohibits the following unless that accepted decision and the
 - do not run stories as automated tests or a CI gate;
 - do not claim that a rendering story satisfies OR-004, ADR-0010, or an acceptance criterion.
 
-If the DG-001 ADR selects Storybook stories as part of the component-test boundary, that ADR must define the runner, browser or DOM environment, commands, CI behavior, failure semantics, and relationship to other frontend tests before the integration is added.
+If future decision work proposes Storybook stories as part of the component-test boundary, it must define the runner, browser or DOM environment, commands, CI behavior, failure semantics, and relationship to other frontend tests before the integration is added, and it must supersede or amend the current accepted boundary through the governed ADR workflow.
 
 ### DG-003 - Frontend GraphQL client and query cache
 
 TASK-009 must resolve DG-003 before TASK-010 can begin. Presentational pilot stories may remain driven by component inputs, but any story that exercises queries, mutations, cache ownership, generated operations, request mocking, or explicit detail refetching must use the client boundary selected by the accepted DG-003 decision.
 
-Neither this document nor DPL-DEC-007 resolves either gate.
+Neither this document nor DPL-DEC-013 resolves pending DG-003 or changes the resolved ADR-0011 test boundary.
 
-### DG-004 - Character-image delivery boundary
+### DG-006 - Accepted character-image URL successor boundary
 
-TASK-016 must resolve DG-004 before TASK-010 implements runtime image loading. Storybook may use deterministic local fixture assets to exercise square layout and failure presentation, but those fixtures must not be treated as a decision to copy, proxy, or directly request production character images. A retained story must adopt the boundary selected by the accepted gate-resolution ADR once runtime image behavior is implemented.
+TASK-017 resolved DG-006 through accepted ADR-0014. TASK-016 remains `Complete`, DG-004 remains `Resolved`, and ADR-0013 remains `Superseded` as historical evidence. Storybook may intercept the exact governed absolute avatar URL with deterministic local success and failure responses to exercise anonymous-CORS, no-referrer, fixed-square, and one-way fallback presentation. Those fixtures must not contact the live upstream host, become a same-origin production asset path, or be treated as runtime implementation, content-rights authorization, or production delivery evidence.
 
-This document and DPL-DEC-007 do not resolve DG-004.
+This document and DPL-DEC-013 do not prove ADR-0014 behavior. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is separately `Authorized` under disposition A, but that authorization is not Storybook, runtime, or acceptance evidence.
 
 ## Pilot evaluation
 
@@ -155,7 +156,7 @@ Evaluate a dedicated ADR, or incorporate the choice into the gate-resolution ADR
 - Multiple applications or packages depend on a shared story, addon, fixture, or component-governance architecture.
 - Stories become the authoritative automated frontend-test boundary.
 
-Until one of those triggers occurs, Storybook remains a proposed, non-blocking, local UI-development pilot recorded by DPL-DEC-007 rather than a standalone architecture decision or implementation-plan requirement.
+Until one of those triggers occurs, Storybook remains a proposed, non-blocking, local UI-development pilot recorded by DPL-DEC-013 rather than a standalone architecture decision or implementation-plan requirement.
 
 ## References
 
@@ -164,13 +165,15 @@ Until one of those triggers occurs, Storybook remains a proposed, non-blocking, 
 - [Storybook viewport documentation](https://storybook.js.org/docs/essentials/viewport)
 - [Repository documentation map](../../README.md#documentation-map)
 - [Requirements specification](../REQUIREMENTS.md)
-- [ADR-0001: Use a Modular Monolith Workspace](../adrs/0001-use-a-modular-monolith-workspace.md)
+- [ADR-0001: Use a Modular Monolith Workspace (`Superseded`)](../adrs/0001-use-a-modular-monolith-workspace.md)
 - [ADR-0002: Use TypeScript Across the Stack](../adrs/0002-use-typescript-across-the-stack.md)
 - [ADR-0006: Define a Use-Case-Oriented GraphQL Contract](../adrs/0006-define-a-use-case-oriented-graphql-contract.md)
 - [ADR-0009: Keep Frontend State Close to Its Owner](../adrs/0009-keep-frontend-state-close-to-its-owner.md)
 - [ADR-0010: Use a Targeted Automated Testing Strategy](../adrs/0010-use-a-targeted-automated-testing-strategy.md)
-- [Active decision gates and frontend tasks](../IMPLEMENTATION_PLAN.md#active-decision-gates)
-- [DPL-DEC-005 through DPL-DEC-007](../execution/decision-and-progress-log.md#decision-log)
+- [ADR-0013: Materialize Character Images During Ingestion (`Superseded`)](../adrs/superseded/0013-materialize-character-images-during-ingestion.md)
+- [ADR-0014: Persist and Deliver Character Image URLs Directly (`Accepted`)](../adrs/0014-persist-and-deliver-character-image-urls-directly.md)
+- [Active decision gates](../IMPLEMENTATION_PLAN.md#active-decision-gates), [TASK-009](../IMPLEMENTATION_PLAN.md#task-009---resolve-the-frontend-graphql-client-gate), [TASK-010](../IMPLEMENTATION_PLAN.md#task-010---deliver-the-character-list-sorting-and-adopted-interface-filters), [TASK-011](../IMPLEMENTATION_PLAN.md#task-011---deliver-character-detail-favorites-and-comments), and [TASK-012](../IMPLEMENTATION_PLAN.md#task-012---complete-responsive-and-resilient-ui-states)
+- [DPL-DEC-005, DPL-DEC-006, and DPL-DEC-013](../execution/decision-and-progress-log.md#decision-log)
 - [SPEC-001 through SPEC-007 routing](../specs/README.md#codex-rule-routing)
 - [UI field visibility and mockup coverage](./README.md)
 - [UI visual foundations](./visual-foundations.md)
