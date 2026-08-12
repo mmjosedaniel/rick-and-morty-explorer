@@ -1,6 +1,6 @@
 # Agent-Flow Metrics
 
-This policy adds local, best-effort telemetry to the repository's [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). It measures corrections, false Reds, confirmed regressions, elapsed time, and exact reported token counters without changing the workflow's authority or evidence rules.
+This optional policy adds local, best-effort telemetry to the repository's [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). Use it when measuring corrections, false Reds, confirmed regressions, elapsed time, or exact reported token counters is worth the recording overhead. It does not change the workflow's authority or evidence rules.
 
 Metrics are observations, not quality gates. A missing hook, event, duration, or token counter cannot accept or reject Red, authorize Green, change a review verdict, prove behavior, alter task status, or block task closure.
 
@@ -29,7 +29,7 @@ Every invocation publishes one uniquely named JSON file under `logs/agent-flow-m
 
 | Metric | Counted when | Not counted when |
 |---|---|---|
-| Correction | The coordinator records `correction_requested` with a new correction lease ID, the same assignment identity, and attempt 2 because a handoff was rejected or an actionable reviewer finding requires additional worker work | Initial assignments, attempts other than 2, clarifications with no new work, new behavior slices, or a stopped/reclassified branch |
+| Correction | The coordinator records `correction_requested` with the same workflow, task, cycle, phase, and role, plus a new correction lease ID and attempt 2, because a handoff was rejected or an actionable reviewer finding requires additional worker work | Initial assignments, attempts other than 2, clarifications with no new work, new behavior slices, or a stopped/reclassified branch |
 | False Red | The coordinator records `red_rejected` because the observed failure cannot cross the Red acceptance barrier | A valid accepted Red, or a test-side mistake fixed before the first worker handoff |
 | Confirmed regression | Triage proves that the current workflow change caused a required check which passed in the accepted baseline to fail, then the coordinator records `regression_confirmed` with that check's stable repository or plan-local ID; one stable check is counted at most once per workflow | Pre-existing, transient, infrastructure, unrelated, still-ambiguous, or duplicate/moved check reports |
 | Elapsed time | A start and completion event share the same workflow, lease, or agent ID | Unpaired events; these remain visible as incomplete coverage instead of becoming zero-duration work |
@@ -44,11 +44,15 @@ The false-Red rate is rejected Reds divided by all Reds decided by the coordinat
 - `infrastructure_failure`
 - `requirement_mismatch`
 
+Only a coordinator-classified attempt-2 worker correction contributes to the correction metric. A new behavior slice, owner-directed change, or reclassified assignment is not `correction_requested`, even when it follows a rejected handoff or review finding.
+
 Workflow elapsed time measures the coordinator's recorded start-to-completion interval. Lease time measures assigned phases. Agent time comes from linked lifecycle hooks. Summed agent time can exceed workflow wall time when independent agents overlap, so the report keeps these scopes separate.
 
 Input, cached-input, output, and reasoning token counters remain separate. Their relationship can depend on the reporting runtime, so the tool does not invent a composite billing total. A partial report says exactly which counters and lease-linked agents are missing. An exact report for the primary coordinator is allowed and contributes to totals, but it is shown separately as an identified unlinked report because the primary does not receive a worker lease.
 
 Every coordinator event requires the same workflow and task identity. Lease start, completion, and correction records also require the same cycle, lease, phase, attempt, agent, and role identity; corrections use attempt 2 exactly. A token report for a lease-linked worker must match that task and role, while an identified primary report remains unlinked. Lifecycle pairs must match session, turn, agent, and role. A stable regression check belongs to only one cycle within a workflow.
+
+Each distinct bounded Setup objective uses a fresh dedicated setup cycle ID created after the stable workflow ID and before that Setup assignment; only its attempt-2 correction preserves that ID. Each behavior slice receives a different fresh cycle ID before its Red assignment. The metrics schema correlates these identities but does not authorize their creation or reuse.
 
 Exact logical replays are idempotent: aggregation keeps the first observation, counts it once, and reports the dataset-wide replay count. The validator rejects and the summary excludes contradictory Red decisions, conflicting copies of one logical event or token report, cross-event identity conflicts, and a completion timestamp earlier than its start. An unpaired start or completion remains an explicit coverage gap because background hooks can be cancelled.
 

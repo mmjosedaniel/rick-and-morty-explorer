@@ -1,6 +1,6 @@
 # Project-Scoped Codex Agents
 
-This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, and stopping condition for each spawned instance.
+This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, and stopping condition for each spawned instance. Write-capable implementation workers receive the canonical [Worker Assignment Packet v1](./execplan-implementation-workflow.md#worker-assignment-packet-v1), whose required fields are a minimum context floor rather than a maximum reading boundary.
 
 These agents support repository work. They do not change product scope, approve architecture, resolve a decision gate, replace an ExecPlan, or count as implementation or acceptance evidence. All agents remain subject to the root [repository guidelines](../AGENTS.md) and must begin repository work from the [documentation map](../README.md#documentation-map).
 
@@ -11,8 +11,8 @@ These agents support repository work. They do not change product scope, approve 
 | [`technology_researcher`](./agents/technology-researcher.toml) | Read only | Investigate one assigned technical option against common criteria and return primary-source evidence in a fixed structure | Repository edits, final synthesis, architecture approval, or task and gate status changes |
 | [`decision_analyst`](./agents/decision-analyst.toml) | Read only | Audit research comparability and Decision Review Contract coverage, rank options, and return a traceable recommendation, ADR outline, and synthesis-readiness verdict | Repository edits, ADR numbering or approval, owner-controlled choices, or task and gate status changes |
 | [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Try to falsify an assigned pre-draft decision contract or exact final artifact against repository authorities and reproducible evidence | Editing the reviewed work, approving owner-controlled decisions, or taking closure ownership |
-| [`test_worker`](./agents/test-worker.toml) | Workspace write under an explicit lease | Add one smallest test for an assigned behavior slice, run it, and prove the intended Red state | Production behavior, architecture decisions, status changes, Green authorization, or task closure |
-| [`code_worker`](./agents/code-worker.toml) | Workspace write under an explicit lease | Perform bounded declarative setup, minimum Green implementation, and behavior-preserving Refactor work | Changing an accepted test, selecting architecture, status changes, or task closure |
+| [`test_worker`](./agents/test-worker.toml) | Workspace write under an explicit lease | Add one smallest test for an assigned behavior slice and prove the intended Red | Production behavior, evidence-document edits, architecture decisions, status changes, Green authorization, or task closure |
+| [`code_worker`](./agents/code-worker.toml) | Workspace write under an explicit lease | Perform bounded setup or minimum Green with optional same-turn behavior-preserving Refactor | Changing an accepted test, evidence-document edits, selecting architecture, status changes, or task closure |
 
 Codex identifies each custom agent by the `name` field inside its TOML file. The filenames follow the same names in kebab case for navigation only.
 
@@ -27,7 +27,7 @@ The workflow uses one model family with role-specific reasoning effort:
 | `decision_analyst` | `gpt-5.6-sol`, `xhigh` | Must reconcile multiple reports, contract coverage, ranking, and decide-now versus prove-later boundaries. |
 | `independent_reviewer` | `gpt-5.6-sol`, `max` | Performs quality-first adversarial exploration and verification at the highest-risk checkpoints. |
 | `test_worker` | `gpt-5.6-sol`, `medium` | Owns one narrow test-side slice and returns concise Red evidence. |
-| `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup, Green, or Refactor work after the applicable coordinator barrier. |
+| `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup or minimum Green with an optional same-turn Refactor. |
 
 The custom-agent TOML values take precedence over the parent setting, so the differentiated policy is explicit rather than inherited. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision or implementation run. `Ultra` is not a substitute for these topologies: proactive delegation may help independent work, but the repository still requires named barriers, explicit write ownership, fresh review, bounded correction, and owner approval where applicable.
 
@@ -77,9 +77,9 @@ For decision work, the primary thread is deliberately not duplicated as a custom
 
 ### Implementation work
 
-Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary remains the sole integration, evidence, approval-handling, and closure owner but normally delegates repository edits to `test_worker` and `code_worker` through explicit, sequential path leases. The primary enforces each assignment with the [automatic write-lease guard](./write-lease-guard.md): it starts an immutable baseline before spawning the worker and requires a fresh terminal compliant result, or a replayed compliant receipt plus clean pinned status, before accepting the handoff barrier. Only one worker lease may be active per worktree, and the same-cycle Red and Green writers never run concurrently. A fresh `independent_reviewer` examines the complete final state, exact diff, and lease receipts before the primary reconciles closure.
+Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary retains integration, evidence acceptance, exception handling, approvals, authoritative status, and closure while delegating bounded edits to `test_worker` and `code_worker` through sequential path leases. Each spawn receives the minimum-but-extensible `Worker Assignment Packet v1`; additional context and reading are allowed, but they never expand a binding assignment field or the lease. The primary opens and terminally closes the [automatic write-lease guard](./write-lease-guard.md), then inspects the receipt, actual diff, command results, and handoff. Red precedes Green; the code worker may Refactor in the same Green turn only while tests stay green and frozen. Any rejected or ambiguous result stops writes for coordinator triage rather than entering an exhaustive automatic state machine. A fresh `independent_reviewer` examines each integrated candidate final state before the primary reconciles closure.
 
-The [agent-flow metrics policy](./agent-flow-metrics.md) adds a non-blocking observation sidecar to this implementation topology. Project hooks record sanitized subagent lifecycle events, while the coordinator records the semantic decisions that distinguish a correction, rejected Red, or confirmed regression. Metrics never replace the blocking lease guard, ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
+The [agent-flow metrics policy](./agent-flow-metrics.md) is an optional, non-blocking observation sidecar. Use it only when corrections, false Reds, regressions, time, or exact token coverage are worth measuring. Metrics never replace the lease guard, ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
 
 The decision topology above remains unchanged: write-capable implementation workers do not research options, draft ADRs, resolve gates, or replace the primary decision writer.
 
@@ -151,11 +151,11 @@ A good instance assignment states:
 
 ### Implementation workflow prompt
 
-Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the automatic lease, Red, Green, Refactor, review, correction, metrics, and closure barriers without duplicating them here.
+Use the concise copy-paste prompt, canonical assignment packet, and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It defines the serial normal path and deliberately returns exceptions to coordinator triage.
 
 ## Review, Correction, and Approval Protocol
 
-The fresh final reviewer always performs the evidence checkpoint and returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. A `PASS WITH FOLLOW-UPS` may advance only after the primary dispositions every item and confirms that none conflicts with a definition of done, hard gate, required validation result, or documentation gate; any such conflict is a correction that requires complete fresh re-review. The decision-artifact review loop below is intentionally bounded. Worker-first implementation uses the same fresh full-state re-review rule and the role-specific correction routing in its implementation guide.
+The fresh final reviewer always performs the evidence checkpoint and returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. A `PASS WITH FOLLOW-UPS` may advance only after the primary dispositions every item and confirms that none conflicts with a definition of done, hard gate, required validation result, or documentation gate; any such conflict requires a fix and complete fresh re-review. The bounded decision-artifact review loop below remains specific to decision work. Implementation exceptions return to coordinator triage under the implementation guide.
 
 1. The primary coordinator applies only supported, in-scope corrections.
 2. The reviewer inspects the complete revised artifact and exact diff and re-runs the full applicable invariant packet.
@@ -176,7 +176,7 @@ The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-
 
 All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, analyst, and reviewer remain `read-only` with `high`, `xhigh`, and `max` reasoning according to role. The test and code workers use `medium` reasoning and `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
 
-Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. An exceptional primary-thread implementation edit must be recorded with its reason, paths, and validation.
+Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. The coordinator records accepted evidence and any exceptional primary-thread implementation edit with its reason, paths, and validation.
 
 Agent output and flow metrics are supporting observations, not self-validating proof. A terminal compliant lease receipt proves only that net non-ignored repository changes stayed within the pinned path contract and Git control state; it does not prove semantic correctness. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage, while a lease-guard failure freezes the write branch.
 

@@ -1,299 +1,236 @@
 # Implement an ExecPlan with Worker Agents
 
-This guide explains the repository's worker-first flow for executing a write-authorized implementation ExecPlan. It keeps the primary Codex thread focused on scope, decisions, integration, and closure while bounded workers perform the normal repository writes.
+This guide defines the normal implementation path for an authorized ExecPlan. It deliberately keeps exception handling outside the main graph: when a lease, handoff, command, requirement, or review result is not acceptable, writing stops and the primary coordinator decides what the new assignment must be.
 
-The guide is a workflow policy. It does not start a task, change product scope, resolve a decision gate, approve architecture, or prove that an implementation passes. The exact `TASK-*`, its owning ExecPlan, repository authorities, and runtime evidence remain controlling.
+The workflow adds three controls without replacing the ExecPlan:
+
+- a small, extensible assignment packet so a worker receives enough context to start safely;
+- a machine-verified write lease so the worker can change only the assigned paths; and
+- serial Red-Green-Refactor handoffs with one independent review of each candidate final state.
 
 ## When to use this flow
 
-Use this flow when the project owner asks Codex to implement an active ExecPlan that changes application behavior, tests, configuration, or other implementation artifacts.
+Use it when the project owner authorizes implementation of an active ExecPlan and its canonical `TASK-*` is `In progress`. Do not use it to start a pending task, approve architecture, resolve a decision gate, or turn a plan into implementation evidence.
 
-Do not use it to compare consequential options, prepare an ADR, or resolve a decision gate. Decision work continues to use the contract-first, primary-writer workflow in the [project-scoped agent guide](./README.md#collaboration-topology).
+The flow supports:
 
-Before spawning a writer, the coordinator must confirm that:
+- `setup` by `code_worker` for separately planned declarative or infrastructure work;
+- `red` by `test_worker` for one observable behavior slice;
+- `green` plus optional behavior-preserving Refactor by `code_worker` in one implementation turn.
 
-- the exact `TASK-*` and active ExecPlan are named;
-- task dependencies, decision gates, and authorization joins permit the assigned artifact;
-- the task state and execution record allow implementation to start or continue;
-- the parent session permits workspace writes, because live parent permissions can constrain spawned agents;
-- the working tree and existing changes are understood; and
-- every assignment has an explicit write lease and stopping condition; and
-- the coordinator can start and terminally close the [automatic write-lease guard](./write-lease-guard.md) around the assignment.
+Only one write-capable worker lease may be active in one worktree. The Red and Green workers for a behavior cycle are always sequential.
 
 ## Roles
 
-| Role | Normal permission | Responsibility | Must not do |
-|---|---|---|---|
-| Primary coordinator | Workspace capable, normally non-writing | Select the next slice, grant leases, inspect handoffs and diffs, route corrections, reconcile state, and own closure | Delegate scope, approval, task status, or closure ownership |
-| [`test_worker`](./agents/test-worker.toml) | Workspace write | Add one smallest test, prove the intended Red state, and return concise evidence | Edit production behavior or authorize Green |
-| [`code_worker`](./agents/code-worker.toml) | Workspace write | Perform explicitly assigned setup, minimum Green implementation, and behavior-preserving Refactor | Change an accepted test or start another TDD slice |
-| [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Falsify the integrated result, reproduce safe validation, and return a verdict | Edit findings, approve architecture, or close the task |
+| Role | Responsibility |
+|---|---|
+| Primary coordinator | Selects the next authorized slice, creates packets and leases, accepts or rejects handoffs, integrates evidence, handles approvals and exceptions, and owns final closure. |
+| `test_worker` | Writes only the smallest assigned test-side change and proves the intended Red. |
+| `code_worker` | Performs bounded setup or reaches minimum Green and optionally Refactors in the same turn. It never changes an accepted test. |
+| `independent_reviewer` | Reviews the integrated candidate state and evidence read-only. It does not repair findings or close the task. |
 
-The coordinator remains the sole integration, evidence, approval-handling, and closure owner. It normally delegates repository edits to workers. If it must make an exceptional edit, it records the reason, paths, and validation in the ExecPlan or final handoff.
+## Worker Assignment Packet v1
 
-## Write leases
+Complete one packet immediately before every write-capable worker spawn. The packet is a minimum context floor, not a maximum: the coordinator may add relevant context, and the worker may inspect additional readable repository files when needed. Additional reading never expands the objective, authority, commands, dependencies, expected result, or write lease.
 
-A write lease is a temporary assignment for one agent turn. The coordinator makes it executable by starting the [automatic write-lease guard](./write-lease-guard.md) immediately before the worker is spawned. The guard returns an immutable contract digest that is passed to the worker and retained by the coordinator. A lease contains:
+Create the stable workflow ID before the first assignment. Use one cycle ID for each bounded setup objective or behavior slice; its Red, Green, and optional Refactor assignments share that behavior-cycle ID.
 
-- the exact cycle or setup mode;
-- stable workflow, cycle, and lease identifiers plus the attempt number;
-- allowed paths;
-- forbidden paths;
-- the required command and expected result;
-- authority IDs and source documents;
-- whether task-scoped evidence documentation may be updated; and
-- stop and escalation conditions.
+Use this template:
 
-Only one automatic worker lease may be active in a Git worktree, and only one agent may own a path at a time. The test and code workers never write concurrently during the same Red-Green-Refactor cycle. Shared manifests, lockfiles, root configuration, schemas, lifecycle helpers, ExecPlans, execution records, and current-status documents require a single explicit owner and an ordered handoff.
+```text
+Worker Assignment Packet v1
 
-After the worker stops, the coordinator terminally closes the pinned lease. Only a fresh `closed-compliant` result permits inspection and acceptance of the handoff barrier. A replayed close returns nonzero and is recovery evidence only; before accepting its original receipt, the coordinator must run pinned `status` and require `closed-compliant` with `post_close_drift: false`. A verified violation, wrong digest, tamper indication, repository mismatch, forbidden or unleased endpoint change, index or `HEAD` drift, ignore-control drift, unsupported path state, unstable scan, or guard error freezes further writes. The guard cannot attribute a concurrent writer whose final net change is wholly inside an allowed endpoint, and it never reverts work. See the operating guide for exact commands, path semantics, recovery, and proof limits.
+Identity
+- Workflow ID:
+- Task ID:
+- Cycle ID:
+- Lease ID:
+- Phase: setup | red | green
+- Attempt: 1 | 2
+- Worker role: test_worker | code_worker
+- Lease owner:
+- Guard contract digest: inserted after guard start
 
-## Correction and stopping limits
+Authority and objective
+- Owning ExecPlan:
+- Controlling requirement / ADR / gate / SPEC / HS IDs:
+- Objective:
+- Starting barrier:
+- Expected outcome:
+- Non-goals:
+- Stop and escalate when:
 
-Each initial assignment may receive at most one coordinator-authorized correction. A correction is a separate guarded lease with a new lease ID, new baseline, and attempt 2; it never reopens, rebaselines, or overwrites the terminal initial lease. If the correction still fails, changes the expected behavior, needs an unleased path or dependency, crosses an authority boundary, or produces a guard violation, the worker stops and the coordinator reclassifies the work instead of continuing an unbounded loop.
+Write scope
+- Allowed files:
+- Allowed directory roots:
+- Forbidden files:
+- Forbidden directory roots:
+- Frozen paths:
 
-A correction is counted only when the coordinator issues that new correction lease because it rejected a handoff or routed an actionable reviewer finding. The initial lease, a clarification with no new work, a new behavior slice, and a reclassification that stops the branch are not corrections.
+Validation
+- Working directory:
+- Commands to run:
+- Expected decisive result:
+- Known external side effects and cleanup:
 
-Once Red is accepted and production work begins, its test paths stay frozen. A material test correction ends that cycle and requires a new test lease plus fresh Red evidence. The final integrated review permits at most two unsuccessful correction cycles before project-owner direction is required.
+Context
+- Required repository reads:
+- Additional context supplied by the coordinator:
 
-## Flow
+Handoff
+- Report identity and authority, touched paths, exact commands and decisive results,
+  outcome, unexpected state, residual risks, and documentation impact.
+```
+
+Use `None` when a field is intentionally empty. Do not omit the field. Secrets, full transcripts, and unrelated conversation history do not belong in the packet.
+
+The active role/phase pairs are `red` with `test_worker`, and `setup` or `green` with `code_worker`. Refactor, when useful, occurs after Green in that same `green` assignment.
+
+### Binding fields and additional context
+
+The packet may grow when the assignment needs more explanation, examples, logs, diagrams, or repository references. A worker may also discover and read additional relevant files. These additions are safe while they only improve understanding.
+
+Stop the worker if new information changes a binding field: task or cycle identity, phase, worker role, objective, governing authority, expected outcome, validation command, dependency, side effect, or write scope. The coordinator must close the current lease and decide whether a new packet is authorized.
+
+### Guard projection
+
+Before spawning the worker, the coordinator passes these packet fields unchanged to the [automatic write-lease guard](./write-lease-guard.md):
+
+| Packet field | Guard input |
+|---|---|
+| Workflow ID | `--workflow-id` |
+| Task ID | `--task-id` |
+| Cycle ID | `--cycle-id` |
+| Lease ID | `--lease-id` |
+| Phase | `--phase` |
+| Attempt | `--attempt` |
+| Lease owner | `--owner` |
+| Worker role | `--agent-type` |
+| Allowed files | repeated `--allow-file` |
+| Allowed directory roots | repeated `--allow-dir-root` |
+| Forbidden files | repeated `--forbid-file` |
+| Forbidden directory roots | repeated `--forbid-dir-root` |
+
+The coordinator drafts the packet, starts the guard, inserts the returned digest, confirms that the projection matches, and only then spawns the worker. The guard proves path and repository-control compliance; it does not prove that the test, code, command result, or design is correct.
+
+## Normal flow
 
 ```mermaid
 flowchart TD
-    A["Coordinator loads the exact TASK and ExecPlan"] --> B{"Declarative setup needed before Red?"}
-    B -- "Yes" --> C["Start guarded SETUP lease and spawn code_worker"]
-    C --> C1{"Terminal lease receipt compliant?"}
-    C1 -- "No" --> Z
-    C1 -- "Yes" --> D{"Setup validation passes?"}
-    D -- "No; one correction remains" --> C
-    D -- "Correction exhausted" --> Z
-    D -- "Blocked or out of scope" --> Z["Stop for coordinator or owner direction"]
-    D -- "Yes" --> E["Choose one observable behavior slice"]
-    B -- "No" --> E
-    E --> F["Start guarded test lease and spawn test_worker"]
-    F --> G["test_worker writes one test and runs focused command"]
-    G --> G1{"Terminal lease receipt compliant?"}
-    G1 -- "No" --> Z
-    G1 -- "Yes" --> H{"Coordinator accepts intended Red?"}
-    H -- "Wrong failure; one correction remains" --> F
-    H -- "Correction exhausted" --> Z
-    H -- "Blocked or contract conflict" --> Z
-    H -- "Yes" --> I["Freeze tests and start guarded GREEN lease"]
-    I --> J["code_worker writes minimum production change"]
-    J --> J1{"Terminal lease receipt compliant?"}
-    J1 -- "No" --> Z
-    J1 -- "Yes" --> K{"Focused test is Green?"}
-    K -- "Code defect; one correction remains" --> J
-    K -- "Correction exhausted" --> Z
-    K -- "Test contract concern" --> L["Coordinator triages without edits"]
-    L --> F
-    K -- "Yes" --> M["Start guarded REFACTOR lease and rerun checks"]
-    M --> M1{"Terminal lease receipt compliant?"}
-    M1 -- "No" --> Z
-    M1 -- "Yes" --> N{"More behavior slices?"}
-    N -- "Yes" --> E
-    N -- "No" --> O["Run relevance audit, complete validation, and documentation closure"]
-    O --> P["Fresh independent_reviewer checks full state and diff"]
-    P --> Q{"Verdict"}
-    Q -- "REVISE" --> R["Coordinator routes each finding to its owning worker"]
-    R --> P
-    Q -- "BLOCKED" --> Z
-    Q -- "PASS WITH FOLLOW-UPS" --> T["Coordinator dispositions every follow-up"]
-    T --> U{"Any follow-up required by a task or gate?"}
-    U -- "Yes" --> R
-    U -- "No; record as non-blocking" --> S
-    Q -- "PASS" --> S["Coordinator reconciles evidence and closes only if every gate passes"]
+    A["Coordinator confirms TASK In progress and loads the ExecPlan"] --> B{"Next authorized work?"}
+    B -- "Setup" --> C["Packet and guarded lease: code_worker performs setup"]
+    B -- "Behavior" --> D["Packet and guarded lease: test_worker proves Red"]
+    C --> E{"Lease compliant and setup accepted?"}
+    D --> F{"Lease compliant and Red accepted?"}
+    E -- "No" --> X["Stop writes; coordinator triages and reconciles"]
+    F -- "No" --> X
+    F -- "Yes" --> G["Freeze tests; new packet and lease: code_worker reaches Green and may Refactor"]
+    G --> H{"Lease compliant and implementation accepted?"}
+    H -- "No" --> X
+    E -- "Yes" --> I["Coordinator records accepted evidence"]
+    H -- "Yes" --> I
+    I --> B
+    B -- "Closure" --> J{"Complete validation, relevance, and documentation checks pass?"}
+    J -- "No" --> X
+    J -- "Yes" --> K["One fresh independent_reviewer checks the candidate state"]
+    K --> L{"PASS or accepted non-blocking follow-ups?"}
+    L -- "No" --> X
+    L -- "Yes" --> M["Primary coordinator reconciles authorities and closes"]
 ```
 
-## Step-by-step operation
+`X` is intentionally terminal. The diagram does not guess whether the problem belongs to the test, implementation, environment, authority, or lease. After inspection, the coordinator may create a corrected assignment, a new behavior slice, request owner direction, or stop the task. Any resumed work re-enters at `B` with a newly valid packet and lease.
 
-### 1. Establish the baseline
+## Serial TDD operation
 
-The coordinator follows the root [documentation map](../README.md#documentation-map), reads the owning ExecPlan and exact routed authorities, inspects the working tree, and confirms the next permitted artifact. It does not infer readiness from a plan alone. Immediately before spawning a writer, it starts the automatic guard with the exact path contract and retains the returned digest. Immediately after the worker stops, it terminally closes that pinned lease; a noncompliant or unverifiable result stops the branch before semantic handoff review.
+For each behavior slice:
 
-If the ExecPlan requires manifests, test registration, or other declarative foundations before a meaningful Red can run, the coordinator gives `code_worker` a bounded, guarded `SETUP` lease. Setup validation is structural, build-based, or runtime-based; it is not an artificial TDD cycle and must not add production behavior. Ignore-control files are frozen while a lease is active; a legitimate change such as `.gitignore` maintenance is an exceptional recorded coordinator edit between leases.
+1. The coordinator creates a fresh cycle ID and assigns `red` to `test_worker`.
+2. The test worker adds only the smallest relevant test and runs the focused command. The intended behavioral failure must be observable and unrelated failures do not count as Red.
+3. The coordinator closes the lease, inspects the test and result, and either accepts the Red or stops for triage. Once accepted, test-owned paths are frozen for the rest of the cycle.
+4. The coordinator assigns `green` to `code_worker` under a new packet and lease. The code worker first reproduces the accepted Red, writes only the production behavior required to make it pass, and may perform a small behavior-preserving Refactor while the focused test remains green.
+5. The coordinator closes the implementation lease, inspects the complete production diff and unchanged frozen tests, and accepts the Green and any Refactor evidence together.
+6. The coordinator records concise Red, Green, and post-Refactor evidence in the living ExecPlan before selecting the next slice.
 
-### 2. Produce one valid Red
+A separately planned `setup` assignment may occur before any dependent behavior slice. It must not smuggle production behavior into configuration work and must have its own observable structural, build, or runtime check.
 
-The coordinator defines one observable behavior and the correct test boundary, but leaves the smallest defensible test design to `test_worker`. The test worker writes only leased test-side paths and runs the focused command.
+## Corrections and exceptions
 
-The coordinator first requires a compliant terminal test-lease receipt and then accepts Red only when the test fails for the intended behavioral reason. A dependency error, unrelated type failure, stale process, occupied port, or pre-existing failure is not valid Red evidence unless the ExecPlan names that condition as the target.
+A worker never continues writing after its lease is terminal. Guard violations, ambiguous concurrent changes, pre-existing failures, wrong Red failures, blocked dependencies, rejected handoffs, and review findings all take the same immediate action: stop writes and return control to the coordinator. Never repair them by reverting user or peer work automatically.
 
-Every rejected Red is recorded as a false Red with the coordinator-selected reason. A test that is corrected before its first handoff is not a separate false Red because it never crossed the coordinator acceptance barrier.
+After triage, any authorized fix starts through the ordinary assignment loop with a reconciled tree, a complete packet, and a fresh baseline, lease ID, digest, and worker turn. The coordinator may label it attempt 2 when it is genuinely a correction of the same bounded assignment; a changed test contract, objective, authority, dependency, scope, or behavior is a new assignment. The graph does not encode separate correction routes.
 
-### 3. Reach Green without changing the test
+## Concise worker handoffs
 
-After accepting Red, the coordinator freezes the test-owned paths and starts a guarded `GREEN` lease for `code_worker`. The code worker receives the exact Red command and decisive failure, writes the minimum production behavior, and runs the same focused scope. Green is not accepted until the coordinator obtains the pinned lease's compliant terminal receipt.
+Every worker handoff contains only what the coordinator needs to verify and resume:
 
-If the code worker believes the accepted test is wrong, it returns `TEST CONTRACT CONFLICT` without modifying the test. The coordinator then decides whether the test worker must correct and re-establish Red or whether the task needs authority clarification.
+1. `Assignment` - packet identity, objective, controlling IDs, phase, attempt, and contract digest.
+2. `Lease and changes` - allowed scope, touched paths, unexpected paths, and concise diff intent.
+3. `Validation` - exact commands, exit codes, and decisive results; Green includes the reproduced Red and post-Refactor result.
+4. `Outcome` - the role-specific outcome plus any blocker, residual risk, and documentation impact.
 
-The code worker must reproduce the accepted Red before editing. A different failure returns `RED MISMATCH` and freezes the lease until the coordinator has classified it.
+The coordinator compares the handoff with the packet, terminal receipt, actual diff, and command evidence. A worker summary alone never accepts a barrier.
 
-### 4. Refactor and validate
+## Final review and closure
 
-Once Green is confirmed, `code_worker` may receive a new guarded `REFACTOR` lease. Refactor adds no behavior. The worker reruns the focused test and the proportional checks named by the coordinator. The Refactor barrier likewise requires terminal compliant closure.
+After all planned slices and required evidence are integrated, the coordinator runs the ExecPlan's focused and complete checks, test-relevance audit, documentation validation, and authoritative status checks. A fresh `independent_reviewer` then reviews the complete candidate state, exact diff, packets, terminal receipts, TDD order, and evidence.
 
-The next behavior slice cannot start until the current cycle is Green, every writer lease is terminal and compliant, and its evidence is recorded in the living ExecPlan and required execution handoff. Evidence-document writes may be delegated only through a separate guarded documentation lease.
+- `PASS` permits coordinator reconciliation and closure when every task gate also passes.
+- `PASS WITH FOLLOW-UPS` permits closure only when the coordinator dispositions every item and none conflicts with a definition of done, validation result, or documentation gate.
+- `REVISE` or `BLOCKED` stops closure. The coordinator classifies the finding and, if further work is authorized, resumes through a new ordinary assignment and later requests a fresh complete review.
 
-### 5. Triage failures before editing
-
-| Failure class | Route |
-|---|---|
-| Wrong assertion, false Red, or requirement mismatch | Return to `test_worker`, then reproduce Red |
-| Production behavior defect | Return to `code_worker` with the accepted test frozen |
-| Harness, dependency, process, or infrastructure defect | Assign bounded `SETUP` work; do not weaken the test |
-| Consequential architecture or scope conflict | Stop the dependent branch and follow the governing decision workflow |
-| Unrelated existing failure | Record separately; it cannot serve as Red evidence |
-
-When the failure source is genuinely ambiguous, the coordinator may request parallel read-only diagnosis, but only one guarded write lease is granted after the evidence is reconciled. A guard violation or ambiguous concurrent change is triaged before test-versus-code classification because its source cannot be attributed from endpoint state alone.
-
-A regression is counted only after triage shows that a check which previously passed in the accepted baseline now fails because of the current workflow's change. The event carries the check's stable repository or plan-local ID so a retry cannot double-count it. A transient, infrastructure, pre-existing, or unrelated failure is not a regression.
-
-### 6. Review and close
-
-At a major milestone and before task closure, perform the ADR-0010 test-relevance audit, affected and complete validation, documentation-impact review, and authoritative validators required by the ExecPlan.
-
-A fresh `independent_reviewer` then inspects the complete implementation, tests, evidence, documentation, exact diff, and immutable guard contracts and terminal receipts. It returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED`. A `REVISE` finding is routed to the responsible worker under a new guarded lease, and the reviewer rechecks the complete revised state rather than only the correction.
-
-`PASS WITH FOLLOW-UPS` does not bypass reconciliation. The coordinator must disposition every follow-up. If any item conflicts with the definition of done, a hard gate, a required validation result, or the documentation gate, route it as a correction and obtain complete fresh re-review. Only genuinely non-blocking items with an explicit owner and durable tracking may proceed to final reconciliation.
-
-When flow metrics are available, the reviewer checks their classifications against the handoffs and evidence. Missing lifecycle events, elapsed intervals, or token values are coverage gaps rather than review findings and cannot change the verdict.
-
-After two unsuccessful final-review correction cycles, stop and ask the project owner for direction. The coordinator alone decides whether the final evidence satisfies the task and documentation gates; a worker or reviewer report cannot close the task.
-
-## Concise handoffs
-
-Workers return the fixed sections defined in their TOML contracts. They should provide exact commands, exit codes, and only the decisive output needed to recognize the result. Raw installation logs, complete stack traces, and repetitive test output stay in the worker thread unless the coordinator requests a specific excerpt.
-
-The coordinator terminally closes the pinned lease, reviews the actual changed files, and does not treat a worker summary or nonterminal verification as self-validating proof. This separation keeps the primary context small without weakening evidence ownership.
+The reviewer never edits the repository and no agent report can change authoritative task, gate, ADR, or approval state.
 
 ## Flow metrics
 
-The coordinator follows the [agent-flow metrics policy](./agent-flow-metrics.md) as an observational sidecar. It creates one stable workflow ID, one task identity, one cycle ID per behavior slice, and one lease ID per assignment. Project hooks capture sanitized lifecycle timestamps for the implementation roles, while the coordinator records semantic barriers such as accepted or rejected Red, correction requests, and confirmed regressions. Every completion and correction repeats the complete assignment identity; a correction uses a new lease ID and attempt 2 exactly.
-
-Metrics recording is best effort and deliberately outside the write-lease graph. Workers echo correlation IDs but never edit metrics runtime data. Exact logical replays are counted once and reported; conflicting workflow/task, correction/lease, linked-token role, lifecycle-turn, Red, regression-check, token-report, or time identities are excluded and reported as dataset errors. If a hook is untrusted, Python is unavailable, an event cannot be written, an event conflicts, or an interval or token value is missing, the coordinator reports incomplete or invalid coverage and continues the repository workflow. Metrics never authorize Green, satisfy a test or review, alter task status, or replace the ExecPlan and execution evidence.
-
-Automatic lease verification is different: it is a blocking handoff control owned by the coordinator. A metrics failure remains a coverage gap; a guard failure freezes the write branch. The guard is invoked synchronously around workers and is not implemented through the asynchronous project hooks.
+The [agent-flow metrics](./agent-flow-metrics.md) are an optional, best-effort sidecar. Use them when the operational learning is worth the recording overhead. Missing hooks, events, durations, or token counters never block a lease, TDD barrier, review, or task closure. Record token usage only from exact runtime counters.
 
 ## Copy-paste prompt example
 
-Replace `<TASK_ID>` and `<EXECPLAN_PATH>` before running this prompt. The named task must already be authorized to start or continue.
-
 ```text
-Implement <EXECPLAN_PATH> for <TASK_ID> using the repository's worker-first
-ExecPlan implementation workflow in .codex/execplan-implementation-workflow.md.
-This request authorizes in-scope local repository writes and non-destructive
-validation, but it does not authorize destructive actions, external writes,
-new product scope, architecture decisions, gate resolution, or owner-controlled
-approvals.
+Act as the primary coordinator for the authorized TASK-* and its living ExecPlan.
+Confirm that the canonical task is In progress and load only the mapped requirements,
+accepted ADRs, active gates, and SPEC/HS rules needed for the next slice.
 
-Act as the primary coordinator and final closure owner. Keep the primary context
-focused: normally delegate edits and detailed command execution to the workers,
-receive their fixed concise handoffs, inspect the actual diffs, and write directly
-only when a safe integration edit cannot be delegated. Record any exceptional
-primary-thread edit and its reason.
+Use the worker-first implementation workflow. Keep one write-capable lease active at a
+time. Before every worker spawn, complete Worker Assignment Packet v1, start the
+automatic write-lease guard with its exact identity and four path lists, insert and
+verify the returned contract digest, and send the complete packet. The packet is the
+minimum required context, not a maximum; provide or allow additional relevant reading
+without expanding any binding assignment field or write scope.
 
-Before implementation:
-1. Follow the documentation map and read the exact task, active ExecPlan, mapped
-   requirements, accepted ADRs, active gates, SPEC/HS rules, current evidence,
-   and repository state.
-2. Confirm that dependencies, gates, authorization joins, task state, permissions,
-   and the working tree allow the next artifact. Stop with evidence if they do not.
-3. Identify any declarative bootstrap needed before the first meaningful Red.
-   Perform and record legitimate ignore-control maintenance as an exceptional
-   coordinator edit before a worker baseline. Assign the remaining setup to
-   code_worker under an exact guarded SETUP lease and validate it without adding
-   production behavior.
-4. Create one stable workflow ID and best-effort record workflow_started using the
-   agent-flow metrics policy. Use stable cycle and lease IDs in every assignment.
+For each behavior slice, send the smallest Red to test_worker. Close the lease, inspect
+the actual diff and focused failure, and accept Red only when it fails for the intended
+behavioral reason. Freeze the accepted test paths. Then send Green to code_worker under
+a fresh packet and lease. Require it to reproduce Red before production edits, make the
+minimum change, and pass the focused command. It may Refactor in the same turn only
+while behavior and frozen tests remain unchanged and validation stays green. Use
+code_worker setup only for an independent declarative objective with its own check.
 
-For each behavior slice, complete exactly one Red-Green-Refactor cycle:
-1. Define the observable behavior, correct test boundary, focused command,
-   expected failure class, authority IDs, allowed paths, forbidden paths, and stop
-   conditions.
-2. Start the automatic write-lease guard with the exact paths, retain its contract
-   digest, and send that pinned lease to test_worker. Require one smallest test and
-   its structured handoff. After the worker stops, terminally close the pinned
-   lease. Only a fresh `closed-compliant` result permits diff inspection and Red
-   acceptance. If close reports `already_closed`, require pinned status to return
-   `closed-compliant` with no post-close drift before using the original receipt.
-   Accept Red only when the command fails for the intended behavioral reason.
-   Record red_accepted or red_rejected with its reason. Return invalid Red through
-   a new correction lease and fresh baseline.
-3. Freeze the accepted test paths. Start and send code_worker a guarded GREEN lease containing the
-   exact accepted Red evidence. Prohibit test edits and require only the minimum
-   production change. If it reports TEST CONTRACT CONFLICT, triage before any edit.
-   Terminally close the pinned lease and require a compliant receipt before Green.
-4. After Green, start a new guarded REFACTOR lease that permits no new behavior and
-   requires the focused and proportional checks. Terminally close it and require a
-   compliant receipt. Do not start the next slice until the current cycle is Green
-   and its evidence is recorded.
+After every worker turn, terminally close the exact lease before accepting the handoff.
+Inspect the receipt, actual diff, commands, and outcome, then record concise accepted
+evidence in the ExecPlan. On any noncompliant lease, rejected handoff, wrong failure,
+scope or authority change, blocked dependency, or conflict, stop writes and triage.
+If more work is authorized after triage, re-enter the ordinary loop with a reconciled
+tree and a fresh packet, baseline, lease ID, digest, and worker turn. Never continue
+under a closed lease or silently expand the prior assignment.
 
-Grant only one active guarded worker lease per worktree and one writer ownership of
-a path at a time. Never run test_worker and code_worker concurrently on the same
-cycle. Give every worker the lease ID and immutable contract digest, and prohibit
-workers from invoking the guard or editing its ignored state. Use separate guarded
-documentation leases to have the worker that owns the evidence update the living
-ExecPlan or execution record, but do not let a worker change task, gate, ADR,
-authorization, requirement, or acceptance state.
+When planned work is complete, run the ExecPlan's complete validation, relevance,
+documentation, and authority checks. Spawn one fresh read-only independent_reviewer for
+the integrated candidate state. PASS may proceed to coordinator-owned closure;
+PASS WITH FOLLOW-UPS requires explicit disposition; REVISE or BLOCKED stops closure and
+returns control to coordinator triage. After any authorized fix, rerun complete
+validation and request a fresh complete review.
 
-If verify or terminal close reports any violation, wrong digest, tamper, repository
-mismatch, forbidden or unleased endpoint change, index or HEAD drift, ignore-control drift,
-unsupported state, or unstable scan, freeze writes. Do not revert automatically or
-rebaseline the lease. Reconcile the tree and last accepted barrier, terminally
-disposition the prior lease when the pinned CLI can do so, and use a new lease ID plus
-fresh baseline only for a supported correction. If `start` does not return a valid
-`started` JSON object and contract digest, do not spawn or reuse the ID: treat the
-state as ambiguous. The current CLI has no force-recovery operation; irrecoverable
-active state requires separately authorized coordinator recovery.
-
-After each spawn, best-effort record lease_started with its complete task, cycle,
-lease, phase, attempt, agent, and role identity; after the handoff, record
-lease_completed with the same identity. Record correction_requested only for
-additional work caused by a rejected handoff or actionable reviewer finding, using
-the new correction lease ID, the same assignment identity, and attempt 2. Record
-regression_confirmed only after
-triage proves that the current change broke a check that passed in the accepted
-baseline, and include that check's stable workflow-wide ID. Supply token counters only when the
-runtime reports exact values; never estimate them or parse transcripts. A metrics
-failure is a coverage gap and must not interrupt or change the workflow.
-
-When a test or broader validator fails, freeze writes and classify the failure as
-test contract, production behavior, setup/infrastructure, unrelated existing
-failure, or authority conflict. Route only the supported correction. Stop the
-dependent branch for a consequential scope or architecture conflict.
-
-At the final milestone, run the test-relevance audit, all task-authoritative checks,
-the documentation-impact gate, and repository validators. Spawn a fresh read-only
-independent_reviewer to inspect the complete final state and exact diff, reproduce
-safe validation, and return a verdict. Route REVISE findings to the owning worker
-and request complete re-review. For PASS WITH FOLLOW-UPS, disposition every item;
-if any item conflicts with the definition of done, a hard gate, required validation,
-or the documentation gate, route it as a correction and request complete re-review.
-Track only genuinely non-blocking follow-ups with an explicit owner. After two
-unsuccessful final-review correction cycles, stop for project-owner direction.
-
-Close the task only after the definition of done, runtime evidence, documentation
-gate, and final reconciliation all pass. The final handoff must list each Red,
-Green, and post-Refactor command, every lease ID, contract digest and terminal
-receipt result, the reviewer verdict, residual risks, skipped or blocked checks,
-every follow-up disposition, and one explicit Documentation impact result.
-Best-effort record workflow_completed, generate the metrics summary, and
-report corrections, false Reds, confirmed regressions, elapsed coverage, exact token
-coverage, and any telemetry gaps separately from implementation evidence.
+Metrics are optional and observational. Keep TASK status, approvals, evidence
+acceptance, and final closure with the primary coordinator. Do not stage, commit, push,
+or claim implementation evidence without the corresponding repository and runtime proof.
 ```
 
 ## Related authorities
 
 - [Repository guidelines](../AGENTS.md)
 - [ExecPlan convention](../PLANS.md)
-- [Canonical implementation plan](../docs/IMPLEMENTATION_PLAN.md)
-- [ADR-0010 testing strategy](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)
-- [Project-scoped agent registry and decision workflow](./README.md)
-- [DPL-DEC-014 worker-first implementation decision](../docs/execution/decision-and-progress-log.md)
-- [Agent-flow metrics policy](./agent-flow-metrics.md)
-- [DPL-DEC-015 metrics decision](../docs/execution/decision-and-progress-log.md)
+- [Project-scoped agent guide](./README.md)
 - [Automatic write-lease guard](./write-lease-guard.md)
-- [DPL-DEC-016 automatic lease decision](../docs/execution/decision-and-progress-log.md)
-- [Official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
-- [Official OpenAI documentation for Codex hooks](https://learn.chatgpt.com/docs/hooks)
+- [Agent-flow metrics](./agent-flow-metrics.md)
+- [ADR-0010](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)

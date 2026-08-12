@@ -28,6 +28,10 @@ HASH = re.compile(r"^[0-9a-f]{64}$")
 GLOB_CHARACTERS = frozenset("*?[]{}")
 ASCII_CASE_MAP = str.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")
 WINDOWS_DEVICE = re.compile(r"^(con|prn|aux|nul|com[1-9]|lpt[1-9]|conin\$|conout\$)$", re.IGNORECASE)
+WORKER_PHASES = {
+    "test_worker": frozenset(("red", "evidence")),
+    "code_worker": frozenset(("setup", "green", "refactor", "evidence")),
+}
 
 
 class GuardError(Exception):
@@ -350,6 +354,21 @@ def _validate_identifier(name: str, value: str) -> str:
             f"{name} must be 1-128 characters using letters, digits, period, underscore, colon, or hyphen."
         )
     return value
+
+
+def _validate_assignment_identity(
+    phase: str,
+    attempt: int,
+    agent_type: str,
+    error_type: type[GuardError],
+) -> None:
+    if not isinstance(attempt, int) or isinstance(attempt, bool) or attempt not in (1, 2):
+        raise error_type("attempt must be 1 or 2.")
+    allowed_phases = WORKER_PHASES.get(agent_type)
+    if allowed_phases is None:
+        raise error_type(f"unsupported write-capable agent type {agent_type!r}.")
+    if phase not in allowed_phases:
+        raise error_type(f"agent type {agent_type!r} does not permit phase {phase!r}.")
 
 
 def _path_key(value: str, ignore_case: bool) -> str:
@@ -678,8 +697,9 @@ def _validate_contract(payload: dict[str, Any], lease_id: str) -> None:
         raise GuardError("Contract symbolic HEAD is malformed.")
     if not isinstance(payload["repository_ignore_case"], bool):
         raise GuardError("Contract repository case mode is malformed.")
-    if not isinstance(payload["attempt"], int) or isinstance(payload["attempt"], bool) or payload["attempt"] < 1:
-        raise GuardError("Contract attempt is malformed.")
+    _validate_assignment_identity(
+        payload["phase"], payload["attempt"], payload["agent_type"], GuardError
+    )
     if not isinstance(payload.get("baseline"), dict):
         raise GuardError("Contract baseline is malformed.")
     for field in ("index_digest", "ignore_control_digest"):
@@ -902,8 +922,9 @@ def _start(arguments: argparse.Namespace) -> tuple[int, dict[str, Any]]:
         key: _validate_identifier(key.replace("_", "-"), getattr(arguments, key))
         for key in ("workflow_id", "task_id", "cycle_id", "lease_id", "phase", "owner", "agent_type")
     }
-    if arguments.attempt < 1:
-        raise UsageError("attempt must be a positive integer.")
+    _validate_assignment_identity(
+        identities["phase"], arguments.attempt, identities["agent_type"], UsageError
+    )
     scopes = {
         "allow_files": _unique_paths(arguments.allow_file, "allow-file", repository.ignore_case),
         "allow_dir_roots": _unique_paths(arguments.allow_dir_root, "allow-dir-root", repository.ignore_case),
@@ -1174,11 +1195,17 @@ def _self_test() -> tuple[int, dict[str, Any]]:
             pins[(target, lease)] = payload["contract_digest"]
         return completed.returncode, payload
 
-    def start_args(lease: str, *scopes: str) -> tuple[str, ...]:
+    def start_args(
+        lease: str,
+        *scopes: str,
+        phase: str = "green",
+        attempt: int = 1,
+        agent_type: str = "code_worker",
+    ) -> tuple[str, ...]:
         return (
             "start", "--workflow-id", "wf-test", "--task-id", "TASK-TEST", "--cycle-id", "cycle-1",
-            "--lease-id", lease, "--phase", "green", "--attempt", "1", "--owner", "coordinator",
-            "--agent-type", "code_worker", *scopes,
+            "--lease-id", lease, "--phase", phase, "--attempt", str(attempt), "--owner", "coordinator",
+            "--agent-type", agent_type, *scopes,
         )
 
     def make_directory_link(link: Path, destination: Path) -> bool:
@@ -1199,6 +1226,69 @@ def _self_test() -> tuple[int, dict[str, Any]]:
 
     with tempfile.TemporaryDirectory(prefix="lease-guard-self-test-") as temporary:
         root = Path(temporary)
+
+        target = repo(root, "assignment-identity")
+        invalid_assignments = (
+            ("attempt-zero", "green", 0, "code_worker", "attempt must be 1 or 2"),
+            ("attempt-three", "green", 3, "code_worker", "attempt must be 1 or 2"),
+            ("test-green", "green", 1, "test_worker", "does not permit phase"),
+            ("code-red", "red", 1, "code_worker", "does not permit phase"),
+            ("uppercase-phase", "GREEN", 1, "code_worker", "does not permit phase"),
+            ("unknown-role", "green", 1, "reviewer", "unsupported write-capable agent type"),
+        )
+        for lease, phase, attempt, agent_type, expected_message in invalid_assignments:
+            code, payload = invoke(
+                target,
+                *start_args(
+                    lease,
+                    "--allow-file",
+                    "tracked.txt",
+                    phase=phase,
+                    attempt=attempt,
+                    agent_type=agent_type,
+                ),
+            )
+            assert code == 2 and expected_message in payload["message"], payload
+        valid_assignments = (
+            ("test-red", "red", 1, "test_worker"),
+            ("test-evidence", "evidence", 2, "test_worker"),
+            ("code-setup", "setup", 1, "code_worker"),
+            ("code-green", "green", 2, "code_worker"),
+            ("code-refactor", "refactor", 1, "code_worker"),
+            ("code-evidence", "evidence", 2, "code_worker"),
+        )
+        for lease, phase, attempt, agent_type in valid_assignments:
+            code, payload = invoke(
+                target,
+                *start_args(
+                    lease,
+                    "--allow-file",
+                    "tracked.txt",
+                    phase=phase,
+                    attempt=attempt,
+                    agent_type=agent_type,
+                ),
+            )
+            assert code == 0 and payload["status"] == "started", payload
+            code, payload = invoke(target, "close", "--lease-id", lease)
+            assert code == 0 and payload["status"] == "closed-compliant", payload
+
+        target = repo(root, "stored-assignment-identity")
+        code, _ = invoke(
+            target,
+            *start_args("stored-invalid", "--allow-file", "tracked.txt"),
+        )
+        assert code == 0
+        contract_path = target / STATE_RELATIVE_ROOT / "stored-invalid" / CONTRACT_FILE
+        contract_path.chmod(stat.S_IWRITE | stat.S_IREAD)
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+        contract["attempt"] = 3
+        contract["digest"] = _digest_payload(contract)
+        contract_path.write_bytes(_canonical_json(contract) + b"\n")
+        _make_read_only(contract_path)
+        code, payload = invoke(target, "verify", "--lease-id", "stored-invalid")
+        assert code == 3 and "attempt must be 1 or 2" in payload["message"], payload
+        checks.append("attempt and worker phase identity")
 
         target = repo(root, "allowed")
         code, _ = invoke(target, *start_args("allowed", "--allow-dir-root", "work", "--allow-file", "tracked.txt", "--allow-file", "delete.txt"))

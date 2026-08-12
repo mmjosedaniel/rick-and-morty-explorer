@@ -1,8 +1,8 @@
 # Automatic Write-Lease Guard
 
-The automatic write-lease guard makes the worker-first path contract verifiable. The primary coordinator captures one immutable repository baseline immediately before a write-capable worker starts and terminally closes that exact lease after the worker stops. A handoff barrier may advance only when closure returns a compliant receipt.
+The automatic write-lease guard makes the machine-verifiable projection of a worker-first path contract enforceable. The complete semantic assignment lives in [`Worker Assignment Packet v1`](./execplan-implementation-workflow.md#worker-assignment-packet-v1); the guard pins its workflow identity, path scope, repository baseline, and Git control state. The primary coordinator captures that immutable projection immediately before a write-capable worker starts and terminally closes the exact lease after the worker stops. A handoff barrier may advance only when closure returns a compliant receipt.
 
-The guard is a repository workflow control. It does not decide whether a test is valid, prove product behavior, replace review, isolate operating-system permissions, or identify which process made a change. It never resets, restores, stages, commits, deletes, or otherwise repairs repository work.
+The guard is a repository workflow control. It validates the packet projection's attempt domain and worker/phase compatibility, but it does not own or validate the packet's objective, authorities, commands, expected behavior, correction parent or reason, dependencies, external side effects, cleanup, or stop conditions. It also does not decide whether a test is valid, prove product behavior, replace review, isolate operating-system permissions, or identify which process made a change. It never resets, restores, stages, commits, deletes, or otherwise repairs repository work.
 
 The dependency-free Python implementation is repository workflow tooling, not application source, a product test harness, or TASK-003 implementation evidence. Python is used because the repository has no executable Node workspace until TASK-003 creates the accepted TypeScript scaffold.
 
@@ -16,11 +16,10 @@ flowchart LR
     D --> E["close writes terminal receipt"]
     E --> F{"Receipt outcome"}
     F -- "compliant" --> G["Coordinator may inspect and accept the handoff barrier"]
-    F -- "violated" --> H["Freeze writes and triage without automatic revert"]
-    H --> I["Reconcile the tree and open a new correction lease"]
+    F -- "violated" --> H["Stop writes; coordinator triages and reconciles without automatic revert"]
 ```
 
-Only one worker lease may be active in one Git worktree. Independent work can use separate Git worktrees with separate baselines. The worker receives the lease ID, contract digest, allowed paths, and forbidden paths, but never invokes the guard or edits its runtime records.
+Only one worker lease may be active in one Git worktree. Independent work can use separate Git worktrees with separate baselines. The coordinator first drafts the semantic packet, starts the guard from its exact identity and path projection, inserts the returned digest, verifies that both representations match, and then sends the complete packet to the worker. The worker never invokes the guard or edits its runtime records.
 
 ## Commands
 
@@ -82,10 +81,13 @@ Run the isolated standard-library test packet without touching the current repos
 python -B .codex\leases\lease_guard.py self-test
 ```
 
+The isolated suite checks the assignment identity at both trust boundaries: invalid attempts and worker/phase pairs fail before `start` creates state, and a digest-valid stored contract with an invalid assignment identity fails when reloaded. The assignment checks remain one grouped item in the 26-check suite.
+
 All commands return one JSON object. Exit `0` means the requested operation is valid and compliant. Exit `1` means verified noncompliance for the requested view: an active or terminal violation, or post-close drift. Exit `2` means invalid command input. Exit `3` means missing, replayed, conflicting, malformed, tampered, unstable, or otherwise unverifiable guard or Git state. Inspect the JSON fields rather than interpreting the code alone. Every nonzero result freezes workflow advancement until the coordinator triages it.
 
 ## Scope Rules
 
+- `start` accepts attempts `1` and `2`. Its compatibility schema permits `test_worker` phases `red` or `evidence` and `code_worker` phases `setup`, `green`, `refactor`, or `evidence`; values are lowercase and case-sensitive. The active simplified workflow uses only `red`, `setup`, and `green`, and does not treat the broader guard schema as authorization. Before attempt 2, the prior lease must be terminal and the coordinator must reconcile the tree and last accepted barrier. The guard pins attempt and owner but does not decide whether a correction is semantically valid.
 - `--allow-file` matches one exact repository-relative path. An existing endpoint must be an ordinary file; a missing endpoint may be created as a file during the lease.
 - `--allow-dir-root` matches the named directory and descendants on path-component boundaries. `src` never matches `src2`. An existing root must be an ordinary directory, and a root created during the lease must remain a directory.
 - `--forbid-file` and `--forbid-dir-root` use the same matching rules and always override an allowed scope.
@@ -101,15 +103,15 @@ The baseline includes Git-tracked files and untracked, non-ignored files. It has
 
 ## Terminal Results and Recovery
 
-A fresh compliant `close` writes an immutable receipt, releases the worktree's active pointer, and permits coordinator inspection of the Red, Green, Refactor, setup, or evidence-document barrier. A successful command does not make the barrier correct by itself; the coordinator still reviews the actual diff and command evidence. Repeating the same pinned `close` is state-safe but returns nonzero with `closed-replayed`; it does not freshly validate the worktree. If receipt publication succeeded but active-pointer release failed, that retry may release only its matching stale pointer, after which pinned `status` must confirm the original compliant receipt and absence of post-close drift.
+A fresh compliant `close` writes an immutable receipt, releases the worktree's active pointer, and permits coordinator inspection of the assigned barrier. A successful command does not make the barrier correct by itself; the coordinator still reviews the actual diff and command evidence. Repeating the same pinned `close` is state-safe but returns nonzero with `closed-replayed`; it does not freshly validate the worktree. If receipt publication succeeded but active-pointer release failed, that retry may release only its matching stale pointer, after which pinned `status` must confirm the original compliant receipt and absence of post-close drift.
 
-A policy violation writes a terminal `violated` receipt, releases the active pointer, and exits nonzero. The coordinator freezes writes, identifies the unexpected, forbidden, concurrent, index, `HEAD`, or ignore-control change, and decides whether the handoff is rejected. The guard never attributes or reverts the change. After the tree is reconciled and the last accepted workflow barrier is re-established, a supported correction uses a new lease ID and a fresh baseline. Never reuse or redefine the prior lease.
+A policy violation writes a terminal `violated` receipt, releases the active pointer, and exits nonzero. The coordinator freezes writes, identifies the unexpected, forbidden, concurrent, index, `HEAD`, or ignore-control change, and decides whether the work stops, becomes a corrected assignment, or needs owner direction. The guard never makes that semantic decision, attributes a writer, or reverts the change. Any later assignment starts only after reconciliation and uses a new lease ID and fresh baseline; never reuse or redefine the prior lease.
 
 An integrity or inspection error may be retried only after the underlying state is stable and understood. Controlled `start` failures attempt to remove their unpublished contract directory and matching reservation, but the current CLI does not attest that rollback in its error output. If `start` is interrupted or does not return a valid `started` object and contract digest, do not spawn a worker or reuse the ID: the state is ambiguous. Once `start` returns a digest, never reuse or redefine that lease ID. The CLI intentionally has no force-recovery command. Do not bypass a wrong digest, rewrite runtime JSON, or delete a live pointer merely to continue. Irrecoverably missing, tampered, or ambiguous active state requires separately authorized coordinator recovery recorded in the ExecPlan or execution log before any replacement baseline.
 
 ## State, Privacy, and Proof Boundary
 
-Runtime data lives under the already ignored `logs/agent-flow-leases/v1/` directory. A lease stores identifiers, normalized scope, repository identity, `HEAD` object and symbolic reference, Git-control digests, path names, and SHA-256 content digests. It stores no prompts, messages, command output, secrets, or file contents. Contracts and receipts are write-once and digest-pinned; this is tamper-evident workflow state, not an operating-system security boundary against a malicious same-user process.
+Runtime data lives under the already ignored `logs/agent-flow-leases/v1/` directory. A guard contract stores identifiers including owner and attempt, normalized scope, repository identity, `HEAD` object and symbolic reference, Git-control digests, path names, and SHA-256 content digests. It intentionally does not store correction lineage, the full Worker Assignment Packet, prompts, messages, command output, secrets, or file contents. Contracts and receipts are write-once and digest-pinned; this is tamper-evident workflow state, not an operating-system security boundary against a malicious same-user process.
 
 The guard proves net endpoint state between baseline and inspection. It cannot prove that a file was changed and restored byte-for-byte before closure. Ignored descendants, empty directory creation, Windows alternate data streams, access-control lists, extended attributes, and targets outside the worktree are outside its proof boundary. Concurrent forbidden or unleased endpoint changes and scan-time movement fail closed, but a concurrent process that leaves only an allowed net endpoint state is indistinguishable from the assigned worker and cannot be attributed. Unsupported path types or a tree that changes during inspection fail closed.
 
