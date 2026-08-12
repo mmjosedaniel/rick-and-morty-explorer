@@ -43,12 +43,7 @@ If `.agents/skills/verify-repository/scripts/validate_docs.py` exists, run it wh
 
 ## Close documentation impact
 
-Before handoff, apply the root README task-closure documentation gate:
-
-1. Compare the completed scope and changed paths with the documentation change-impact table.
-2. When writes are authorized, update and link materially affected authoritative documents; when the task is read-only, report required follow-ups without writing them.
-3. Validate changed local documentation paths and anchors, and run the ADR validator when architecture-related documentation changed.
-4. Report `Documentation impact` as updated, none with a concrete reason, or proposed but not written because the task was read-only.
+Before handoff, apply the root README [task-closure documentation gate](../../../README.md#task-closure-documentation-gate). Use this skill to discover and run the required validators, report their exact outcomes, and state the resulting documentation impact; do not duplicate or reinterpret the gate's policy here.
 
 ## Report evidence
 

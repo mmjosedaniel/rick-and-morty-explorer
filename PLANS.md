@@ -1,10 +1,10 @@
 # Repository Execution Plans (ExecPlans)
 
-This document defines the required format for a repository execution plan, or ExecPlan. An ExecPlan is a living, task-scoped design and execution document that a person or coding agent can follow from the current working tree without relying on prior conversation. The canonical task graph, decision gates, and scope remain in `docs/IMPLEMENTATION_PLAN.md`; an ExecPlan only decomposes one of those tasks into concrete work and evidence.
+This document defines the required format for a repository execution plan, or ExecPlan. An ExecPlan is a living, task-scoped design and execution document that a person or coding agent can follow from the current working tree without relying on prior conversation. The canonical task graph, decision gates, and scope remain in the [implementation plan](docs/IMPLEMENTATION_PLAN.md); an ExecPlan only decomposes one of those tasks into concrete work and evidence.
 
 ## When to use an ExecPlan
 
-Use an ExecPlan when a `TASK-*` node is substantial enough to require staged research, an approval checkpoint, multiple independently verifiable milestones, recovery instructions, or a durable record of discoveries and decisions. Also use one when the project owner explicitly requests it. Store active plans directly under `docs/plans/`, move plans whose owning tasks have passed the task-closure documentation gate to `docs/plans/completed/`, and register both active and completed plans in `docs/plans/README.md`.
+Use an ExecPlan when a `TASK-*` node is substantial enough to require staged research, an approval checkpoint, multiple independently verifiable milestones, recovery instructions, or a durable record of discoveries and decisions. Also use one when the project owner explicitly requests it. Store active plans directly under `docs/plans/`, move plans whose owning tasks have passed the [task-closure documentation gate](README.md#task-closure-documentation-gate) to `docs/plans/completed/`, and register both active and completed plans in the [plan index](docs/plans/README.md).
 
 Move a plan to `docs/plans/completed/` only after its authoritative `TASK-*` state is `Complete`. Preserve the plan's stable filename, IDs, execution history, and revision notes. In the same documentation change, repair inbound links, update the plan index, and append any materially affected durable chronology.
 
@@ -18,7 +18,7 @@ Every ExecPlan is a living document. Update it whenever progress is made, eviden
 
 Every ExecPlan must lead to an observable, falsifiable outcome. For application work, describe the behavior and how a reviewer exercises it. For internal, documentation, or decision work, describe the authoritative artifact, validator, approval, state transition, and negative checks that prove the intended boundary was preserved.
 
-Follow `AGENTS.md`, the root documentation map, the exact `TASK-*` record, its mapped requirements and accepted ADRs, its active gates, and only the routed specifications needed by the task. An ExecPlan cannot weaken the repository's language, evidence, preservation, simplicity, TypeScript, TDD, or task-closure policies.
+Follow the [repository guidelines](AGENTS.md), root [documentation map](README.md#documentation-map), exact [`TASK-*` record](docs/IMPLEMENTATION_PLAN.md#implementation-work-sequence), [active decision gates](docs/IMPLEMENTATION_PLAN.md#active-decision-gates), mapped requirements and accepted ADRs, and only the [routed specifications](docs/specs/README.md#codex-rule-routing) needed by the task. An ExecPlan cannot weaken the repository's language, evidence, preservation, simplicity, TypeScript, TDD, or task-closure policies.
 
 For write-authorized implementation, use the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator delegates bounded edits to `test_worker` and `code_worker` sequentially, gives each spawn the minimum-but-extensible `Worker Assignment Packet v1`, and opens and terminally closes its exact path lease through the [automatic write-lease guard](.codex/write-lease-guard.md). The coordinator retains integration, evidence acceptance, exception handling, authoritative status, and closure. Decision work continues to use the sole-writer topology in [.codex/README.md](.codex/README.md).
 
@@ -124,7 +124,7 @@ Every production behavior follows one observable Red-Green-Refactor cycle at a t
 
 Before an ExecPlan or major milestone completes, perform the ADR-0010 test-relevance audit. Inspect affected tests and suite-wide residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests. Record why each affected test remains, changes, consolidates, or is removed; then run the affected and complete suites. If the task changed no tests and no executable suite exists, record that evidence explicitly rather than inventing a test command.
 
-Finally, apply the root README task-closure documentation gate. Update every materially affected authority owner, navigation link, execution record, and current-status statement; preserve historical documentation; run the required validators; and record one explicit documentation-impact result. The owning `TASK-*` node remains incomplete until these checks and its own definition of done pass.
+Finally, apply the root README [task-closure documentation gate](README.md#task-closure-documentation-gate). Update every materially affected authority owner, navigation link, execution record, and current-status statement; preserve historical documentation; run the required validators; and record one explicit documentation-impact result. The owning `TASK-*` node remains incomplete until these checks and its own definition of done pass.
 
 ## Revision note
 

@@ -229,8 +229,11 @@ or claim implementation evidence without the corresponding repository and runtim
 ## Related authorities
 
 - [Repository guidelines](../AGENTS.md)
+- [Documentation map](../README.md#documentation-map)
+- [Task-closure documentation gate](../README.md#task-closure-documentation-gate)
 - [ExecPlan convention](../PLANS.md)
 - [Project-scoped agent guide](./README.md)
 - [Automatic write-lease guard](./write-lease-guard.md)
 - [Agent-flow metrics](./agent-flow-metrics.md)
+- [Verify repository skill](../.agents/skills/verify-repository/SKILL.md)
 - [ADR-0010](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)
