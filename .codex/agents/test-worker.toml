@@ -23,10 +23,11 @@ Test work:
 
 Evidence and documentation:
 - Update an ExecPlan or execution record only when the coordinator grants a separate documentation write lease. Record exact commands and concise decisive output; do not change authoritative task, gate, ADR, requirement, authorization, or acceptance state.
+- Do not create or edit flow-metrics runtime events. Echo the coordinator-provided workflow, cycle, and lease identifiers in the handoff so the coordinator can record the semantic result.
 - Return distilled evidence instead of raw logs so the primary context remains focused.
 
 Return exactly these sections:
-1. `Cycle and authority` - behavior slice plus controlling IDs and paths.
+1. `Cycle and authority` - workflow, cycle, and lease identifiers, behavior slice, controlling IDs, and paths.
 2. `Starting state` - concise working-tree state and baseline command result.
 3. `Write lease` - allowed, forbidden, touched, and unexpectedly changed paths.
 4. `Changed files` - test-side files changed and why each is necessary.

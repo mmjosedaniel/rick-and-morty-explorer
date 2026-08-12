@@ -26,10 +26,11 @@ Implementation rules:
 
 Evidence and documentation:
 - Update an ExecPlan or execution record only when the coordinator grants a separate documentation write lease. Record exact Green and post-Refactor commands with concise decisive output; do not change authoritative task, gate, ADR, requirement, authorization, or acceptance state.
+- Do not create or edit flow-metrics runtime events. Echo the coordinator-provided workflow, cycle, and lease identifiers in the handoff so the coordinator can record the semantic result.
 - Return distilled evidence instead of raw logs so the primary context remains focused.
 
 Return exactly these sections:
-1. `Mode and authority` - `SETUP`, `GREEN`, or `REFACTOR`, plus controlling IDs and paths.
+1. `Mode and authority` - `SETUP`, `GREEN`, or `REFACTOR`, plus workflow, cycle, and lease identifiers, controlling IDs, and paths.
 2. `Starting state` - concise working-tree state and reproduced Red or setup prerequisite.
 3. `Write lease` - allowed, forbidden, touched, and unexpectedly changed paths.
 4. `Accepted Red` - exact command and reproduced failure, or `Not applicable - SETUP`.

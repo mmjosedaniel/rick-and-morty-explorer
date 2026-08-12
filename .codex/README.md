@@ -79,6 +79,8 @@ For decision work, the primary thread is deliberately not duplicated as a custom
 
 Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary remains the sole integration, evidence, approval-handling, and closure owner but normally delegates repository edits to `test_worker` and `code_worker` through explicit, sequential path leases. The same-cycle Red and Green writers never run concurrently. A fresh `independent_reviewer` examines the complete final state and exact diff before the primary reconciles closure.
 
+The [agent-flow metrics policy](./agent-flow-metrics.md) adds a non-blocking observation sidecar to this implementation topology. Project hooks record sanitized subagent lifecycle events, while the coordinator records the semantic decisions that distinguish a correction, rejected Red, or confirmed regression. Metrics never replace the ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
+
 The decision topology above remains unchanged: write-capable implementation workers do not research options, draft ADRs, resolve gates, or replace the primary decision writer.
 
 ## Decision Review Contract and Risk Tier
@@ -149,7 +151,7 @@ A good instance assignment states:
 
 ### Implementation workflow prompt
 
-Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the Red, Green, Refactor, review, correction, and closure barriers without duplicating them here.
+Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the Red, Green, Refactor, review, correction, metrics, and closure barriers without duplicating them here.
 
 ## Review, Correction, and Approval Protocol
 
@@ -176,6 +178,6 @@ All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, a
 
 Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. An exceptional primary-thread implementation edit must be recorded with its reason, paths, and validation.
 
-Agent output is supporting evidence, not self-validating proof. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff.
+Agent output and flow metrics are supporting observations, not self-validating proof. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage and never changes a workflow verdict or task state.
 
-The file schema and project-scoped `.codex/agents/` location follow the [official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+The file schema and project-scoped `.codex/agents/` location follow the [official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents). Project lifecycle instrumentation follows the [official Codex hooks documentation](https://learn.chatgpt.com/docs/hooks).

@@ -35,6 +35,7 @@ The coordinator remains the sole integration, evidence, approval-handling, and c
 A write lease is a temporary assignment for one agent turn. It contains:
 
 - the exact cycle or setup mode;
+- stable workflow, cycle, and lease identifiers plus the attempt number;
 - allowed paths;
 - forbidden paths;
 - the required command and expected result;
@@ -46,7 +47,9 @@ Only one agent may own a path at a time. The test and code workers never write c
 
 ## Correction and stopping limits
 
-Each worker receives one initial assignment and at most one coordinator-authorized correction for that lease. If the correction still fails, changes the expected behavior, needs an unleased path or dependency, or crosses an authority boundary, the worker stops and the coordinator reclassifies the work instead of continuing an unbounded loop.
+Each initial assignment may receive at most one coordinator-authorized correction. A correction is a separate lease with a new lease ID and attempt 2; it never reopens or overwrites the completed initial lease. If the correction still fails, changes the expected behavior, needs an unleased path or dependency, or crosses an authority boundary, the worker stops and the coordinator reclassifies the work instead of continuing an unbounded loop.
+
+A correction is counted only when the coordinator issues that new correction lease because it rejected a handoff or routed an actionable reviewer finding. The initial lease, a clarification with no new work, a new behavior slice, and a reclassification that stops the branch are not corrections.
 
 Once Red is accepted and production work begins, its test paths stay frozen. A material test correction ends that cycle and requires a new test lease plus fresh Red evidence. The final integrated review permits at most two unsuccessful correction cycles before project-owner direction is required.
 
@@ -105,6 +108,8 @@ The coordinator defines one observable behavior and the correct test boundary, b
 
 The coordinator accepts Red only when the test fails for the intended behavioral reason. A dependency error, unrelated type failure, stale process, occupied port, or pre-existing failure is not valid Red evidence unless the ExecPlan names that condition as the target.
 
+Every rejected Red is recorded as a false Red with the coordinator-selected reason. A test that is corrected before its first handoff is not a separate false Red because it never crossed the coordinator acceptance barrier.
+
 ### 3. Reach Green without changing the test
 
 After accepting Red, the coordinator freezes the test-owned paths and gives `code_worker` a `GREEN` lease. The code worker receives the exact Red command and decisive failure, writes the minimum production behavior, and runs the same focused scope.
@@ -131,6 +136,8 @@ The next behavior slice cannot start until the current cycle is Green and its ev
 
 When the failure source is genuinely ambiguous, the coordinator may request parallel read-only diagnosis, but only one write lease is granted after the evidence is reconciled.
 
+A regression is counted only after triage shows that a check which previously passed in the accepted baseline now fails because of the current workflow's change. The event carries the check's stable repository or plan-local ID so a retry cannot double-count it. A transient, infrastructure, pre-existing, or unrelated failure is not a regression.
+
 ### 6. Review and close
 
 At a major milestone and before task closure, perform the ADR-0010 test-relevance audit, affected and complete validation, documentation-impact review, and authoritative validators required by the ExecPlan.
@@ -139,6 +146,8 @@ A fresh `independent_reviewer` then inspects the complete implementation, tests,
 
 `PASS WITH FOLLOW-UPS` does not bypass reconciliation. The coordinator must disposition every follow-up. If any item conflicts with the definition of done, a hard gate, a required validation result, or the documentation gate, route it as a correction and obtain complete fresh re-review. Only genuinely non-blocking items with an explicit owner and durable tracking may proceed to final reconciliation.
 
+When flow metrics are available, the reviewer checks their classifications against the handoffs and evidence. Missing lifecycle events, elapsed intervals, or token values are coverage gaps rather than review findings and cannot change the verdict.
+
 After two unsuccessful final-review correction cycles, stop and ask the project owner for direction. The coordinator alone decides whether the final evidence satisfies the task and documentation gates; a worker or reviewer report cannot close the task.
 
 ## Concise handoffs
@@ -146,6 +155,12 @@ After two unsuccessful final-review correction cycles, stop and ask the project 
 Workers return the fixed sections defined in their TOML contracts. They should provide exact commands, exit codes, and only the decisive output needed to recognize the result. Raw installation logs, complete stack traces, and repetitive test output stay in the worker thread unless the coordinator requests a specific excerpt.
 
 The coordinator reviews the actual changed files and does not treat a worker summary as self-validating proof. This separation keeps the primary context small without weakening evidence ownership.
+
+## Flow metrics
+
+The coordinator follows the [agent-flow metrics policy](./agent-flow-metrics.md) as an observational sidecar. It creates one stable workflow ID, one task identity, one cycle ID per behavior slice, and one lease ID per assignment. Project hooks capture sanitized lifecycle timestamps for the implementation roles, while the coordinator records semantic barriers such as accepted or rejected Red, correction requests, and confirmed regressions. Every completion and correction repeats the complete assignment identity; a correction uses a new lease ID and attempt 2 exactly.
+
+Metrics recording is best effort and deliberately outside the write-lease graph. Workers echo correlation IDs but never edit metrics runtime data. Exact logical replays are counted once and reported; conflicting workflow/task, correction/lease, linked-token role, lifecycle-turn, Red, regression-check, token-report, or time identities are excluded and reported as dataset errors. If a hook is untrusted, Python is unavailable, an event cannot be written, an event conflicts, or an interval or token value is missing, the coordinator reports incomplete or invalid coverage and continues the repository workflow. Metrics never authorize Green, satisfy a test or review, alter task status, or replace the ExecPlan and execution evidence.
 
 ## Copy-paste prompt example
 
@@ -174,6 +189,8 @@ Before implementation:
 3. Identify any declarative bootstrap needed before the first meaningful Red.
    Assign it to code_worker in SETUP mode under an explicit path lease and validate
    it without adding production behavior.
+4. Create one stable workflow ID and best-effort record workflow_started using the
+   agent-flow metrics policy. Use stable cycle and lease IDs in every assignment.
 
 For each behavior slice, complete exactly one Red-Green-Refactor cycle:
 1. Define the observable behavior, correct test boundary, focused command,
@@ -181,7 +198,8 @@ For each behavior slice, complete exactly one Red-Green-Refactor cycle:
    conditions.
 2. Send that lease to test_worker. Require one smallest test and its structured
    handoff. Inspect the diff and accept Red only when the command fails for the
-   intended behavioral reason. Return invalid Red to the same worker for correction.
+   intended behavioral reason. Record red_accepted or red_rejected with its reason.
+   Return invalid Red to the same worker for correction.
 3. Freeze the accepted test paths. Send code_worker a GREEN lease containing the
    exact accepted Red evidence. Prohibit test edits and require only the minimum
    production change. If it reports TEST CONTRACT CONFLICT, triage before any edit.
@@ -194,6 +212,17 @@ code_worker concurrently on the same cycle. Use separate documentation leases to
 have the worker that owns the evidence update the living ExecPlan or execution
 record, but do not let a worker change task, gate, ADR, authorization, requirement,
 or acceptance state.
+
+After each spawn, best-effort record lease_started with its complete task, cycle,
+lease, phase, attempt, agent, and role identity; after the handoff, record
+lease_completed with the same identity. Record correction_requested only for
+additional work caused by a rejected handoff or actionable reviewer finding, using
+the new correction lease ID, the same assignment identity, and attempt 2. Record
+regression_confirmed only after
+triage proves that the current change broke a check that passed in the accepted
+baseline, and include that check's stable workflow-wide ID. Supply token counters only when the
+runtime reports exact values; never estimate them or parse transcripts. A metrics
+failure is a coverage gap and must not interrupt or change the workflow.
 
 When a test or broader validator fails, freeze writes and classify the failure as
 test contract, production behavior, setup/infrastructure, unrelated existing
@@ -214,7 +243,9 @@ Close the task only after the definition of done, runtime evidence, documentatio
 gate, and final reconciliation all pass. The final handoff must list each Red,
 Green, and post-Refactor command, the reviewer verdict, residual risks, skipped or
 blocked checks, every follow-up disposition, and one explicit Documentation impact
-result.
+result. Best-effort record workflow_completed, generate the metrics summary, and
+report corrections, false Reds, confirmed regressions, elapsed coverage, exact token
+coverage, and any telemetry gaps separately from implementation evidence.
 ```
 
 ## Related authorities
@@ -225,4 +256,7 @@ result.
 - [ADR-0010 testing strategy](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)
 - [Project-scoped agent registry and decision workflow](./README.md)
 - [DPL-DEC-014 worker-first implementation decision](../docs/execution/decision-and-progress-log.md)
+- [Agent-flow metrics policy](./agent-flow-metrics.md)
+- [DPL-DEC-015 metrics decision](../docs/execution/decision-and-progress-log.md)
 - [Official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
+- [Official OpenAI documentation for Codex hooks](https://learn.chatgpt.com/docs/hooks)

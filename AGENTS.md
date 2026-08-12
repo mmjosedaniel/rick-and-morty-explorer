@@ -30,6 +30,8 @@ When an ExecPlan compares consequential options or prepares an ADR, follow the r
 
 When an authorized ExecPlan implements repository changes, follow the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator normally delegates bounded edits to `test_worker` and `code_worker` through explicit, sequential write leases, while retaining integration, evidence acceptance, approval handling, task status, and closure ownership. Record the reason, paths, and validation for any exceptional implementation edit made directly by the primary thread. This implementation topology does not change the sole-writer rule for decision artifacts.
 
+For each worker-first implementation run, the coordinator owns the correlation IDs and best-effort semantic events defined by the [agent-flow metrics policy](.codex/agent-flow-metrics.md). Workers report the lease and cycle identifiers in their handoffs but never edit metrics runtime data. Metrics are observational: a missing event, unavailable hook, or recorder failure cannot accept or reject Red, authorize Green, satisfy implementation evidence, or block task closure. Record token usage only when the runtime supplies exact values; never estimate it or parse unstable transcript files to derive it.
+
 ## Documentation Preservation
 
 Do not silently delete, replace, move, rename, or consolidate repository documentation.

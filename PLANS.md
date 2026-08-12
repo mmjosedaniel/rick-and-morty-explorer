@@ -58,7 +58,7 @@ An ExecPlan decision is not an architectural approval. A choice governed by a de
 
 ### Outcomes & Retrospective
 
-At each major milestone and at completion, compare the observed result with the original purpose. Record what was achieved, what remains, unexpected costs, and lessons that should affect later tasks. An empty initial entry may state that execution has not started.
+At each major milestone and at completion, compare the observed result with the original purpose. Record what was achieved, what remains, unexpected costs, and lessons that should affect later tasks. When the worker-first metrics sidecar was used, summarize corrections, false Reds, confirmed regressions, time and token coverage, and telemetry gaps as operational-learning data rather than implementation evidence. An empty initial entry may state that execution has not started.
 
 ## Required execution sections
 
@@ -78,7 +78,7 @@ State what the owning task includes and what remains outside it. Preserve mandat
 
 Describe the dependency-ordered sequence of edits and additions in prose. For each milestone, state what will exist afterward, what did not exist before, what evidence will be captured, and what condition permits the next milestone to start. Use approval checkpoints only where repository policy requires a human decision.
 
-When the worker-first implementation workflow applies, identify each declarative setup slice and observable behavior cycle, the intended worker mode, path-ownership boundary, frozen test boundary after accepted Red, required handoff evidence, synchronization barrier, correction route, and re-entry condition. The two write-capable workers must not operate concurrently on the same cycle.
+When the worker-first implementation workflow applies, identify each declarative setup slice and observable behavior cycle, the intended worker mode, path-ownership boundary, frozen test boundary after accepted Red, required handoff evidence, synchronization barrier, correction route, and re-entry condition. The two write-capable workers must not operate concurrently on the same cycle. Use stable workflow, cycle, and lease identifiers for best-effort metrics correlation, but keep generated metrics data outside the ExecPlan and never make telemetry availability a plan gate.
 
 ### Decision Review Contract (decision work only)
 
@@ -98,7 +98,7 @@ Give exact commands and the working directory. Commands must match current repos
 
 Define observable acceptance in terms of behavior, authoritative state, or reproducible validator output. For production behavior, include the exact Red failure, Green pass, and post-Refactor validation required by ADR-0010. For declarative or decision work with no production behavior, explain why a TDD cycle does not apply and define the structural, semantic, and negative checks that replace it.
 
-For worker-first implementation, record who produced each Red, Green, and post-Refactor result, the coordinator's acceptance of each barrier, and the fresh independent review verdict for the integrated final state. Worker summaries support but do not replace the coordinator's inspection and task-authoritative validation.
+For worker-first implementation, record who produced each Red, Green, and post-Refactor result, the coordinator's acceptance of each barrier, and the fresh independent review verdict for the integrated final state. Worker summaries and flow metrics support but do not replace the coordinator's inspection and task-authoritative validation.
 
 For decision work, record both the contract-checkpoint result when risk triggers require it and the fresh evidence-checkpoint result for the exact final artifact. Re-run the complete applicable invariant packet after every material revision, and reconcile the final verdict with the score, recommendation, artifact status, task and gate states, and next action before an owner-approval request.
 
@@ -110,7 +110,7 @@ If multiple agents share the working tree, define how leases are released, how u
 
 ### Artifacts and Notes
 
-Keep the most important short transcripts, path lists, decision matrices, or excerpts needed to prove or resume the work. Do not duplicate authoritative prose wholesale.
+Keep the most important short transcripts, path lists, decision matrices, or excerpts needed to prove or resume the work. For a worker-first run, record the stable workflow ID and the final metrics-summary command; do not copy generated event files into the ExecPlan. Do not duplicate authoritative prose wholesale.
 
 ### Interfaces and Dependencies
 
