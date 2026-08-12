@@ -19,6 +19,8 @@ This plan is intent, not runtime evidence. At plan registration the repository h
 - [x] (2026-08-11 20:54Z) Created and registered this task-scoped ExecPlan while preserving TASK-003 as `Pending`, adding accepted ADR-0011 to the canonical governing-decision list, and recording plan creation without starting implementation.
 - [x] (2026-08-11 21:26Z) Validated the final post-review registration reconciliation: documentation validation passed for 42 Markdown files, 41 requirement IDs, 1 authorization, 17 tasks, 17 SPEC rules, 20 HS rules, and 119 scenarios; ADR validation passed for 14 ADRs and 38 mapped requirements with only the known NFR-006 warning; `git diff --check` and the cached check passed with line-ending notices only; changed paths remain README/documentation only; trailing-whitespace and executable-workspace/Python-cache discovery returned no paths.
 - [x] (2026-08-11 21:24Z) Obtained fresh independent final review `PASS` on the corrected complete registration tree, including reviewed plan SHA-256 `4AEEE0B1F0FED6EAA65CF6B36CF90D585F896B3BB52CAB69182F12827D7C5156`; two provisional Majors plus later smoke-scope and closure-wording findings were corrected before the verdict, and no Blocker, Major, or Minor remains. TASK-003 stayed `Pending` and unstarted.
+- [x] (2026-08-12 00:29Z) Revised the still-unstarted plan to adopt DPL-DEC-014's worker-first implementation topology, including serial write leases, task-local path ownership, handoff barriers, correction limits, and fresh integrated review; the prior hash-specific review remains historical evidence, and fresh review of this revision is pending.
+- [x] (2026-08-12 00:53Z) Obtained complete fresh correction-cycle review `PASS` for the worker-flow revision at reviewed plan SHA-256 `43BD0E3DA5853BC8DC29FFA18490ED601F591F1AFE2134271DBE20FC89C1C5E3` and complete raw working-tree patch SHA-256 `91F10449A0B4F4D5C42AF5E568B88C3085779CDAA93437A1371DCCCC8C75E3`; the initial review's sole Major about `PASS WITH FOLLOW-UPS` routing was corrected and no finding remains.
 - [ ] Start TASK-003 only after a separate execution instruction: update the canonical task state to `In progress` first, synchronize the root status and plan index, and append a distinct `Started` execution-log entry.
 - [ ] Reconfirm supported tool versions from primary sources and record the next unused `DPL-DEC-*` choice or choices for package manager and lockfile, Node.js and browser targets, web build tool, workspace names, ports and origins, environment keys, Compose identity, root process orchestration, and the smoke-lifecycle command and supported triggers before adding dependent artifacts.
 - [ ] Resolve the ADR-0011 Windows-and-continuous-integration evidence boundary, or preserve it as an explicit task-closure blocker, before claiming lifecycle conformance or TASK-003 completion.
@@ -95,11 +97,15 @@ This plan is intent, not runtime evidence. At plan registration the repository h
   Rationale: The accepted ADR simultaneously requires both environments and keeps provider selection out of scope. The ExecPlan cannot manufacture evidence, treat authorization to begin reconciliation as completion, or amend that authority.
   Date/Author: 2026-08-11 / Codex primary thread.
 
+- Decision: Execute implementation through the DPL-DEC-014 worker-first topology, with sequential path leases for `test_worker` and `code_worker` and fresh read-only integrated review.
+  Rationale: Bounded workers can own detailed edits and command output without crowding the primary context, while the primary retains task state, DPL decisions, Red acceptance, integration, authority reconciliation, and closure. Same-cycle writers remain serial, accepted test paths stay frozen during Green and Refactor, and decision artifacts remain primary-written under DPL-DEC-011.
+  Date/Author: 2026-08-12 / Codex primary thread.
+
 
 ## Outcomes & Retrospective
 
 
-Plan registration and its independent final evidence review are the only completed outcomes. The corrected registration received `PASS` with no open finding. TASK-003 remains `Pending`; no dependency, command, application process, infrastructure container, test, browser binary, or acceptance evidence has been created. The plan makes the implementation sequence restartable and surfaces the unresolved CI evidence boundary before code can be mistaken for complete delivery.
+Plan registration, its hash-specific independent final evidence review, the later worker-topology revision, and that revision's complete fresh correction-cycle `PASS` are the only completed outcomes. The original reviewed hash remains point-in-time registration evidence; the new review covers DPL-DEC-014, all five agent contracts, the workflow guide and prompt, this revised plan, and their integrated documentation state with no open finding. TASK-003 remains `Pending`; no dependency, command, application process, infrastructure container, test, browser binary, or acceptance evidence has been created. The plan is ready for a separate execution instruction, makes the implementation sequence restartable, assigns serial write ownership, and surfaces the unresolved CI evidence boundary before code can be mistaken for complete delivery.
 
 At each major milestone, append the observed result here: what became runnable, the exact Red/Green/Refactor evidence, any change in cost or scope, the state of the lifecycle evidence boundary, and what remains before closure. At completion, compare the clean-checkout and reviewer observations with the purpose above and record any lesson that must constrain TASK-004.
 
@@ -161,6 +167,24 @@ The following remain outside TASK-003:
 
 
 ## Plan of Work
+
+
+### Worker-first assignments and barriers
+
+
+When execution is separately authorized, follow the [worker-first ExecPlan implementation workflow](../../.codex/execplan-implementation-workflow.md). Exact leases are issued one turn at a time after Milestone 1 records the final paths and commands. The anticipated ownership below is controlling unless current repository evidence requires the primary to narrow it further:
+
+| Slice | Writer and mode | Leased path family | Barrier before the next writer |
+|---|---|---|---|
+| Task start, reversible DPL choices, and authority state | Primary coordinator | This ExecPlan, root current status, plan index, canonical TASK-003 record, and execution log only | TASK-003 is `In progress`, required execution decisions exist, and no implementation file was added early. |
+| Red-enabling workspace bootstrap | `code_worker` in `SETUP` mode | One ordered lease covering approved manifests, lockfile, root/package TypeScript and test configuration, `.gitignore`, `.env.example`, and package metadata | Structural validation passes and no production behavior or inactive test scope exists. |
+| Each web, API, and smoke Red | `test_worker` | Only the current cycle's test, fixture, local test setup, and explicitly required test-registration path | The primary inspects the diff and accepts the intended nonzero Red; all accepted test-owned paths then freeze. |
+| Each Green and Refactor | `code_worker` | Only the current cycle's production and explicitly required non-test configuration paths | The accepted Red is reproduced before edits, the focused scope reaches Green, post-Refactor checks pass, and frozen test paths are unchanged. |
+| Tailwind, Compose, process-lifecycle, and documentation-only setup | `code_worker` in `SETUP` mode | One declarative or helper family per lease, with exact structural, build, lifecycle, or runtime validation | The configured outcome passes without an artificial test or unrelated production behavior. Executable lifecycle behavior still begins with a `test_worker` Red where ADR-0010 applies. |
+| Evidence recording | Worker that produced the evidence, only under a separate documentation lease | Evidence-only entries in this living ExecPlan; no authority status or decision rows | The primary verifies the actual files and commands before treating the entry as integrated evidence. |
+| Milestone and task closure | Primary coordinator, then fresh `independent_reviewer` | Primary-owned authority and current-status documents; reviewer remains read-only | Complete validation and relevance audit precede review; supported corrections return to the owning worker; only the primary reconciles and closes. |
+
+Only one agent owns a path at a time. `test_worker` and `code_worker` never write concurrently within the same cycle. Each lease permits one initial turn and at most one coordinator-authorized correction. Once Red is accepted, a material test change ends that cycle and requires fresh Red; an exhausted worker correction or a needed path, dependency, semantic, or authority expansion returns to the primary. Final integrated review retains the repository's two-cycle correction limit.
 
 
 ### Milestone 0: Register the plan without starting implementation
@@ -293,7 +317,7 @@ Use these focused TDD commands after replacing `<PM>` with the selected executab
 <PM> run test
 ```
 
-For each cycle, append the exact final command, nonzero Red diagnostic, Green pass summary, and post-Refactor pass summary to `Progress`, `Artifacts and Notes`, and the task's execution chronology. Do not preserve the placeholder once a command becomes authoritative.
+For each cycle, each worker returns the exact final command, nonzero Red diagnostic, Green pass summary, post-Refactor pass summary, changed paths, and correction count in its fixed handoff. The primary verifies the repository state and then records or delegates an evidence-only lease for `Progress` and `Artifacts and Notes`; only the primary updates authoritative status and the task's execution chronology. Do not preserve the placeholder once a command becomes authoritative.
 
 Exercise independent infrastructure with a task-owned project name selected in Milestone 1:
 
@@ -335,7 +359,7 @@ git status --short
 ## Validation and Acceptance
 
 
-Registration passes only when this plan is active and linked, TASK-003 remains `Pending`, ADR-0011 is listed as governing, the documentation-only diff validates, and an independent reviewer finds no material scope, authority, traceability, or restartability defect. No product command or TDD cycle applies to plan registration because no production behavior changes.
+Registration passes only when this plan is active and linked, TASK-003 remains `Pending`, ADR-0011 is listed as governing, the documentation-only diff validates, and an independent reviewer finds no material scope, authority, traceability, or restartability defect. No product command or TDD cycle applies to plan registration because no production behavior changes. The material worker-topology revision requires its own fresh plan hash, agent-schema and permission checks, documentation validation, exact-diff review, and independent verdict before the plan index may again call the plan ready to execute.
 
 Execution must collect the following observable evidence before TASK-003 can close:
 
@@ -347,7 +371,7 @@ Execution must collect the following observable evidence before TASK-003 can clo
 | HTTP liveness | `api-application` exits nonzero for missing composition, 404, wrong status, or wrong body. | It passes with HTTP 200 and exactly `{ "status": "ok" }`. | The app/server split remains clear; focused application, root application, and strict type-check pass. |
 | Native browser smoke | `test:smoke` exits nonzero for the recorded missing startup or shell/liveness assertion. | Chromium observes the visible shell and exact API response through two owned processes. | Independent builds, smoke, root `test`, and port-release happy path pass. |
 
-Every Red must fail for the intended reason before its production edit. A dependency-resolution, unrelated type error, stale process, occupied port, or previous failing test is not acceptable Red evidence. Green may add only enough production behavior for the current failure. Refactor may not add behavior and must repeat the relevant scope. Exact transcripts replace the generic expectations in the table as execution proceeds.
+Every Red must fail for the intended reason before its production edit. A dependency-resolution, unrelated type error, stale process, occupied port, or previous failing test is not acceptable Red evidence. `test_worker` returns the test diff and Red packet to the primary, which accepts or rejects that barrier. `code_worker` must reproduce the accepted Red, may add only enough production behavior for the current failure, and may not modify the frozen test. Refactor may not add behavior and must repeat the relevant scope. Exact transcripts replace the generic expectations in the table as execution proceeds.
 
 Tailwind is not an additional TDD row or smoke assertion. It is declarative configuration whose automated production-build/output command must prove that the web build emits and references a non-empty stylesheet containing the exact utility generated for the current shell consumer. That structural evidence must pass alongside the independent web build and cannot be reported as CSS layout, responsive, browser-style, or product acceptance evidence.
 
@@ -368,7 +392,7 @@ Under current ADR-0011, the task remains incomplete if the continuous-integratio
 
 Before closure, perform the ADR-0010 relevance audit and record a disposition for the shell unit test, routed application test, configuration tests, liveness application test, native smoke assertions, Tailwind build-output validator, lifecycle cases, fixtures, and helpers. Search the complete suite for residual mocks, fixtures, snapshots, empty projects, focused/skipped tests, test-only production branches, and unconsumed output. Run affected scopes and root `test` after any maintenance.
 
-Documentation closure must update every materially affected owner, state the documentation impact explicitly, preserve dated history, pass both validators and `git diff --check`, and receive independent review. TASK-003 may then become `Complete`; AC-001 through AC-012 and product SPEC scenarios remain unpassed unless later owning tasks provide evidence.
+Documentation closure must update every materially affected owner, state the documentation impact explicitly, preserve dated history, pass both validators and `git diff --check`, and receive fresh read-only review of the complete tests, implementation, evidence, documentation, and exact diff. Reviewer findings return to the worker that owns the affected path under a new bounded lease. Only the primary performs post-review reconciliation and may change TASK-003 to `Complete`; AC-001 through AC-012 and product SPEC scenarios remain unpassed unless later owning tasks provide evidence.
 
 
 ## Idempotence and Recovery
@@ -383,6 +407,8 @@ Use one unique Compose project name per verification. Teardown only that explici
 The smoke must never attach to an existing server. If a configured port is occupied, report the owner-neutral conflict and fail; do not terminate the occupying process. Lifecycle cleanup may terminate only process identifiers or groups created and recorded by the current owned run. Confirm port bindability after cleanup, and preserve the primary failure while reporting any cleanup failure separately.
 
 If work stops during Red, leave the exact failing command and intended diagnostic in `Progress` and resume from that test. If Green is complete but Refactor is not, keep the same scope green before editing. Do not skip, weaken, delete, or condition a test to recover. Do not use `git reset --hard`, broad checkout, recursive workspace deletion, or another task's files as recovery.
+
+If a worker stops or changes an unexpected path, freeze further writes, inspect the shared working tree, and release or replace the lease explicitly. Resume only after re-establishing the last accepted setup, Red, Green, or Refactor barrier. Never recover by overlapping the test and code workers, letting the code worker change a test, or treating a new test contract as part of the prior cycle.
 
 Perform clean-checkout work only in a separately resolved path owned for TASK-003. Verify the absolute path before any cleanup; prefer removing only known generated outputs or retiring the disposable checkout through the repository's safe worktree workflow. Lack of commit authorization or a clean source snapshot keeps clean-checkout evidence pending rather than authorizing a destructive substitute.
 
@@ -429,6 +455,21 @@ post-review reconciliation: validators, diff/cached checks, whitespace, scope, t
                             state, and negative artifact searches repeated and passed
 ```
 
+Worker-flow revision evidence checkpoint on 2026-08-12:
+
+```text
+initial verdict: REVISE; one Major for missing PASS WITH FOLLOW-UPS routing
+correction: Mermaid, prose, registry policy, and copy-paste prompt now disposition
+            every follow-up and re-review any DoD/gate/validation/documentation conflict
+reviewed plan SHA-256: 43BD0E3DA5853BC8DC29FFA18490ED601F591F1AFE2134271DBE20FC89C1C5E3
+reviewed raw working-tree patch SHA-256: 91F10449A0B4F4D5C42AF5E568B88C3085779CDAA93437A1371DCCCC8C75E3
+correction-cycle verdict: PASS; no Blocker, Major, or Minor
+validation: five agent TOMLs, documentation and ADR validators, diff/whitespace,
+            verdict routing, stale wording, pending state, and negative artifacts passed
+authority state: TASK-003 Pending/unstarted; no architecture or gate change
+implementation evidence: none
+```
+
 Expected owned artifact families after execution, subject to the exact Milestone 1 DPL records, are:
 
 - root: `package.json`, the selected workspace metadata and single lockfile, runtime pin, `tsconfig.base.json`, root TypeScript/test configuration, `vitest.config.ts`, `playwright.config.ts`, `compose.yaml`, `.env.example`, and targeted additions to `.gitignore`;
@@ -438,7 +479,7 @@ Expected owned artifact families after execution, subject to the exact Milestone
 - smoke: one owned Playwright test under a clearly named `tests/smoke/` boundary and one clearly consumed lifecycle/port helper only after its triggers are recorded;
 - documentation: this living plan, plan index, canonical TASK-003 record, root current status and command navigation, execution DPL/progress records, and only other owners materially changed by actual implementation.
 
-Append short evidence here as work proceeds. At minimum retain: tool/version compatibility sources and date; allocated DPL IDs; exact Red/Green/Refactor commands and decisive output; project registry listing; clean-install/build/test transcripts; direct HTTP status/body; Playwright report paths; lifecycle case matrix with port-rebind results per platform; Compose health/teardown output; negative-scope and relevance-search results; documentation validators; diff checks; and independent-review verdicts. Keep secrets, full dependency logs, browser binaries, and disposable generated output out of this document and Git.
+Append short evidence here as work proceeds. At minimum retain: tool/version compatibility sources and date; allocated DPL IDs; each worker lease, correction count, changed paths, and fixed handoff outcome; the primary's accepted Red/Green/Refactor barriers; exact commands and decisive output; project registry listing; clean-install/build/test transcripts; direct HTTP status/body; Playwright report paths; lifecycle case matrix with port-rebind results per platform; Compose health/teardown output; negative-scope and relevance-search results; documentation validators; diff checks; and independent-review verdicts. Keep secrets, full dependency logs, browser binaries, and disposable generated output out of this document and Git.
 
 
 ## Interfaces and Dependencies
@@ -478,3 +519,5 @@ Before TASK-003 closure, the owner/authority join for ADR-0011 must be explicit:
 - 2026-08-11 / Codex primary thread: Corrected a second fresh-review Major by requiring an exact DPL-recorded direct-dependency allowlist and report, then splitting known forbidden-family verification into an all-workspace manifest check and a broad source/test token search. This closes the prior false-pass path for unanticipated client/cache packages and direct, side-effect, dynamic, or require-style GraphQL, Sequelize, Umzug, or Redis-client additions.
 - 2026-08-11 / Codex primary thread: Corrected final-state review findings by removing Tailwind assertions from the ADR-0011 smoke and requiring a dedicated automated production-build/output validation for the declarative Tailwind integration. Also closed a false task-completion path by requiring any alternative to current CI runtime evidence to be a completed, accepted, and fully synchronized authority reconciliation rather than mere authorization to begin that workflow.
 - 2026-08-11 / Codex primary thread: Recorded fresh independent final `PASS` for the corrected complete registration tree at reviewed plan SHA-256 `4AEEE0B1F0FED6EAA65CF6B36CF90D585F896B3BB52CAB69182F12827D7C5156`, after two provisional Majors plus later smoke-scope and closure-wording findings were corrected and with no open Blocker, Major, or Minor. This evidence-only reconciliation leaves TASK-003 `Pending` and creates no implementation claim.
+- 2026-08-12 / Codex primary thread: Materially revised the still-unstarted plan to adopt DPL-DEC-014 and the project-scoped `test_worker`/`code_worker` contracts. Added task-local serial leases, path families, Red acceptance and frozen-test barriers, bounded correction and re-entry, evidence ownership, and fresh integrated review requirements. The prior reviewed hash remains historical; this revision requires a new hash and verdict before the plan is again marked ready to execute.
+- 2026-08-12 / Codex primary thread: Recorded complete fresh correction-cycle `PASS` for reviewed plan SHA-256 `43BD0E3DA5853BC8DC29FFA18490ED601F591F1AFE2134271DBE20FC89C1C5E3` and raw working-tree patch SHA-256 `91F10449A0B4F4D5C42AF5E568B88C3085779CDAA93437A1371DCCCC8C75E3`. The initial review's only Major was corrected by defining deterministic `PASS WITH FOLLOW-UPS` disposition and re-review semantics; no finding remains. This reconciliation returns the plan to ready-to-execute without starting TASK-003 or creating implementation evidence.

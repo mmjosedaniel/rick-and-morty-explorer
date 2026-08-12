@@ -20,6 +20,8 @@ Every ExecPlan must lead to an observable, falsifiable outcome. For application 
 
 Follow `AGENTS.md`, the root documentation map, the exact `TASK-*` record, its mapped requirements and accepted ADRs, its active gates, and only the routed specifications needed by the task. An ExecPlan cannot weaken the repository's language, evidence, preservation, simplicity, TypeScript, TDD, or task-closure policies.
 
+For write-authorized implementation, use the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator normally delegates edits to `test_worker` and `code_worker` through explicit, sequential write leases while retaining integration, evidence acceptance, authoritative status, and closure ownership. Decision work continues to use the sole-writer topology in [.codex/README.md](.codex/README.md).
+
 ## Format
 
 Write an ExecPlan as one Markdown document. When the plan is stored in a `.md` file, do not surround the document with an outer code fence. Use prose first. Tables and lists are appropriate when they make traceability or alternatives materially easier to compare, but avoid turning narrative milestones into administrative checklists.
@@ -76,6 +78,8 @@ State what the owning task includes and what remains outside it. Preserve mandat
 
 Describe the dependency-ordered sequence of edits and additions in prose. For each milestone, state what will exist afterward, what did not exist before, what evidence will be captured, and what condition permits the next milestone to start. Use approval checkpoints only where repository policy requires a human decision.
 
+When the worker-first implementation workflow applies, identify each declarative setup slice and observable behavior cycle, the intended worker mode, path-ownership boundary, frozen test boundary after accepted Red, required handoff evidence, synchronization barrier, correction route, and re-entry condition. The two write-capable workers must not operate concurrently on the same cycle.
+
 ### Decision Review Contract (decision work only)
 
 When the owning task compares consequential options, prepares an ADR, or resolves a decision gate, create a living Decision Review Contract inside the ExecPlan before option research starts. This is a workflow contract, not a new authority document or a substitute for the ADR. Link to authoritative wording instead of copying it wholesale.
@@ -94,11 +98,15 @@ Give exact commands and the working directory. Commands must match current repos
 
 Define observable acceptance in terms of behavior, authoritative state, or reproducible validator output. For production behavior, include the exact Red failure, Green pass, and post-Refactor validation required by ADR-0010. For declarative or decision work with no production behavior, explain why a TDD cycle does not apply and define the structural, semantic, and negative checks that replace it.
 
+For worker-first implementation, record who produced each Red, Green, and post-Refactor result, the coordinator's acceptance of each barrier, and the fresh independent review verdict for the integrated final state. Worker summaries support but do not replace the coordinator's inspection and task-authoritative validation.
+
 For decision work, record both the contract-checkpoint result when risk triggers require it and the fresh evidence-checkpoint result for the exact final artifact. Re-run the complete applicable invariant packet after every material revision, and reconcile the final verdict with the score, recommendation, artifact status, task and gate states, and next action before an owner-approval request.
 
 ### Idempotence and Recovery
 
 Explain which steps are safe to repeat, how to resume after a partial failure, and how to avoid overwriting another task's work. Prefer additive changes. Never use destructive recovery commands when a targeted edit or preserved historical record is sufficient.
+
+If multiple agents share the working tree, define how leases are released, how unexpectedly changed paths are handled, and which actor may resume after a failed handoff. Re-establish the last accepted barrier before granting the next write lease; never recover by running the same-cycle test and code writers concurrently.
 
 ### Artifacts and Notes
 
@@ -112,7 +120,7 @@ Name every library, service, command boundary, configuration file, interface, or
 
 Milestones must be independently verifiable and must build toward the owning task's falsifiable outcome. Describe them as a narrative of goal, work, result, and proof. Prototypes are permitted only when they stay within task scope, do not cross an unresolved gate, use disposable or clearly isolated artifacts, and define promotion or removal criteria.
 
-Every production behavior follows one observable Red-Green-Refactor cycle at a time under ADR-0010. Record the exact command and intended failure during Red, the passing command during Green, and the repeated validation after Refactor in both the ExecPlan and the execution log or handoff evidence required by the task.
+Every production behavior follows one observable Red-Green-Refactor cycle at a time under ADR-0010. Under the worker-first workflow, `test_worker` stops after proving Red, the primary coordinator accepts and freezes that test boundary, and `code_worker` performs the minimum Green and behavior-preserving Refactor sequentially. Record the exact command and intended failure during Red, the passing command during Green, and the repeated validation after Refactor in both the ExecPlan and the execution log or handoff evidence required by the task.
 
 Before an ExecPlan or major milestone completes, perform the ADR-0010 test-relevance audit. Inspect affected tests and suite-wide residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests. Record why each affected test remains, changes, consolidates, or is removed; then run the affected and complete suites. If the task changed no tests and no executable suite exists, record that evidence explicitly rather than inventing a test command.
 

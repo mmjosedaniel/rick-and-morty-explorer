@@ -1,6 +1,6 @@
 # Project-Scoped Codex Agents
 
-This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, option, artifact, criteria, output contract, and stopping condition for each spawned instance.
+This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, and stopping condition for each spawned instance.
 
 These agents support repository work. They do not change product scope, approve architecture, resolve a decision gate, replace an ExecPlan, or count as implementation or acceptance evidence. All agents remain subject to the root [repository guidelines](../AGENTS.md) and must begin repository work from the [documentation map](../README.md#documentation-map).
 
@@ -11,6 +11,8 @@ These agents support repository work. They do not change product scope, approve 
 | [`technology_researcher`](./agents/technology-researcher.toml) | Read only | Investigate one assigned technical option against common criteria and return primary-source evidence in a fixed structure | Repository edits, final synthesis, architecture approval, or task and gate status changes |
 | [`decision_analyst`](./agents/decision-analyst.toml) | Read only | Audit research comparability and Decision Review Contract coverage, rank options, and return a traceable recommendation, ADR outline, and synthesis-readiness verdict | Repository edits, ADR numbering or approval, owner-controlled choices, or task and gate status changes |
 | [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Try to falsify an assigned pre-draft decision contract or exact final artifact against repository authorities and reproducible evidence | Editing the reviewed work, approving owner-controlled decisions, or taking closure ownership |
+| [`test_worker`](./agents/test-worker.toml) | Workspace write under an explicit lease | Add one smallest test for an assigned behavior slice, run it, and prove the intended Red state | Production behavior, architecture decisions, status changes, Green authorization, or task closure |
+| [`code_worker`](./agents/code-worker.toml) | Workspace write under an explicit lease | Perform bounded declarative setup, minimum Green implementation, and behavior-preserving Refactor work | Changing an accepted test, selecting architecture, status changes, or task closure |
 
 Codex identifies each custom agent by the `name` field inside its TOML file. The filenames follow the same names in kebab case for navigation only.
 
@@ -20,23 +22,27 @@ The workflow uses one model family with role-specific reasoning effort:
 
 | Execution role | Model and effort | Rationale |
 |---|---|---|
-| Primary coordinating thread | `gpt-5.6-sol` with `max` when available | Owns cross-report synthesis, repository writes, state reconciliation, approval handling, and final closure. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
+| Primary coordinating thread | `gpt-5.6-sol` with `max` when available | Owns synthesis, write-lease routing, integration, state reconciliation, approval handling, and final closure. It is the sole writer for decision work and normally delegates implementation writes. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
 | `technology_researcher` | `gpt-5.6-sol`, `high` | Each instance has a bounded, parallel, evidence-gathering assignment. |
 | `decision_analyst` | `gpt-5.6-sol`, `xhigh` | Must reconcile multiple reports, contract coverage, ranking, and decide-now versus prove-later boundaries. |
 | `independent_reviewer` | `gpt-5.6-sol`, `max` | Performs quality-first adversarial exploration and verification at the highest-risk checkpoints. |
+| `test_worker` | `gpt-5.6-sol`, `medium` | Owns one narrow test-side slice and returns concise Red evidence. |
+| `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup, Green, or Refactor work after the applicable coordinator barrier. |
 
-The custom-agent TOML values take precedence over the parent setting, so the differentiated policy is explicit rather than inherited. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision run. `Ultra` is not a substitute for this topology: proactive delegation may help independent work, but the repository still requires the named barriers, fresh review, bounded correction, and owner approval below.
+The custom-agent TOML values take precedence over the parent setting, so the differentiated policy is explicit rather than inherited. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision or implementation run. `Ultra` is not a substitute for these topologies: proactive delegation may help independent work, but the repository still requires named barriers, explicit write ownership, fresh review, bounded correction, and owner approval where applicable.
 
-Role instructions remain necessary. More reasoning does not replace primary-source requirements, common criteria, explicit uncertainty, artifact-local completeness, read-only boundaries, or executable validation. If the configured model or effort becomes unavailable in a target Codex environment, update this policy and the affected agent files together rather than allowing silent drift. Compare policy changes on representative repository decisions instead of assuming that a higher effort alone improves the workflow.
+Role instructions remain necessary. More reasoning does not replace primary-source requirements, common criteria, explicit uncertainty, artifact-local completeness, read-only boundaries or write leases, or executable validation. If the configured model or effort becomes unavailable in a target Codex environment, update this policy and the affected agent files together rather than allowing silent drift. Compare policy changes on representative repository work instead of assuming that a higher effort alone improves the workflow.
 
 The model ID, supported reasoning levels, custom-agent precedence, and parallel-work guidance are documented in the [official GPT-5.6 Sol model reference](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model), and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
 
 ## Collaboration Topology
 
-The repository uses a risk-tiered, contract-first graph with explicit ownership:
+### Decision work
+
+Decision-oriented ExecPlans use a risk-tiered, contract-first graph with explicit ownership:
 
 ```text
-Primary Codex thread (coordinator, sole writer, final closure owner)
+Primary Codex thread (coordinator, sole decision-artifact writer, final closure owner)
   |
   +-- living Decision Review Contract in the owning ExecPlan
   |
@@ -67,7 +73,13 @@ Primary Codex thread (coordinator, sole writer, final closure owner)
 
 The contract and evidence checkpoints are agent-workflow controls, not `DG-*` architecture decision gates and not the task-closure documentation gate. The option and reviewer labels belong to instances, not permanent definitions. The pre-draft and final reviewers are separate fresh instances of the same `independent_reviewer` role; no permanent panel or second reviewer role is required.
 
-The primary thread is deliberately not duplicated as a custom `coordinator` agent. It owns orchestration, repository writes, approval handling, integration, and final closure. Parallel work is limited to independent, read-heavy assignments. The final reviewer receives the authoritative inputs, living contract, cumulative invariant packet, exact artifact, and diff, and independently reproduces evidence instead of treating the prior review or the primary summary as proof.
+For decision work, the primary thread is deliberately not duplicated as a custom `coordinator` agent. It owns orchestration, decision-artifact writes, approval handling, integration, and final closure. Parallel work is limited to independent, read-heavy assignments. The final reviewer receives the authoritative inputs, living contract, cumulative invariant packet, exact artifact, and diff, and independently reproduces evidence instead of treating the prior review or the primary summary as proof.
+
+### Implementation work
+
+Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary remains the sole integration, evidence, approval-handling, and closure owner but normally delegates repository edits to `test_worker` and `code_worker` through explicit, sequential path leases. The same-cycle Red and Green writers never run concurrently. A fresh `independent_reviewer` examines the complete final state and exact diff before the primary reconciles closure.
+
+The decision topology above remains unchanged: write-capable implementation workers do not research options, draft ADRs, resolve gates, or replace the primary decision writer.
 
 ## Decision Review Contract and Risk Tier
 
@@ -101,6 +113,8 @@ For ordinary decisions without a trigger, the analyst's `DRAFT READY` result is 
 
 Custom agents do not run automatically merely because their files exist. The coordinating request must name the roles, barriers, and stopping conditions. For example:
 
+### Decision workflow prompt
+
 ```text
 Act as the primary coordinator for the exact TASK-* and its owning ExecPlan.
 Use gpt-5.6-sol with max reasoning for the primary thread when available.
@@ -133,9 +147,13 @@ A good instance assignment states:
 - whether the coordinator must wait for peer results or use a fresh instance; and
 - the success, escalation, re-entry, and stopping conditions.
 
+### Implementation workflow prompt
+
+Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the Red, Green, Refactor, review, correction, and closure barriers without duplicating them here.
+
 ## Review, Correction, and Approval Protocol
 
-The fresh final reviewer always performs the evidence checkpoint and returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. The final review loop is intentionally bounded:
+The fresh final reviewer always performs the evidence checkpoint and returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. A `PASS WITH FOLLOW-UPS` may advance only after the primary dispositions every item and confirms that none conflicts with a definition of done, hard gate, required validation result, or documentation gate; any such conflict is a correction that requires complete fresh re-review. The decision-artifact review loop below is intentionally bounded. Worker-first implementation uses the same fresh full-state re-review rule and the role-specific correction routing in its implementation guide.
 
 1. The primary coordinator applies only supported, in-scope corrections.
 2. The reviewer inspects the complete revised artifact and exact diff and re-runs the full applicable invariant packet.
@@ -154,7 +172,9 @@ The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-
 
 ## Permission and Evidence Boundaries
 
-All three custom agent definitions set `model = "gpt-5.6-sol"` and `sandbox_mode = "read-only"`; their reasoning efforts are `high`, `xhigh`, and `max` according to role. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation. Repository writes remain centralized in the primary thread.
+All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, analyst, and reviewer remain `read-only` with `high`, `xhigh`, and `max` reasoning according to role. The test and code workers use `medium` reasoning and `workspace-write`, but only an explicit coordinator-issued path lease authorizes a particular edit. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
+
+Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. An exceptional primary-thread implementation edit must be recorded with its reason, paths, and validation.
 
 Agent output is supporting evidence, not self-validating proof. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff.
 

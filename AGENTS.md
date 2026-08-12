@@ -28,6 +28,8 @@ Keep the ExecPlan's `Progress`, `Surprises & Discoveries`, `Decision Log`, and `
 
 When an ExecPlan compares consequential options or prepares an ADR, follow the risk-tiered, contract-first collaboration policy in [.codex/README.md](.codex/README.md). Keep the Decision Review Contract inside the owning ExecPlan, preserve the primary thread as the sole writer and closure owner, complete every applicable contract and evidence checkpoint, and stop at owner-controlled approval boundaries.
 
+When an authorized ExecPlan implements repository changes, follow the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator normally delegates bounded edits to `test_worker` and `code_worker` through explicit, sequential write leases, while retaining integration, evidence acceptance, approval handling, task status, and closure ownership. Record the reason, paths, and validation for any exceptional implementation edit made directly by the primary thread. This implementation topology does not change the sole-writer rule for decision artifacts.
+
 ## Documentation Preservation
 
 Do not silently delete, replace, move, rename, or consolidate repository documentation.
@@ -40,7 +42,7 @@ Do not silently delete, replace, move, rename, or consolidate repository documen
 
 ## Task Closure
 
-Every completed repository task must pass the [task-closure documentation gate](README.md#task-closure-documentation-gate). The agent responsible for the task owns the gate and may use a subagent only as an independent reviewer; delegation never transfers closure responsibility. For write-authorized work, update and link all materially affected documentation before handoff. For read-only work, report required documentation follow-ups without modifying files. Every final handoff must state the documentation impact explicitly, including a concrete reason when no documentation change was necessary.
+Every completed repository task must pass the [task-closure documentation gate](README.md#task-closure-documentation-gate). The primary agent responsible for the task owns the gate. It may delegate bounded implementation and evidence-document edits to write-capable workers and delegate independent review to a read-only reviewer, but only the primary may reconcile the evidence, change authoritative status, or declare the gate passed; delegation never transfers closure responsibility. For write-authorized work, update and link all materially affected documentation before handoff. For read-only work, report required documentation follow-ups without modifying files. Every final handoff must state the documentation impact explicitly, including a concrete reason when no documentation change was necessary.
 
 ## Implementation Simplicity and Clean Code
 
