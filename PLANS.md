@@ -20,7 +20,7 @@ Every ExecPlan must lead to an observable, falsifiable outcome. For application 
 
 Follow `AGENTS.md`, the root documentation map, the exact `TASK-*` record, its mapped requirements and accepted ADRs, its active gates, and only the routed specifications needed by the task. An ExecPlan cannot weaken the repository's language, evidence, preservation, simplicity, TypeScript, TDD, or task-closure policies.
 
-For write-authorized implementation, use the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator normally delegates edits to `test_worker` and `code_worker` through explicit, sequential write leases while retaining integration, evidence acceptance, authoritative status, and closure ownership. Decision work continues to use the sole-writer topology in [.codex/README.md](.codex/README.md).
+For write-authorized implementation, use the [worker-first ExecPlan implementation workflow](.codex/execplan-implementation-workflow.md). The primary coordinator normally delegates edits to `test_worker` and `code_worker` through explicit, sequential write leases while retaining integration, evidence acceptance, authoritative status, and closure ownership. The coordinator must open and terminally close every worker lease through the [automatic write-lease guard](.codex/write-lease-guard.md); only a fresh compliant closure, or a replayed compliant receipt followed by pinned status with no post-close drift, permits the next barrier. Decision work continues to use the sole-writer topology in [.codex/README.md](.codex/README.md).
 
 ## Format
 
@@ -78,7 +78,7 @@ State what the owning task includes and what remains outside it. Preserve mandat
 
 Describe the dependency-ordered sequence of edits and additions in prose. For each milestone, state what will exist afterward, what did not exist before, what evidence will be captured, and what condition permits the next milestone to start. Use approval checkpoints only where repository policy requires a human decision.
 
-When the worker-first implementation workflow applies, identify each declarative setup slice and observable behavior cycle, the intended worker mode, path-ownership boundary, frozen test boundary after accepted Red, required handoff evidence, synchronization barrier, correction route, and re-entry condition. The two write-capable workers must not operate concurrently on the same cycle. Use stable workflow, cycle, and lease identifiers for best-effort metrics correlation, but keep generated metrics data outside the ExecPlan and never make telemetry availability a plan gate.
+When the worker-first implementation workflow applies, identify each declarative setup slice and observable behavior cycle, the intended worker mode, exact allowed and forbidden path scopes, frozen test boundary after accepted Red, required handoff evidence, synchronization barrier, correction route, and re-entry condition. The two write-capable workers must not operate concurrently on the same cycle. Record the guard start and terminal-close commands, lease ID, contract digest, receipt status, and changed-path classification for every assignment. Use the same stable workflow, cycle, and lease identifiers for best-effort metrics correlation, but keep generated metrics data outside the ExecPlan and never make telemetry availability a plan gate.
 
 ### Decision Review Contract (decision work only)
 
@@ -98,7 +98,7 @@ Give exact commands and the working directory. Commands must match current repos
 
 Define observable acceptance in terms of behavior, authoritative state, or reproducible validator output. For production behavior, include the exact Red failure, Green pass, and post-Refactor validation required by ADR-0010. For declarative or decision work with no production behavior, explain why a TDD cycle does not apply and define the structural, semantic, and negative checks that replace it.
 
-For worker-first implementation, record who produced each Red, Green, and post-Refactor result, the coordinator's acceptance of each barrier, and the fresh independent review verdict for the integrated final state. Worker summaries and flow metrics support but do not replace the coordinator's inspection and task-authoritative validation.
+For worker-first implementation, record who produced each Red, Green, and post-Refactor result, the compliant automatic-lease receipt that bounded each write, the coordinator's acceptance of each barrier, and the fresh independent review verdict for the integrated final state. A worker summary, a nonterminal verification, or flow metrics cannot replace terminal guard closure, coordinator inspection, and task-authoritative validation.
 
 For decision work, record both the contract-checkpoint result when risk triggers require it and the fresh evidence-checkpoint result for the exact final artifact. Re-run the complete applicable invariant packet after every material revision, and reconcile the final verdict with the score, recommendation, artifact status, task and gate states, and next action before an owner-approval request.
 
@@ -106,11 +106,11 @@ For decision work, record both the contract-checkpoint result when risk triggers
 
 Explain which steps are safe to repeat, how to resume after a partial failure, and how to avoid overwriting another task's work. Prefer additive changes. Never use destructive recovery commands when a targeted edit or preserved historical record is sufficient.
 
-If multiple agents share the working tree, define how leases are released, how unexpectedly changed paths are handled, and which actor may resume after a failed handoff. Re-establish the last accepted barrier before granting the next write lease; never recover by running the same-cycle test and code writers concurrently.
+If multiple agents share the working tree, define how leases are terminally closed, how an automatic guard violation freezes writes, how unexpectedly changed paths are attributed without reverting them, and which actor may resume after a failed handoff. Re-establish the last accepted barrier before granting a new lease with a fresh baseline; never recover by rebasing an active lease or running the same-cycle test and code writers concurrently.
 
 ### Artifacts and Notes
 
-Keep the most important short transcripts, path lists, decision matrices, or excerpts needed to prove or resume the work. For a worker-first run, record the stable workflow ID and the final metrics-summary command; do not copy generated event files into the ExecPlan. Do not duplicate authoritative prose wholesale.
+Keep the most important short transcripts, path lists, decision matrices, or excerpts needed to prove or resume the work. For a worker-first run, record the stable workflow ID, each lease ID and contract digest, each terminal receipt result, and the final metrics-summary command; do not copy ignored guard state or generated metric events into the ExecPlan. Do not duplicate authoritative prose wholesale.
 
 ### Interfaces and Dependencies
 

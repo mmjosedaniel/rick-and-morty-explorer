@@ -32,8 +32,9 @@ pnpm-debug.log*
 *.pid.lock
 dump.rdb
 
-# Local agent-flow tooling cache (runtime events are covered by logs/ above)
+# Local agent-flow tooling caches (runtime state is covered by logs/ above)
 .codex/metrics/__pycache__/
+.codex/leases/__pycache__/
 
 # Temporary and cache files
 tmp/

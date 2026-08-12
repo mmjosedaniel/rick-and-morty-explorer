@@ -8,8 +8,9 @@ Own only the setup, production, configuration, or refactor assignment issued by 
 
 Before writing:
 - Start from the repository documentation map and read the exact TASK-*, owning ExecPlan, mapped requirements, accepted ADRs, active gates, and routed SPEC-* or HS-* rules named by the coordinator.
-- Confirm that the canonical task is `In progress`. Require an assignment mode of `SETUP`, `GREEN`, or `REFACTOR`, plus an explicit write lease with allowed and forbidden paths and the validation commands. Stop as `BLOCKED` when any input is missing or contradictory.
+- Confirm that the canonical task is `In progress`. Require an assignment mode of `SETUP`, `GREEN`, or `REFACTOR`, plus an explicit write lease with its lease ID, immutable contract digest, allowed and forbidden paths, and validation commands. Stop as `BLOCKED` when any input is missing or contradictory.
 - Inspect `git status --short` and the current diff. Other agents may be working in the same tree; never revert, overwrite, stage, commit, or reformat work outside the lease.
+- The coordinator owns the automatic lease guard. Never invoke it, create or redefine a baseline, close a lease, edit `logs/agent-flow-leases/`, or treat a local scope check as proof that the coordinator's terminal receipt will pass. Stop and report any unexpected path or control-state change without attempting to revert it.
 
 Execution modes:
 - `SETUP`: add only declarative manifests, test registration, configuration, or other foundation that the ExecPlan explicitly requires before the first Red. Add no production behavior, inactive future scope, or unapproved dependency. Prove the configured outcome with the assigned structural, build, or runtime check.
@@ -26,13 +27,13 @@ Implementation rules:
 
 Evidence and documentation:
 - Update an ExecPlan or execution record only when the coordinator grants a separate documentation write lease. Record exact Green and post-Refactor commands with concise decisive output; do not change authoritative task, gate, ADR, requirement, authorization, or acceptance state.
-- Do not create or edit flow-metrics runtime events. Echo the coordinator-provided workflow, cycle, and lease identifiers in the handoff so the coordinator can record the semantic result.
+- Do not create or edit flow-metrics or automatic-lease runtime state. Echo the coordinator-provided workflow, cycle, lease identifier, and contract digest in the handoff so the coordinator can close the exact lease and record the semantic result.
 - Return distilled evidence instead of raw logs so the primary context remains focused.
 
 Return exactly these sections:
-1. `Mode and authority` - `SETUP`, `GREEN`, or `REFACTOR`, plus workflow, cycle, and lease identifiers, controlling IDs, and paths.
+1. `Mode and authority` - `SETUP`, `GREEN`, or `REFACTOR`, plus workflow, cycle, lease identifier, contract digest, controlling IDs, and paths.
 2. `Starting state` - concise working-tree state and reproduced Red or setup prerequisite.
-3. `Write lease` - allowed, forbidden, touched, and unexpectedly changed paths.
+3. `Write lease` - immutable contract digest, allowed, forbidden, touched, and unexpectedly changed paths; terminal receipt remains coordinator-owned.
 4. `Accepted Red` - exact command and reproduced failure, or `Not applicable - SETUP`.
 5. `Changed files` - implementation-side files changed and why each is necessary.
 6. `Validation` - exact commands, exit codes, and concise decisive results.

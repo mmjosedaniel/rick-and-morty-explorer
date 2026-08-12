@@ -77,9 +77,9 @@ For decision work, the primary thread is deliberately not duplicated as a custom
 
 ### Implementation work
 
-Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary remains the sole integration, evidence, approval-handling, and closure owner but normally delegates repository edits to `test_worker` and `code_worker` through explicit, sequential path leases. The same-cycle Red and Green writers never run concurrently. A fresh `independent_reviewer` examines the complete final state and exact diff before the primary reconciles closure.
+Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary remains the sole integration, evidence, approval-handling, and closure owner but normally delegates repository edits to `test_worker` and `code_worker` through explicit, sequential path leases. The primary enforces each assignment with the [automatic write-lease guard](./write-lease-guard.md): it starts an immutable baseline before spawning the worker and requires a fresh terminal compliant result, or a replayed compliant receipt plus clean pinned status, before accepting the handoff barrier. Only one worker lease may be active per worktree, and the same-cycle Red and Green writers never run concurrently. A fresh `independent_reviewer` examines the complete final state, exact diff, and lease receipts before the primary reconciles closure.
 
-The [agent-flow metrics policy](./agent-flow-metrics.md) adds a non-blocking observation sidecar to this implementation topology. Project hooks record sanitized subagent lifecycle events, while the coordinator records the semantic decisions that distinguish a correction, rejected Red, or confirmed regression. Metrics never replace the ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
+The [agent-flow metrics policy](./agent-flow-metrics.md) adds a non-blocking observation sidecar to this implementation topology. Project hooks record sanitized subagent lifecycle events, while the coordinator records the semantic decisions that distinguish a correction, rejected Red, or confirmed regression. Metrics never replace the blocking lease guard, ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
 
 The decision topology above remains unchanged: write-capable implementation workers do not research options, draft ADRs, resolve gates, or replace the primary decision writer.
 
@@ -151,7 +151,7 @@ A good instance assignment states:
 
 ### Implementation workflow prompt
 
-Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the Red, Green, Refactor, review, correction, metrics, and closure barriers without duplicating them here.
+Use the copy-paste prompt and lease contract in the [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md#copy-paste-prompt-example). It names the automatic lease, Red, Green, Refactor, review, correction, metrics, and closure barriers without duplicating them here.
 
 ## Review, Correction, and Approval Protocol
 
@@ -174,10 +174,10 @@ The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-
 
 ## Permission and Evidence Boundaries
 
-All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, analyst, and reviewer remain `read-only` with `high`, `xhigh`, and `max` reasoning according to role. The test and code workers use `medium` reasoning and `workspace-write`, but only an explicit coordinator-issued path lease authorizes a particular edit. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
+All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, analyst, and reviewer remain `read-only` with `high`, `xhigh`, and `max` reasoning according to role. The test and code workers use `medium` reasoning and `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
 
 Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. An exceptional primary-thread implementation edit must be recorded with its reason, paths, and validation.
 
-Agent output and flow metrics are supporting observations, not self-validating proof. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage and never changes a workflow verdict or task state.
+Agent output and flow metrics are supporting observations, not self-validating proof. A terminal compliant lease receipt proves only that net non-ignored repository changes stayed within the pinned path contract and Git control state; it does not prove semantic correctness. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage, while a lease-guard failure freezes the write branch.
 
 The file schema and project-scoped `.codex/agents/` location follow the [official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents). Project lifecycle instrumentation follows the [official Codex hooks documentation](https://learn.chatgpt.com/docs/hooks).

@@ -8,8 +8,9 @@ Own only the test-side assignment issued by the primary coordinator. Do not impl
 
 Before writing:
 - Start from the repository documentation map and read the exact TASK-*, owning ExecPlan, mapped requirements, accepted ADRs, active gates, and routed SPEC-* or HS-* rules named by the coordinator.
-- Confirm that the canonical task is `In progress`. Require one bounded behavior slice, an explicit write lease with allowed and forbidden paths, the baseline and focused commands, and the expected class of failure. Stop as `BLOCKED` when any of these inputs is missing or contradictory.
+- Confirm that the canonical task is `In progress`. Require one bounded behavior slice, an explicit write lease with its lease ID, immutable contract digest, allowed and forbidden paths, the baseline and focused commands, and the expected class of failure. Stop as `BLOCKED` when any of these inputs is missing or contradictory.
 - Inspect `git status --short` and the current diff. Other agents may be working in the same tree; never revert, overwrite, stage, commit, or reformat work outside the lease.
+- The coordinator owns the automatic lease guard. Never invoke it, create or redefine a baseline, close a lease, edit `logs/agent-flow-leases/`, or treat a local scope check as proof that the coordinator's terminal receipt will pass. Stop and report any unexpected path or control-state change without attempting to revert it.
 
 Test work:
 - Run the assigned existing scope before editing. A pre-existing failure invalidates the cycle; when the first test has no existing focused scope, require the coordinator's accepted setup-validation evidence instead.
@@ -23,13 +24,13 @@ Test work:
 
 Evidence and documentation:
 - Update an ExecPlan or execution record only when the coordinator grants a separate documentation write lease. Record exact commands and concise decisive output; do not change authoritative task, gate, ADR, requirement, authorization, or acceptance state.
-- Do not create or edit flow-metrics runtime events. Echo the coordinator-provided workflow, cycle, and lease identifiers in the handoff so the coordinator can record the semantic result.
+- Do not create or edit flow-metrics or automatic-lease runtime state. Echo the coordinator-provided workflow, cycle, lease identifier, and contract digest in the handoff so the coordinator can close the exact lease and record the semantic result.
 - Return distilled evidence instead of raw logs so the primary context remains focused.
 
 Return exactly these sections:
-1. `Cycle and authority` - workflow, cycle, and lease identifiers, behavior slice, controlling IDs, and paths.
+1. `Cycle and authority` - workflow, cycle, lease identifier, contract digest, behavior slice, controlling IDs, and paths.
 2. `Starting state` - concise working-tree state and baseline command result.
-3. `Write lease` - allowed, forbidden, touched, and unexpectedly changed paths.
+3. `Write lease` - immutable contract digest, allowed, forbidden, touched, and unexpectedly changed paths; terminal receipt remains coordinator-owned.
 4. `Changed files` - test-side files changed and why each is necessary.
 5. `Red command` - exact command, exit code, and concise decisive failure.
 6. `Negative checks` - scope, focused/skipped-test, and production-path checks required by the lease.
