@@ -4,6 +4,21 @@ This directory contains reusable Codex agent definitions that are versioned with
 
 These agents support repository work. They do not change product scope, approve architecture, resolve a decision gate, replace an ExecPlan, or count as implementation or acceptance evidence. All agents remain subject to the root [repository guidelines](../AGENTS.md) and must begin repository work from the [documentation map](../README.md#documentation-map).
 
+## Start Here
+
+| Need | Start with | Continue with |
+|---|---|---|
+| Persistent repository rules and authority | [Repository guidelines](../AGENTS.md) | [Documentation map](../README.md#documentation-map) and its task-specific reading order |
+| Repeatable ADR, planning, acceptance, or verification procedure | [Codex task routing](../README.md#codex-task-routing) | The selected `SKILL.md` and only the references or scripts it routes to |
+| Consequential decision work | [Decision work](#decision-work) | Owning ExecPlan and its Decision Review Contract |
+| Owner-authorized implementation ExecPlan | [Implementation workflow](./execplan-implementation-workflow.md) | [Write-lease guard](./write-lease-guard.md) and owning ExecPlan |
+| Custom role selection | [Agent registry](#agent-registry) | Exact role TOML and bounded instance assignment |
+| Optional worker-flow telemetry | [Agent-flow metrics](./agent-flow-metrics.md) | [Hook activation and trust](./agent-flow-metrics.md#activate-the-lifecycle-hooks) only when a present measurement question justifies the overhead |
+
+Keep `AGENTS.md` concise and durable; put task-specific procedures in the linked ExecPlan, workflow, or repository skill. Codex discovers repository skills under `.agents/skills` using progressive disclosure: it first sees skill metadata, then loads a selected `SKILL.md` and only the supporting resources needed for the task. Project-scoped custom agents live under `.codex/agents`; their definitions do not execute merely because the files exist.
+
+Project-scoped `.codex` configuration and hooks load only for a trusted project. Non-managed command hooks require a separate review of the current definition before they run; use `/hooks` in Codex CLI to inspect, trust, or disable them. The optional metrics guide owns the exact activation steps and evidence boundary.
+
 ## Agent Registry
 
 | Agent | Permission boundary | Stable responsibility | Not responsible for |
@@ -29,7 +44,7 @@ The workflow uses one model family with role-specific reasoning effort:
 | `test_worker` | `gpt-5.6-sol`, `medium` | Owns one narrow test-side slice and returns concise Red evidence. |
 | `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup or minimum Green with an optional same-turn Refactor. |
 
-The custom-agent TOML values take precedence over the parent setting, so the differentiated policy is explicit rather than inherited. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision or implementation run. `Ultra` is not a substitute for these topologies: proactive delegation may help independent work, but the repository still requires named barriers, explicit write ownership, fresh review, bounded correction, and owner approval where applicable.
+Each custom-agent file's explicit `model` and `model_reasoning_effort` values take precedence over the corresponding parent settings. Omitted session settings inherit from the parent, while current-turn runtime overrides can still supersede agent-file sandbox and approval defaults. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision or implementation run. `Ultra` is not a substitute for these topologies: proactive delegation may help independent work, but the repository still requires named barriers, explicit write ownership, fresh review, bounded correction, and owner approval where applicable.
 
 Role instructions remain necessary. More reasoning does not replace primary-source requirements, common criteria, explicit uncertainty, artifact-local completeness, read-only boundaries or write leases, or executable validation. If the configured model or effort becomes unavailable in a target Codex environment, update this policy and the affected agent files together rather than allowing silent drift. Compare policy changes on representative repository work instead of assuming that a higher effort alone improves the workflow.
 
@@ -168,6 +183,23 @@ Before presenting any proposal for approval, the primary coordinator performs a 
 
 Human-controlled milestones remain human controlled. An agent report cannot accept an ADR, resolve a `DG-*` gate, or close the owning task. Decisions already at an explicit owner-approval checkpoint when this policy is adopted retain their completed review evidence; do not fabricate a retrospective contract checkpoint. Any later material change to such a proposal activates the material-change invalidation rule before a new approval request.
 
+## Validation
+
+Run the smallest checks that cover the changed Codex surface; do not run optional tooling merely because it exists.
+
+| Changed surface | Proportional repository check |
+|---|---|
+| Any local documentation or navigation | `python -B .agents/skills/verify-repository/scripts/validate_docs.py --repo .` |
+| Agent definitions | `python -c "import pathlib,tomllib; files=sorted(pathlib.Path('.codex/agents').glob('*.toml')); [tomllib.loads(path.read_text(encoding='utf-8')) for path in files]; print(f'Parsed {len(files)} agent TOML files.')"` |
+| Hook definition | `python -m json.tool .codex/hooks.json` |
+| Write-lease guard | `python -B .codex/leases/lease_guard.py self-test` |
+| Agent-flow metrics | `python -B .codex/metrics/agent_flow_metrics.py self-test` and, when runtime events exist, `python -B .codex/metrics/agent_flow_metrics.py validate` |
+| Any changed text | `git diff --check` |
+
+TOML and JSON parsing validate syntax only. A trusted Codex project session establishes project-layer discovery, and `/hooks` in Codex CLI establishes the current command-hook trust state; neither parser proves runtime activation.
+
+Apply the root [task-closure documentation gate](../README.md#task-closure-documentation-gate) after the component checks. Run the ADR validator only when architecture, ADR coverage, optional disposition, or decision-gate semantics changed.
+
 ## TASK-001 Historical Example
 
 The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-decision.md) preserves the workflow that existed when it ran: three independent option researchers, a synchronization barrier, one decision analyst, a primary-authored proposal, and bounded final review. Under the current risk-tiered policy, a similarly bounded decision would use the analyst's readiness result as its contract checkpoint unless its current Decision Review Contract identifies a risk trigger. Historical plans are not rewritten to simulate a checkpoint that did not exist.
@@ -180,4 +212,4 @@ Decision-artifact writes remain centralized in the primary thread. During write-
 
 Agent output and flow metrics are supporting observations, not self-validating proof. A terminal compliant lease receipt proves only that net non-ignored repository changes stayed within the pinned path contract and Git control state; it does not prove semantic correctness. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage, while a lease-guard failure freezes the write branch.
 
-The file schema and project-scoped `.codex/agents/` location follow the [official OpenAI documentation for Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents). Project lifecycle instrumentation follows the [official Codex hooks documentation](https://learn.chatgpt.com/docs/hooks).
+Repository instruction discovery follows the official OpenAI documentation for [custom instructions with `AGENTS.md`](https://learn.chatgpt.com/docs/agent-configuration/agents-md). Repository skill location and progressive disclosure follow [Build skills](https://learn.chatgpt.com/docs/build-skills). The file schema and project-scoped `.codex/agents/` location follow the [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents). Project-layer trust and configuration follow the [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference), and project lifecycle instrumentation follows the [Codex hooks documentation](https://learn.chatgpt.com/docs/hooks).

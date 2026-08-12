@@ -58,11 +58,11 @@ Exact logical replays are idempotent: aggregation keeps the first observation, c
 
 ## Activate the lifecycle hooks
 
-Project hooks are security-sensitive and do not run merely because the files exist. Review [the hook definition](./hooks.json) and [the invoked script](./metrics/agent_flow_metrics.py), then use `/hooks` in Codex to trust the exact project hook definition. Codex skips an untrusted or subsequently changed definition until it is reviewed again.
+Project-local hooks load only after the project `.codex` layer is trusted. Non-managed command hooks also require definition-specific review: inspect [the hook definition](./hooks.json) and [the invoked script](./metrics/agent_flow_metrics.py), then use `/hooks` in Codex CLI to trust the current definition. Codex skips a new or changed command-hook definition until it is reviewed again.
 
-The Unix hook command uses `python3`; its Windows override uses `python`. Both resolve the Git root before invoking the repository script, so starting Codex from a subdirectory does not change the script location. Hooks run asynchronously with a five-second timeout and always return empty valid JSON. A hook parsing or storage failure exits successfully and does not request continuation, blocking, approval, or input rewriting.
+The Unix hook command uses `python3`; its Windows override uses `python`. Both resolve the Git root before invoking the repository script, so starting Codex from a subdirectory does not change the script location. Codex launches all matching command hooks for the same event concurrently. These handlers also run asynchronously with a five-second timeout and may finish out of order; unique atomic event files make ordering unnecessary. They always return empty valid JSON. A hook parsing or storage failure exits successfully and does not request continuation, blocking, approval, or input rewriting.
 
-Hook trust and a real subagent run are required before automatic lifecycle capture can be claimed as runtime evidence. The tracked configuration by itself proves only that instrumentation is available.
+Project-layer trust, current command-hook trust, and a real subagent run are required before automatic lifecycle capture can be claimed as runtime evidence. The tracked configuration by itself proves only that instrumentation is available.
 
 ## Coordinator operation
 
