@@ -296,8 +296,9 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-004 - Create relational persistence from migrations
 
 - **Outcome:** An empty PostgreSQL database can be migrated to the accepted character/comment model through Sequelize.
+- **Execution plan:** The active [TASK-004 relational-persistence ExecPlan](./plans/TASK-004-relational-persistence-from-migrations.md) is registered while TASK-004 remains `Pending`; it cannot start implementation or resolve DG-005.
 - **Mapped scope:** FR-BE-003, NFR-003, DEL-002, AC-009, AC-012.
-- **Governing decisions:** ADR-0002, ADR-0003, ADR-0005, ADR-0010, ADR-0011, ADR-0012, ADR-0014, and the future accepted successor that resolves DG-005.
+- **Governing decisions:** ADR-0002, ADR-0003, ADR-0005, ADR-0008, ADR-0010, ADR-0011, ADR-0012, ADR-0014, and the future accepted successor that resolves DG-005.
 - **Prerequisites and gates:** TASK-002 and TASK-003; DG-001 and DG-002 resolved through completed decision tasks; DG-005 resolved by project-owner approval before TASK-004 starts. AUTH-001 is already Authorized under disposition A for the ADR-0014 non-null image URL column and mapping.
 - **Expected artifacts:** The build-first programmatic Umzug boundary carried forward from ADR-0012 through the DG-005 successor, migration configuration and source, Sequelize models/adapters, isolated persistence integration tests, and executable migration commands. Keep only `characters.image_url` for image persistence and add no image relation or byte field. Do not implement ADR-0012's NFC-based `migrations:v1` lock.
 - **Validation:** Record Red for an empty-database integration test, Green after migrations create the accepted tables, columns, indexes, constraints, and foreign key, then repeat the same scope after Refactor.
