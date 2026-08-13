@@ -96,12 +96,34 @@ async function withTimeout<T>(
   }
 }
 
+function signalOwnedProcessGroup(processGroupId: number, signal: NodeJS.Signals): boolean {
+  try {
+    process.kill(-processGroupId, signal);
+    return true;
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "ESRCH"
+    ) {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
 async function terminateOwnedTree(child: ChildProcess): Promise<void> {
-  if (child.pid === undefined || child.exitCode !== null || child.signalCode !== null) {
+  if (child.pid === undefined) {
     return;
   }
 
   if (process.platform === "win32") {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      return;
+    }
+
     const killer = spawn(
       "taskkill",
       ["/PID", String(child.pid), "/T", "/F"],
@@ -134,12 +156,7 @@ async function terminateOwnedTree(child: ChildProcess): Promise<void> {
     return;
   }
 
-  process.kill(-child.pid, "SIGTERM");
-  await delay(500);
-
-  if (child.exitCode === null && child.signalCode === null) {
-    process.kill(-child.pid, "SIGKILL");
-  }
+  signalOwnedProcessGroup(child.pid, "SIGINT");
 }
 
 async function cleanupSmokeRun(run: SmokeRun): Promise<CleanupResult> {
