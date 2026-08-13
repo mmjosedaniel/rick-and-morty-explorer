@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ES2023",
+      "ESNext.Disposable"
+    ],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tests/smoke/walking-skeleton.smoke.test.ts",
+    "tests/smoke/fixtures/never-ready-api.ts",
+    "scripts/verify-smoke-lifecycle.ts",
+    "scripts/validate-tailwind.ts"
+  ]
+}

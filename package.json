@@ -1,0 +1,41 @@
+{
+  "name": "rick-and-morty-explorer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.16.0",
+  "engines": {
+    "node": ">=24.18.0 <25",
+    "npm": ">=11.16.0 <12"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @rick-and-morty/web && npm run build --workspace @rick-and-morty/api",
+    "start": "concurrently --kill-others-on-fail --names web,api \"npm run start --workspace @rick-and-morty/web\" \"npm run start --workspace @rick-and-morty/api\"",
+    "browser:install": "playwright install chromium",
+    "infra:config": "docker compose -p rick-and-morty-dev config",
+    "infra:up": "docker compose -p rick-and-morty-dev up -d --wait",
+    "infra:ps": "docker compose -p rick-and-morty-dev ps",
+    "infra:down": "docker compose -p rick-and-morty-dev down --volumes",
+    "dev:apps": "concurrently --kill-others-on-fail --names web,api \"npm run dev --workspace @rick-and-morty/web\" \"npm run dev --workspace @rick-and-morty/api\"",
+    "dev": "npm run infra:up && npm run dev:apps",
+    "typecheck": "tsc --noEmit --project tsconfig.tools.json && tsc --noEmit --project apps/web/tsconfig.json && tsc --noEmit --project apps/api/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
+    "validate:tailwind": "tsx scripts/validate-tailwind.ts",
+    "test:unit": "vitest run --config vitest.config.ts --project web-unit --project api-unit",
+    "test:application": "vitest run --config vitest.config.ts --project web-application --project api-application",
+    "test:smoke": "playwright test --config playwright.config.ts",
+    "test:smoke:lifecycle": "tsx scripts/verify-smoke-lifecycle.ts",
+    "test": "npm run test:unit && npm run test:application && npm run test:smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@types/node": "24.13.3",
+    "concurrently": "10.0.4",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}
