@@ -9,6 +9,7 @@ node_modules/
 
 # Build output
 dist/
+dist-server/
 build/
 out/
 .next/
@@ -18,6 +19,7 @@ out/
 # Test and coverage output
 coverage/
 .nyc_output/
+.artifacts/
 
 # Logs
 logs/

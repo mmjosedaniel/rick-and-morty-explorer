@@ -2,7 +2,9 @@
 
 ## Repository status
 
-This repository is currently in its requirements and architecture phase. It contains the assessment contract; accepted architecture decisions including ADR-0011 for the planned TypeScript test harness, ADR-0012 for a build-first programmatic migration lifecycle, and [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly; a target system module diagram; a graph-oriented implementation plan whose first implementation node is an operational walking skeleton; a root ExecPlan convention; completed TASK-001, TASK-002, [TASK-016](./docs/plans/completed/TASK-016-character-image-delivery-decision.md), and [TASK-017](./docs/plans/completed/TASK-017-character-image-url-successor-decision.md) decision ExecPlans; an active [TASK-003 operational walking-skeleton ExecPlan](./docs/plans/TASK-003-operational-walking-skeleton.md); five project-scoped Codex agent definitions, a worker-first ExecPlan implementation workflow, an automatic write-lease guard, and optional project-local agent-flow metrics tooling; derived Gherkin specifications; UI field-visibility and visual-foundation specifications; a proposed non-blocking Storybook pilot; execution records; and repository-specific workflow guidance. ADR-0014 is `Accepted`, ADR-0001 and ADR-0013 are preserved as `Superseded` by ADR-0014, and ADR-0004 remains `Superseded` by ADR-0013 in the historical chain. DG-001, DG-002, DG-004, and DG-006 are resolved, and TASK-001, TASK-002, TASK-016, and TASK-017 are `Complete`; DG-004/TASK-016 remain historical image-decision evidence, while ADR-0014/DG-006/TASK-017 own the current direct-URL direction. [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` under disposition A for this personal, educational, non-commercial portfolio's direct display of the official API images and ordinary browser/intermediary caching. The owner subsequently clarified that provider, project-scope, and provider-condition changes do not require AUTH-001 review or reopening; a change to ADR-0014's technical delivery boundary remains an architecture decision rather than an authorization renewal. Authorization does not prove implementation or start a task. TASK-003 remains `Pending` and has not started. Its prior worker-flow, lease, packet, hash, and review evidence remains historical. DPL-DEC-018 materially simplified the active workflow to one normal Red-Green-Refactor path plus coordinator stop-and-triage; exact correction-cycle packet `1B4FBEA61C2CE047579B4B7BD35A2C1D627DCC7945930090B9A6979B88464280` passed fresh review with no finding, so the ExecPlan is ready for a separate execution instruction. Metrics and lease tooling remain repository workflow configuration only: live metrics require project-layer trust, current command-hook trust, and an implementation run, while lease enforcement begins when the coordinator invokes the guard around a future worker assignment. DG-005 separately remains `Pending` for an ADR-0012 migration-lock successor before TASK-004, which also remains `Pending`. No migration runner, test harness, character-image delivery behavior, application scaffold, UI mockup, Storybook configuration or story, runnable web or API service, migration, automated product test, image asset, ERD, or authoritative install, run, migration, import, and API-usage command exists.
+This repository has completed its first implementation task after completing the requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including ADR-0011 for the TypeScript test harness, ADR-0012 for a build-first programmatic migration lifecycle, and [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly; a target system module diagram; a graph-oriented implementation plan; completed task-scoped ExecPlans; five project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. ADR-0014 is `Accepted`; ADR-0001, ADR-0004, and ADR-0013 remain preserved `Superseded` history. DG-001, DG-002, DG-004, and DG-006 are resolved; TASK-001, TASK-002, TASK-003, TASK-016, and TASK-017 are `Complete`; [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized`; and DG-005 separately remains `Pending` before TASK-004.
+
+TASK-003 is `Complete` after passing its implementation, runtime, clean-checkout, CI, independent-review, and documentation-closure gates under the project owner's 2026-08-12 execution authorization. The repository contains a strict npm/TypeScript workspace, a React 18/BrowserRouter/Tailwind shell, an Express liveness process, unit and application projects, a Chromium smoke, a cross-platform six-case lifecycle controller, root build/start/development navigation, an isolated PostgreSQL/Redis Compose definition, and the owner-authorized GitHub Actions workflow. Repository, Windows runtime, Docker, isolated-clone, disposable-Ubuntu, and GitHub-hosted evidence proves the accessible `Rick and Morty Explorer` heading, HTTP 200 with exact body `{ "status": "ok" }`, unit 7/7, application 2/2, smoke 1/1, lifecycle 6/6 with reusable ports, healthy PostgreSQL/Redis containers, scoped teardown, the complete root development entry, and reproducibility from committed snapshot `e58374a`. GitHub Actions run `31658342722`, job `94317643800`, passed the exact workflow on Ubuntu 24.04 at commit `4b721063f56b66aaca22e73267b451bde6e2d084`. TASK-003 remains a foundation only: no GraphQL product API, persistence, migration, import, Redis client/cache behavior, product UI, image behavior, ERD, or product acceptance criterion is implemented, and acceptance remains 0/12.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
@@ -72,8 +74,8 @@ The current evidence-based [documentation consistency review](./docs/reviews/202
 
 | View | Current result |
 |---|---|
-| Minimum assessment | Fail: 0 of 12 acceptance criteria pass because the required application behavior and deliverables have no implementation/runtime evidence. |
-| Repository baseline | Fail: the minimum assessment fails and the adopted optional commitments also have no implementation evidence. |
+| Minimum assessment | Fail: 0 of 12 acceptance criteria pass. TASK-003 proves only the operational shell and liveness foundation; required product behavior and deliverables remain absent. |
+| Repository baseline | Fail: strict TypeScript and task-local automated-test foundations now have evidence, but the minimum assessment and the remaining adopted product commitments are incomplete. |
 
 Pending decision gates explain the next planning work; they do not convert missing implementation into `Blocked` or `Pass`.
 
@@ -81,11 +83,60 @@ Pending decision gates explain the next planning work; they do not convert missi
 
 | Required deliverable | Current evidence |
 |---|---|
-| [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Partially demonstrated: anonymous read access to the configured [GitHub repository](https://github.com/mmjosedaniel/rick-and-morty-explorer) was verified on 2026-08-09 with `git ls-remote`, but no application source has been committed, so the deliverable does not pass. |
+| [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Partially demonstrated: anonymous read access to the configured [GitHub repository](https://github.com/mmjosedaniel/rick-and-morty-explorer) was verified on 2026-08-09, and committed TASK-003 skeleton source is present on the pushed branch and [draft PR #8](https://github.com/mmjosedaniel/rick-and-morty-explorer/pull/8). Complete application delivery remains pending through TASK-014, so the deliverable and AC-012 do not pass. |
 | [DEL-002](./docs/REQUIREMENTS.md#del-002---entity-relationship-diagram) - Entity-relationship diagram | Not yet available because no migrations have been implemented. |
-| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Not yet available because no authoritative application commands or executable GraphQL schema exist. |
+| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Partially demonstrated: the operational walking-skeleton commands are documented below, but no executable GraphQL schema, product API examples, migration/import workflow, or complete application guide exists. |
 
 This status section must be updated and supplemented with links to reproducible prerequisites, configuration, installation, infrastructure, migration, character-import, development, test, build, and GraphQL usage instructions as the corresponding executable artifacts are added.
+
+## Operational walking skeleton
+
+TASK-003 currently targets Node.js `24.18.0` and npm `11.16.0`. Install the immutable dependency graph and Chromium with:
+
+```text
+npm ci
+npm run browser:install
+```
+
+The local defaults are recorded in [`.env.example`](./.env.example). The API accepts only loopback `API_HOST=127.0.0.1` and a decimal `API_PORT` from 1 through 65535; its defaults are `127.0.0.1:3000`. PostgreSQL and Redis also have local-only defaults. Do not commit real secrets.
+
+With Docker Compose available, the complete development entry starts healthy PostgreSQL and Redis before the foreground web and API processes:
+
+```text
+npm run dev
+```
+
+If another local service already owns a default infrastructure port, set explicit free loopback ports in the same PowerShell session before running the development and infrastructure commands. For example, the verified Windows run preserved an existing PostgreSQL 18.1 service on `5432` and used:
+
+```powershell
+$env:POSTGRES_PORT = '55432'
+$env:REDIS_PORT = '56379'
+npm run dev
+```
+
+The development web URL is `http://127.0.0.1:5173`; API liveness is `http://127.0.0.1:3000/healthz`. Infrastructure remains under the named `rick-and-morty-dev` project after the foreground applications stop. Inspect or remove only that project with:
+
+```text
+npm run infra:ps
+npm run infra:down
+```
+
+For compiled application processes without infrastructure, run `npm run build` followed by `npm start`. This starts the built web server on `127.0.0.1:4173` and the API on `127.0.0.1:3000`; both remain foreground-owned. The current API exposes only `GET /healthz`. It is not a GraphQL or readiness endpoint and does not query PostgreSQL or Redis.
+
+Authoritative verification commands are:
+
+```text
+npm run typecheck
+npm run test:unit
+npm run test:application
+npm run test:smoke
+npm test
+npm run build
+npm run validate:tailwind
+npm run test:smoke:lifecycle
+```
+
+Root `npm test` runs unit, application, then Chromium smoke. `test:integration` is intentionally absent until TASK-004. The smoke owns only ports 4173/4174 and remains independent of PostgreSQL and Redis.
 
 ## Codex quick start
 
