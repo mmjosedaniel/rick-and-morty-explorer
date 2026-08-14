@@ -1,14 +1,16 @@
 # ADR-0012: Use a Build-First Programmatic Migration Lifecycle
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-10
 - Approval date: 2026-08-10
 - Decision owners: Project owner and project maintainers
 - Related requirements: FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012, OR-001
-- Related decisions: ADR-0001, ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011
+- Related decisions: ADR-0001, ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0014, ADR-0015
 - Controlled gate: DG-002; resolved by project-owner approval of this decision on 2026-08-10
 - Supersedes: None
-- Superseded by: None
+- Superseded by: ADR-0015
+
+> Lifecycle notice: ADR-0015 superseded this whole record on 2026-08-14 after fresh independent review returned `PASS` on exact proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1` and the project owner explicitly approved those bytes. This body remains preserved as historical evidence. Its `migrations:v1` identity must not be implemented, reused, or reinterpreted; accepted ADR-0015 is the current migration-lifecycle authority.
 
 ## Context
 
@@ -268,6 +270,7 @@ TASK-014 will derive and validate the ERD only after TASK-004 has implemented an
 - [ADR-0008: Deterministic bootstrap and import](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0010: Targeted automated testing strategy](./0010-use-a-targeted-automated-testing-strategy.md)
 - [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
+- [ADR-0015: Accepted whole-record successor](./0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md)
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
 - [Gherkin specification index](../specs/README.md)
 - [Completed TASK-002 ExecPlan](../plans/completed/TASK-002-sequelize-migration-lifecycle-decision.md)

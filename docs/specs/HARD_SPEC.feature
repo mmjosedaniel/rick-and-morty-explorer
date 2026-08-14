@@ -27,13 +27,13 @@ Feature: Non-negotiable application and delivery constraints
         | the walking-skeleton real-browser smoke                | one Chromium-only Playwright project with two owned processes           |
         | the first production-behavior Red-Green-Refactor cycle | the smallest registered scope owned by the active implementation task   |
 
-  @HS-002 @repository_baseline @DG-002 @DG-005 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0012
-  Rule: Migration-lifecycle work must follow ADR-0012 and the accepted DG-005 successor
+  @HS-002 @repository_baseline @DG-002 @DG-005 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0015
+  Rule: Migration-lifecycle work must follow accepted ADR-0015
 
     Scenario Outline: Keep controlled work inside the accepted migration boundary
       Given DG-002 has status "Resolved"
       And DG-005 has status "Resolved"
-      And an accepted successor carries forward ADR-0012 without the prohibited migrations:v1 lock identity
+      And accepted ADR-0015 supersedes ADR-0012 without reusing or reinterpreting the prohibited migrations:v1 lock identity
       When a change proposes <controlledWork>
       Then the change must use <acceptedBoundary>
       And the artifact must be added only by its owning TASK after every other controlling gate is resolved
@@ -43,9 +43,9 @@ Feature: Non-negotiable application and delivery constraints
         | controlledWork                               | acceptedBoundary |
         | a migration runner or configuration          | private programmatic Umzug 3 on stable Sequelize 6 |
         | the first migration                          | strict TypeScript source mapped to authenticated immutable emitted ESM |
-        | a root migration command                     | the ADR-0012 factory and command facade over one selected build |
-        | the PostgreSQL namespace migration lock      | the owner-approved ADR-0012 successor selected by DG-005 instead of the NFC-based migrations:v1 identity |
-        | a database-backed migration test harness     | ADR-0011 isolation invoking the ADR-0012 boundary in TASK-004 |
+        | a root migration command                     | the ADR-0015 factory and command facade over one selected build |
+        | the PostgreSQL namespace migration lock      | the accepted ADR-0015 catalog-bound migrations:v2 identity instead of ADR-0012's NFC-based migrations:v1 identity |
+        | a database-backed migration test harness     | ADR-0011 isolation invoking the ADR-0015 boundary in TASK-004 |
         | an ERD                                       | migrated-state evidence produced only after TASK-004 implementation |
 
   @HS-003 @repository_baseline @human_decision @DG-003 @FR-FE-001 @FR-FE-002 @FR-FE-003 @FR-FE-004 @FR-FE-005 @OR-003
@@ -265,11 +265,11 @@ Feature: Non-negotiable application and delivery constraints
         | '     |
         | %_'   |
 
-  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0012 @ADR-0014 @DG-002 @DG-005 @DG-006 @AUTH-001
+  @HS-011 @repository_baseline @mandatory @FR-BE-003 @NFR-003 @AC-009 @ADR-0003 @ADR-0014 @ADR-0015 @DG-002 @DG-005 @DG-006 @AUTH-001
   Rule: Relational persistence enforces the accepted model
 
     Scenario: Apply schema migrations without external network access
-      Given the accepted ADR-0012 migration lifecycle has been implemented
+      Given the accepted ADR-0015 migration lifecycle has been implemented
       And DG-005 was resolved before TASK-004 began
       And an empty PostgreSQL database is available
       And external network access is disabled
@@ -596,7 +596,7 @@ Feature: Non-negotiable application and delivery constraints
       And residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests are removed or have an explicit current consumer
       And affected and complete test scopes pass after justified maintenance
 
-  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0012 @ADR-0014
+  @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0014 @ADR-0015
   Rule: Delivery claims require reproducible evidence
 
     Scenario: Do not infer implementation from planning artifacts

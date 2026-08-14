@@ -245,13 +245,13 @@ Feature: Rick and Morty character application behavior
       Then the characters query returns an empty list
       And the response contains no GraphQL error
 
-  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @ADR-0012 @ADR-0014 @DG-002 @DG-005 @DG-006 @AUTH-001
+  @SPEC-010 @repository_baseline @mandatory @FR-BE-003 @FR-BE-004 @NFR-003 @AC-009 @ADR-0003 @ADR-0008 @ADR-0014 @ADR-0015 @DG-002 @DG-005 @DG-006 @AUTH-001
   Rule: PostgreSQL is created through migrations and initialized
 
     @minimum_assessment
     Scenario: Create and initialize an empty application database with 15 API characters
       Given an empty PostgreSQL database
-      And the accepted ADR-0012 migration lifecycle has been implemented and is available
+      And the accepted ADR-0015 migration lifecycle has been implemented and is available
       And DG-005 was resolved before TASK-004 began
       When Sequelize migrations and database initialization are run
       Then the application schema is created through Sequelize migrations
@@ -259,7 +259,7 @@ Feature: Rick and Morty character application behavior
 
     Scenario: Use the deterministic accepted baseline
       Given an empty PostgreSQL database
-      And the accepted ADR-0012 migration lifecycle has been implemented and is available
+      And the accepted ADR-0015 migration lifecycle has been implemented and is available
       And DG-005 was resolved before TASK-004 began
       When the version-controlled migrations and explicit character import are run
       Then exactly the upstream character IDs 1 through 15 are stored
@@ -337,7 +337,7 @@ Feature: Rick and Morty character application behavior
       Then the complete source is accessible
       And the Git history demonstrates appropriate version-control usage
 
-  @SPEC-016 @repository_baseline @mandatory @DEL-002 @AC-012 @ADR-0003 @ADR-0008 @ADR-0012 @ADR-0014 @DG-002 @DG-006 @AUTH-001
+  @SPEC-016 @repository_baseline @mandatory @DEL-002 @AC-012 @ADR-0003 @ADR-0008 @ADR-0014 @ADR-0015 @DG-002 @DG-006 @AUTH-001
   Rule: Reviewers can understand the implemented data model
 
     @minimum_assessment
