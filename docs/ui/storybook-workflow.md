@@ -15,7 +15,7 @@ The [requirements specification](../REQUIREMENTS.md) remains authoritative for p
 
 ## Pilot summary
 
-After TASK-003 creates the React application scaffold and TASK-010's gates and prerequisites are satisfied, TASK-010 may run a non-blocking Storybook pilot inside `apps/web` for building and reviewing isolated list UI components and their approved states. Candidate story files use strict TypeScript, remain colocated with the components they describe, and render deterministic local fixtures or intercepted exact avatar URLs rather than contact the live public API.
+TASK-003 has established the React application and workspace foundation. After TASK-010's gates and prerequisites are satisfied, TASK-010 may run a non-blocking Storybook pilot inside `apps/web` for building and reviewing isolated list UI components and their approved states. Candidate story files use strict TypeScript, remain colocated with the components they describe, and render deterministic local fixtures or intercepted exact avatar URLs rather than contact the live public API.
 
 The candidate boundary includes component development, responsive inspection, state enumeration, and local design review. It does not include a published catalog, hosted visual-regression service, CI quality gate, test-runner selection, or production runtime dependency. The current implementation plan does not require Storybook for TASK-010, TASK-011, or TASK-012 completion.
 
@@ -25,7 +25,7 @@ The candidate boundary includes component development, responsive inspection, st
 - TASK-010 is the only initial pilot owner. If activated, it may add base configuration plus list-card, list-state, sorting, and filter stories within that task's existing behavior scope.
 - If the pilot is retained, TASK-011 may add detail, favorite, and comment stories, and TASK-012 may add responsive and resilient-state variants within their existing scopes.
 - TASK-009 remains the owner of DG-003 resolution and is not a Storybook implementation task.
-- TASK-016 and DG-004 preserve the Superseded ADR-0013 decision history. TASK-017 resolved DG-006 through accepted ADR-0014, and AUTH-001 is separately Authorized under disposition A. Local story fixtures neither prove the direct runtime character-image boundary nor constitute authorization evidence.
+- TASK-016 and DG-004 preserve the Superseded ADR-0013 decision history. TASK-017 resolved DG-006 through accepted ADR-0014, and AUTH-001 is separately Authorized under disposition A within the recorded personal, educational, non-commercial portfolio and direct-URL scope. Local story fixtures neither prove the direct runtime character-image boundary nor constitute authorization evidence.
 - TASK-013 remains the owner of adopted automated-test closure. Stories do not contribute to OR-004 or automated-test evidence unless the accepted DG-001 decision and implementation plan explicitly make them part of the test boundary.
 - Storybook is not an expected artifact or completion gate in the current implementation plan. Choosing not to activate the pilot, or removing it after evaluation, does not block TASK-010 through TASK-012.
 
@@ -65,7 +65,7 @@ apps/web/
 - Colocate a story with the component it documents unless a page-level composition has a clearer existing owner.
 - Do not create a shared workspace package solely for stories or fixtures.
 - Treat Storybook packages as development dependencies; production bundles and runtime behavior must not depend on the Storybook environment.
-- Defer the exact Storybook version, builder, install command, and root script name until TASK-003 establishes the package manager, runtime targets, and frontend build foundation.
+- TASK-003 already established the package manager, runtime targets, and frontend build foundation. If TASK-010 activates the pilot, record its exact Storybook version, builder, development dependency, install command, and root script before adding those artifacts; this workflow does not select them.
 
 ## Candidate story coverage
 
@@ -96,7 +96,7 @@ Do not add stories merely to increase their count. Each story must protect a nam
 
 ## Relationship to mockups
 
-Before an application scaffold exists, lightweight interactive HTML/CSS mockups or reviewed design frames may live under `docs/ui/mockups/` and remain design intent. If the pilot is retained and a corresponding story exists, that story becomes the preferred editable component preview.
+Before the relevant product UI components exist, lightweight interactive HTML/CSS mockups or reviewed design frames may live under `docs/ui/mockups/` and remain design intent. If the pilot is retained and a corresponding story exists, that story becomes the preferred editable component preview.
 
 Reviewed PNG, SVG, or other static exports may remain under `docs/ui/mockups/` when they help compare or approve a design. Each export must record its viewport, status, related IDs, and source story or frame. Static exports do not replace the story, component, or runtime verification and must not be described as implementation evidence.
 
@@ -127,7 +127,7 @@ Neither this document nor DPL-DEC-013 resolves pending DG-003 or changes the res
 
 TASK-017 resolved DG-006 through accepted ADR-0014. TASK-016 remains `Complete`, DG-004 remains `Resolved`, and ADR-0013 remains `Superseded` as historical evidence. Storybook may intercept the exact governed absolute avatar URL with deterministic local success and failure responses to exercise anonymous-CORS, no-referrer, fixed-square, and one-way fallback presentation. Those fixtures must not contact the live upstream host, become a same-origin production asset path, or be treated as runtime implementation, content-rights authorization, or production delivery evidence.
 
-This document and DPL-DEC-013 do not prove ADR-0014 behavior. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is separately `Authorized` under disposition A, but that authorization is not Storybook, runtime, or acceptance evidence.
+This document and DPL-DEC-013 do not prove ADR-0014 behavior. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is separately `Authorized` under disposition A only within its recorded portfolio/direct-URL scope, but that authorization is not Storybook, runtime, or acceptance evidence.
 
 ## Pilot evaluation
 

@@ -4,10 +4,11 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
-- [2026-08-09 documentation consistency review](./2026-08-09-documentation-consistency-review.md) — evaluates the current walking-skeleton roadmap, AI-assistant DAG, target module view, UI guidance, specifications, and execution records.
+- [2026-08-14 documentation consistency and readiness review](./2026-08-14-documentation-consistency-and-readiness-review.md) — reconciles current documentation navigation with TASK-003 foundation evidence, accepted ADR-0014/ADR-0015, completed TASK-017/TASK-018, scope-bound AUTH-001, the pending TASK-004 execution-authorization boundary, and AC-001 through AC-012.
 
 ## Historical Records
 
+- [2026-08-09 documentation consistency review](./2026-08-09-documentation-consistency-review.md) — records the aligned pre-TASK-003 roadmap, target module view, UI guidance, specifications, and execution records before application implementation began.
 - [2026-08-09 initial documentation work review](./2026-08-09-latest-documentation-work-review.md) — establishes the initial `0/12` readiness baseline and records the earlier TASK-001-through-TASK-015 documentation batch. Its filename is retained for stable historical links; it predates DG-004, TASK-016, HS-020, the UI documentation, and the target system diagram.
 
 ## Review Rules

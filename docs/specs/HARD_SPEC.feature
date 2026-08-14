@@ -654,12 +654,13 @@ Feature: Non-negotiable application and delivery constraints
       Given DG-006 has status "Resolved"
       And ADR-0014 has status "Accepted"
       And AUTH-001 has status "Authorized"
+      And AUTH-001 is limited to this personal, educational, non-commercial portfolio using the exact ADR-0014 direct URLs and ordinary browser and intermediary caching
       When a change proposes image-specific persistence, import, GraphQL, Redis, browser, CSP, fallback, test, or documentation work
       Then it must preserve the exact requested-ID, payload-ID, and Character.image URL binding
       And PostgreSQL, GraphQL, and finite Redis projections must use the same exact absolute URL
       And no image relation, image bytes, decoder, durable image cache, proxy route, asset route, image lock, retention, purge, or withdrawal artifact may be added
       And image-specific work may begin only in its owning downstream task after that task's remaining prerequisites
-      And provider, scope, condition, delivery-mechanism, or disposition changes must not require review, reopening, or renewal of AUTH-001
+      And provider or content-source, host or URL mapping, project or commercial scope, provider terms or authorization, objection or takedown status, delivery mechanism or redistribution, or disposition changes must reopen AUTH-001 before dependent image work
       And any proposed departure from ADR-0014's accepted direct-URL technical semantics must remain prohibited until the applicable ADR is approved and synchronized
       And no behavior may be claimed without evidence from its owning downstream task
 

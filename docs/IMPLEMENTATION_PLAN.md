@@ -2,7 +2,7 @@
 
 ## Current planning state
 
-The repository has completed its first implementation task after completing the requirements and architecture foundation. This plan records architectural decision gates and a dependency graph for implementation work. `TASK-003` has repository, Windows runtime, Docker Compose, root-development, isolated committed-checkout, disposable-Ubuntu, successful GitHub-hosted, fresh independent-review, and documentation-closure evidence. No product feature or acceptance criterion is implied.
+The repository has completed its first implementation task after establishing the initial requirements and architecture foundation. This plan records architectural decision gates and a dependency graph for implementation work. `TASK-003` has repository, Windows runtime, Docker Compose, root-development, isolated committed-checkout, disposable-Ubuntu, successful GitHub-hosted, fresh independent-review, and documentation-closure evidence. No product feature or acceptance criterion is implied.
 
 Mandatory requirements and deliverables remain defined in the [requirements specification](./REQUIREMENTS.md). Optional requirements retain the source assessment's classification, and their repository dispositions remain authoritative in the [ADR index](./adrs/README.md#optional-scope-decisions).
 
@@ -47,15 +47,17 @@ An accepted ADR records implementation direction only. Resolving a gate is not e
 
 | Authorization | Status | Recorded disposition and evidence | Authorized scope | Continuity |
 |---|---|---|---|---|
-| [AUTH-001](#auth-001---character-image-content-rights-authorization) | Authorized | **A — Documented authorization.** On 2026-08-11, the project owner explicitly confirmed that this personal, educational, non-commercial portfolio has authorization to display the official API's character images through ADR-0014's direct URLs and ordinary browser/intermediary caching. | Image-specific work may proceed through ADR-0014's exact direct-URL boundary and each owning task after its other prerequisites. This authorization is not implementation evidence. | AUTH-001 remains `Authorized` under the continuity rule below. Technical delivery changes follow the ADR lifecycle without renewing AUTH-001. |
+| [AUTH-001](#auth-001---character-image-content-rights-authorization) | Authorized | **A — Documented authorization.** On 2026-08-11, the project owner explicitly confirmed that this personal, educational, non-commercial portfolio has authorization to display the official API's character images through ADR-0014's direct URLs and ordinary browser/intermediary caching. On 2026-08-14, the owner confirmed that the project will remain within that portfolio scope. | Image-specific work may proceed through ADR-0014's exact direct-URL boundary and each owning task after its other prerequisites. This authorization is not implementation evidence. | AUTH-001 remains `Authorized` only while the recorded portfolio, source, URL mapping, provider conditions, and direct-delivery boundary remain unchanged. The scope-bound reopen rule below governs any departure. |
 
 ### AUTH-001 - Character-image content-rights authorization
 
-- **Status:** Authorized on 2026-08-11 under disposition A.
-- **Owner evidence:** The project owner explicitly confirms authorization for this personal, educational, non-commercial portfolio to display the official API's character images through the exact ADR-0014 direct URLs, including ordinary browser and intermediary caching.
-- **Permitted boundary:** AUTH-001 authorizes this project's character-image use. Implementation under the current architecture still follows ADR-0014's direct-URL behavior and each owning task after its other prerequisites; those are technical and task-ownership constraints, not limits that require authorization renewal.
-- **Continuity:** AUTH-001 remains `Authorized`. Changes in provider or content source; host, URL, path, or character mapping; project or commercial scope; provider terms, authorization, objection, or takedown status; delivery mechanism, including proxying, application-owned bytes, or redistribution; or disposition label do not require review, reopening, or renewal of AUTH-001. Any proposed departure from ADR-0014's accepted direct-URL technical semantics follows the applicable ADR lifecycle without renewing AUTH-001.
+- **Status:** Authorized on 2026-08-11 under disposition A; the project owner confirmed the scope boundary on 2026-08-14.
+- **Owner evidence:** The project owner explicitly confirms authorization for this personal, educational, non-commercial portfolio to display the official API's character images through the exact ADR-0014 direct URLs, including ordinary browser and intermediary caching, and confirms that the project will not move into commercial use.
+- **Permitted boundary:** AUTH-001 authorizes character-image use only within that recorded portfolio scope and ADR-0014's exact direct-URL behavior. Each owning task must still satisfy its other prerequisites. Ordinary implementation work that preserves every element of this boundary does not require authorization renewal.
+- **Continuity and reopen rule:** AUTH-001 remains `Authorized` only while the recorded boundary remains unchanged. Before dependent image-specific work proceeds, reopen AUTH-001 if any provider or content source; host, URL, path, or character mapping; project or commercial scope; provider terms, authorization, objection, or takedown status; delivery mechanism, including proxying, application-owned bytes, or redistribution; or disposition label changes. A proposed departure from ADR-0014's accepted technical semantics follows the applicable ADR lifecycle and also reopens AUTH-001 whenever it changes one of these authorization dimensions.
 - **Evidence limit:** This record satisfies ADR-0014's owner-controlled authorization prerequisite. It is not independent legal verification, implementation evidence, runtime proof, or acceptance evidence.
+
+Every downstream AUTH-001 join in this plan assumes the scope-bound continuity above. Reopening AUTH-001 pauses only affected image-specific work until the project owner records a current disposition; it does not by itself change a task status, task edge, gate status, or ADR status.
 
 ## Active decision gates
 
@@ -70,12 +72,12 @@ An accepted ADR records implementation direction only. Resolving a gate is not e
 
 ## Gate sequence and parallelism
 
-1. DG-001 was resolved by ADR-0011 at repository-foundation time because every production behavior must begin with an executable failing test under ADR-0010. The harness remains unimplemented until TASK-003.
+1. DG-001 was resolved by ADR-0011 at repository-foundation time because every production behavior must begin with an executable failing test under ADR-0010. TASK-003 subsequently implemented the registered unit, application, and Chromium process-smoke scopes. TASK-004 owns the first integration-scope activation, and later task-specific scopes remain absent until their owning tasks implement them.
 2. DG-002 remains historically resolved through now-Superseded ADR-0012, and TASK-002 remains complete. TASK-016 review exposed an NFC alias in ADR-0012's migration-lock identity. Accepted ADR-0015 carries forward the unaffected lifecycle and replaces that identity with the restricted-ASCII/catalog-bound v2 contract. Fresh independent review passed on exact proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`, and explicit owner approval resolved DG-005. The completed approval join changed no TASK dependency edge and did not start TASK-004.
 3. Resolve DG-003 after the project-owned GraphQL operations are stable and before frontend data-access implementation. It does not block backend schema, service, repository, or static frontend layout work.
 4. DG-004 remains historically resolved by now-Superseded ADR-0013. Its materialized-byte direction is preserved with TASK-016 as history and is no longer the implementation target; accepted ADR-0014 and resolved DG-006 now govern image delivery.
 5. DG-005 was resolved on 2026-08-14 through fresh independent `PASS` and explicit owner approval of exact ADR-0015 proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`. TASK-018 is complete; ADR-0015 is accepted; ADR-0012 is reciprocally superseded; and its `rick-and-morty-explorer:migrations:v1` meaning must not be implemented, reused, or reinterpreted. TASK-004 remains Pending and unstarted until separate project-owner execution authorization; its dependencies remain exactly TASK-002 and TASK-003.
-6. DG-006 was resolved through TASK-017 by project-owner approval of fresh-final-IR-B-`PASS` ADR-0014. The accepted successor preserves TASK-016 and ADR-0013 as history, supersedes ADR-0001 and ADR-0013 as whole records, carries forward their unaffected constraints, and selects exact validated direct avatar URLs without image bytes, an asset route, or a runtime proxy. AUTH-001 is `Authorized` under the continuity policy above. Image-specific work may proceed only in its owning downstream tasks after their remaining dependencies; no implementation is implied.
+6. DG-006 was resolved through TASK-017 by project-owner approval of fresh-final-IR-B-`PASS` ADR-0014. The accepted successor preserves TASK-016 and ADR-0013 as history, supersedes ADR-0001 and ADR-0013 as whole records, carries forward their unaffected constraints, and selects exact validated direct avatar URLs without image bytes, an asset route, or a runtime proxy. AUTH-001 is `Authorized` under the scope-bound continuity and reopen policy above. Image-specific work may proceed only in its owning downstream tasks after their remaining dependencies; no implementation is implied.
 
 Neutral requirements and architecture documentation may continue while a gate is pending. Declarative workspace or infrastructure work may proceed only when it does not select or depend on an option controlled by a pending gate.
 
@@ -142,7 +144,7 @@ Milestones describe useful convergence points; they do not add edges or force se
 
 | Milestone | Graph nodes | Observable outcome |
 |---|---|---|
-| M0 - Decision readiness | Completed TASK-001, TASK-002, TASK-016, and TASK-017; TASK-018 prepares the separate DG-005 approval join | The test and image-delivery directions are approved and measurable; the migration-lock successor remains the only unresolved M0 decision join. |
+| M0 - Decision readiness | Completed TASK-001, TASK-002, TASK-016, TASK-017, and TASK-018 | All current M0 decision joins are resolved and measurable. TASK-004 remains separately unstarted because execution authorization has not been given. |
 | M1 - Operational walking skeleton | TASK-003 | One documented root workflow starts a visible React shell and a live Express process; the repository can build, type-check, test, and smoke-check the minimal applications. |
 | M2 - Data and API foundation | TASK-004, then TASK-005 and TASK-006 in parallel | PostgreSQL is created from migrations, the fixed data set can be imported, and the project-owned GraphQL read boundary works against the database. |
 | M3 - First product vertical slice | TASK-009 and TASK-010 after TASK-005 and TASK-006 | A browser renders the imported character list through the project GraphQL API, including sorting and adopted interface filters. |
@@ -203,7 +205,7 @@ The operational walking skeleton is deliberately thinner than the first product 
 
 ### Task status and dependency index
 
-This table is the canonical current status for `TASK-*` work. `Pending` means prerequisites or work remain; `In progress` requires an evidence-linked execution-log entry; `Complete` requires the task's falsifiable definition of done and documentation gate. `Blocked` means an external condition prevents further progress after safe in-scope alternatives have been exhausted; the execution log must identify the condition, evidence, owner or dependency, and smallest next action. TASK-001, TASK-002, TASK-003, TASK-016, and TASK-017 are complete.
+This table is the canonical current status for `TASK-*` work. `Pending` means prerequisites or work remain; `In progress` requires an evidence-linked execution-log entry; `Complete` requires the task's falsifiable definition of done and documentation gate. `Blocked` means an external condition prevents further progress after safe in-scope alternatives have been exhausted; the execution log must identify the condition, evidence, owner or dependency, and smallest next action. TASK-001, TASK-002, TASK-003, TASK-016, TASK-017, and TASK-018 are complete.
 
 | Task | Status | May start after | Additional completion join or approval |
 |---|---|---|---|
@@ -266,7 +268,7 @@ Reversible execution choices that are not controlled by a decision gate, such as
 - **Expected artifacts:** Accepted ADR-0013, reciprocal ADR-0004 supersession, the updated ADR index, this resolved gate record, affected image-delivery guidance, directly affected specification routing, approval chronology, and the completed ExecPlan.
 - **Validation:** Run the ADR validator and verify that the selected path defines URL and byte ownership, ingestion and persistence effects, browser and server request boundaries, deterministic tests, failure and recovery behavior, downstream task ownership, and the exact preservation or governed supersession relationship to ADR-0001, ADR-0004, and ADR-0006.
 - **Documentation impact:** ADR index, implementation plan, system module diagram, image-delivery guidance, specifications, and execution log.
-- **Done when:** Achieved on 2026-08-11: the project owner accepted ADR-0013, DG-004 is `Resolved`, reciprocal ADR-0004 supersession is recorded, the documentation and relevance gates pass, and no asset strategy is described as implemented without repository evidence. Rights disposition A/B/C remains a separate pre-implementation gate.
+- **Done when:** Achieved on 2026-08-11: the project owner accepted ADR-0013, DG-004 is `Resolved`, reciprocal ADR-0004 supersession is recorded, the documentation and relevance gates pass, and no asset strategy is described as implemented without repository evidence. Rights disposition A/B/C remained a separate pre-implementation gate at this TASK-016 closure; [AUTH-001](#auth-001---character-image-content-rights-authorization) later recorded disposition A, and accepted ADR-0014 now owns the direct-URL successor boundary.
 
 ### TASK-017 - Select the proportional character-image URL successor
 
@@ -311,7 +313,7 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-004 - Create relational persistence from migrations
 
 - **Outcome:** An empty PostgreSQL database can be migrated to the accepted character/comment model through Sequelize.
-- **Execution plan:** The active [TASK-004 relational-persistence ExecPlan](./plans/TASK-004-relational-persistence-from-migrations.md) is registered while TASK-004 remains `Pending`; it cannot start implementation or resolve DG-005.
+- **Execution plan:** The active [TASK-004 relational-persistence ExecPlan](./plans/TASK-004-relational-persistence-from-migrations.md) is registered while TASK-004 remains `Pending`. Registration did not start implementation or resolve DG-005; completed TASK-018 and accepted ADR-0015 resolved that gate separately, and TASK-004 still requires separate execution authorization.
 - **Mapped scope:** FR-BE-003, NFR-003, DEL-002, AC-009, AC-012; OR-001 (adopted optional).
 - **Governing decisions:** ADR-0002, ADR-0003, ADR-0005, ADR-0008, ADR-0010, ADR-0011, ADR-0012 (historical and Superseded), ADR-0014, and accepted ADR-0015.
 - **Prerequisites and gates:** TASK-002 and TASK-003; DG-001 and DG-002 resolved through completed decision tasks; DG-005 resolved by project-owner approval before TASK-004 starts. AUTH-001 is already Authorized under disposition A for the ADR-0014 non-null image URL column and mapping.
@@ -460,7 +462,8 @@ This is planning traceability, not implementation evidence. Exact behavioral exa
 | NFR-002, NFR-005; AC-006 | TASK-012, then TASK-015 |
 | NFR-003 | TASK-003 through TASK-008, then TASK-015 |
 | NFR-004 | Every production task under ADR-0010, with portfolio closure in TASK-013 |
-| NFR-006; DEL-001, DEL-002, DEL-003; AC-012 | TASK-014, then TASK-015 |
+| DEL-002; AC-012 ERD foundation | TASK-004 for the migrated-schema foundation, then TASK-014 and TASK-015 for the ERD artifact and delivery evidence |
+| NFR-006; DEL-001, DEL-003; AC-012 final delivery | TASK-014, then TASK-015 |
 | Adopted OR-001 | TASK-002 and TASK-018 for migration-decision foundations; TASK-003, TASK-004, TASK-006, TASK-007, TASK-010 through TASK-013 for implementation/quality; TASK-013 and TASK-015 for portfolio/delivery closure |
 | Adopted OR-003, OR-004, OR-007, OR-008 | TASK-003, TASK-006, TASK-007, TASK-010 through TASK-013, then TASK-015 |
 | Deferred OR-002, OR-005, OR-006, OR-009 | No implementation task; HS-004 remains a scope guard |

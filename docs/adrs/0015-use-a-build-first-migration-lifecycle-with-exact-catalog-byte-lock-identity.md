@@ -10,7 +10,6 @@
 - Owning task: TASK-018 (Complete)
 - Supersedes: ADR-0012
 - Superseded by: None
-- Superseded by: None
 
 ## Context
 

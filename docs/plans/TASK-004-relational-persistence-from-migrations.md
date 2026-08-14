@@ -50,6 +50,7 @@ This plan is intent, not implementation evidence. The current repository has hea
 - [x] (2026-08-14) Fresh independent review returned `PASS` with no finding on exact ADR-0015 proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`, and the project owner explicitly approved those bytes. Reciprocal synchronization accepted ADR-0015, superseded ADR-0012, resolved DG-005, and completed TASK-018 without changing TASK-004 dependencies, starting this task, or reusing the historical v1 literal.
 - [ ] Obtain separate project-owner execution authorization, change TASK-004 canonically from `Pending` to `In progress`, synchronize current-status navigation, and append a `Started` progress entry before opening any worker lease.
 - [x] (2026-08-14) Re-read exact accepted ADR-0015 and synchronized this waiting plan to consume its compatibility, provenance, startup, identity, deadline, ownership, diagnostics, and recovery contract without reopening those decisions.
+- [x] (2026-08-14) Reconciled the project owner's confirmation that the project will remain a personal, educational, non-commercial portfolio. This plan and its pre-start authority barrier consume [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) only within its exact ADR-0014 direct-URL and ordinary-caching scope; TASK-004 remains `Pending`, unstarted, and unchanged with exactly TASK-002 and TASK-003 as dependencies.
 - [ ] Record the required reversible execution decisions only after re-listing current `DPL-DEC-*` IDs and before adding dependent artifacts.
 - [ ] Complete the bounded setup and every serial Red-Green-Refactor cycle through the worker-first workflow, recording assignment identity, terminal lease receipt, decisive commands, and primary-coordinator acceptance.
 - [ ] Pass the focused, integrated, Windows, continuous-integration, clean-checkout, negative-scope, test-relevance, documentation, and fresh independent-review barriers.
@@ -116,6 +117,10 @@ This plan is intent, not implementation evidence. The current repository has hea
   Rationale: PowerShell native-command failures can otherwise be masked by a later success, and the current root infrastructure scripts own the developer Compose project. The controller is required to own unique resources, capture one artifact, stop dependent work, preserve the primary failure, and clean in `finally`.
   Date/Author: 2026-08-12 / Codex primary coordinator.
 
+- Decision: Consume canonical AUTH-001 only within its recorded personal, educational, non-commercial portfolio and exact ADR-0014 direct-URL/ordinary-caching scope.
+  Rationale: the [implementation plan](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) owns authorization scope and reopen conditions. TASK-004 may implement its image-URL schema contribution only while that boundary remains unchanged; this plan cannot broaden authorization, and a current reopen trigger pauses the affected image-specific work for owner review.
+  Date/Author: 2026-08-14 / Codex primary coordinator.
+
 
 ## Outcomes & Retrospective
 
@@ -123,6 +128,8 @@ This plan is intent, not implementation evidence. The current repository has hea
 Plan registration is complete, but execution has not started. The useful current result is a restartable, dependency-ordered implementation route with a hard gate barrier, explicit ownership boundaries, serial TDD slices, and honest downstream acceptance limits. No runtime behavior, migration interface, schema, test result, ERD, or acceptance criterion exists because of this plan.
 
 DG-005 is now resolved through accepted ADR-0015, and this plan has been synchronized to consume that exact authority. TASK-004 remains `Pending`; no execution authorization, worker lease, package, image update, migration, integration test, or runtime evidence was created by the decision closure.
+
+AUTH-001 remains `Authorized` only within the project owner's confirmed personal, educational, non-commercial portfolio and exact ADR-0014 direct-URL/ordinary-caching scope. This plan consumes that boundary without expanding it; the clarification changes no TASK-004 status, dependency, implementation artifact, runtime evidence, or acceptance result.
 
 At every major milestone, append the observed outcome here, including what passed, what remains, and any unexpected cost or authority conflict. At final closure, summarize the implemented interfaces, Red-Green-Refactor evidence, runtime and CI results, residual limitations, downstream handoff to TASK-005/TASK-006/TASK-014, and the explicit documentation impact.
 
@@ -158,11 +165,11 @@ The accepted decisions governing execution are:
 
 TASK-004 must consume accepted ADR-0015's exact compatibility matrix rather than choose versions; admit only lower-case ASCII database, schema, and user identifiers matching `^[a-z]{1}[a-z0-9_]{0,62}$`; reject the reserved database/schema domains and every nonempty `PG*` environment variable before connection creation; and use only loopback `127.0.0.1` with TLS disabled. It must accept only a frozen, property-free handle issued by the validated configuration loader or ADR-0011 allocator and recognized through module-private `WeakMap` state. The private session must prove the exact forwarded `options=-c client_encoding=UTF8 -c search_path=pg_catalog`, the separately serializer-appended direct `client_encoding=UTF8` pair, PostgreSQL's application of both controls after authentication but before `search_path` and client-encoding initialization, `ReadyForQuery`, and every Sequelize SQL statement, `databaseVersion='18.6.0'`, and the eight-field startup identity including `server_version_num=180006`; bind database/schema through two-field `text` observations before and after the lock; derive v2 from the verified ASCII values; and destroy the physical session on an expired or late lock attempt. Advisory-lock collision tests must distinguish same-database false serialization from cross-database non-contention. These are current architecture inputs but remain unimplemented until separate TASK-004 execution authorization and TDD.
 
-[AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is already `Authorized` for the image-specific schema boundary. That authorization neither starts TASK-004 nor proves the column exists.
+[AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is already `Authorized` for the image-specific schema boundary within the recorded personal, educational, non-commercial portfolio and exact direct-URL scope. That authorization neither starts TASK-004 nor proves the column exists; its current reopen conditions remain owned by the implementation plan.
 
-Current repository evidence includes an npm workspace, strict TypeScript, API/web builds, unit/application/smoke scopes, an existing PostgreSQL 18.4 Compose service, `.env.example` PostgreSQL defaults, and a successful GitHub Actions foundation. The corrected proposal targets PostgreSQL 18.6, but this decision-only edit deliberately does not change the running image; TASK-004 will replace and verify the Compose pin only after acceptance and separate execution authorization. The repository does not include `sequelize`, `umzug`, `pg`, `test:integration`, a migration build, a migration runner, database models/adapters, a migrated database, or an ERD. The current root `test` order is unit, application, smoke because integration is deliberately inactive.
+Current repository evidence includes an npm workspace, strict TypeScript, API/web builds, unit/application/smoke scopes, an existing PostgreSQL 18.4 Compose service, `.env.example` PostgreSQL defaults, and a successful GitHub Actions foundation. Accepted ADR-0015 fixes PostgreSQL 18.6 for TASK-004, but the decision-only acceptance did not change the running image; TASK-004 will replace and verify the Compose pin only after separate execution authorization. The repository does not include `sequelize`, `umzug`, `pg`, `test:integration`, a migration build, a migration runner, database models/adapters, a migrated database, or an ERD. The current root `test` order is unit, application, smoke because integration is deliberately inactive.
 
-In this plan, an immutable migration artifact is a content-addressed emitted-ESM publication authenticated by the ADR-0012 manifest. A namespace is the exact PostgreSQL database/schema pair used by one migration target. Migration history is the schema-local `sequelize_migration_history` relation whose ordered rows and normalized source checksums must be an exact prefix of the selected artifact. These terms remain subject to the accepted DG-005 successor where lock identity or connection ownership is involved.
+In this plan, an immutable migration artifact is a content-addressed emitted-ESM publication authenticated under [ADR-0015](../adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md), which carries forward the unaffected ADR-0012 manifest contract. A namespace is the exact PostgreSQL database/schema pair used by one migration target. Migration history is the schema-local `sequelize_migration_history` relation whose ordered rows and normalized source checksums must be an exact prefix of the selected artifact. ADR-0015 owns the current lock identity and connection boundary.
 
 
 ## Scope and Non-Goals
@@ -172,7 +179,7 @@ TASK-004 includes:
 
 - the successor-fixed compatibility profile: Node.js `24.18.0`, npm `11.16.0`, TypeScript `6.0.3`, PostgreSQL `18.6` / `postgres:18.6-alpine`, Sequelize `6.37.7`, Umzug `3.8.3`, `pg` `8.22.0`, and `pg-hstore` `2.3.4`, with transitive lockfile pins for `pg-protocol` `1.15.0` and `pgpass` `1.0.5`;
 - the strict-TypeScript build generator, manifest creation and verification, private resolver, migration definition/context, checksummed storage, accepted ADR-0015 lock implementation, migrator factory, command facade, and structured diagnostics;
-- version-controlled Sequelize migration source and an immutable native-ESM publication under ADR-0012's accepted roots;
+- version-controlled Sequelize migration source and an immutable native-ESM publication under the roots carried forward by ADR-0015;
 - Sequelize models/adapters aligned with the migrated schema, without allowing model synchronization to own schema creation;
 - the first real-PostgreSQL integration project, one root lifecycle wrapper, unique database/schema allocation, run-owned cleanup, and canonical root `test` registration;
 - root and API-workspace migration build, up, status, down, and emitted-validation interfaces;
@@ -219,9 +226,9 @@ Anticipated assignments are listed below. Before each actual spawn, replace a pa
 ### Milestone 0: Register the plan without starting TASK-004
 
 
-Create this active plan, index it, link it from TASK-004, repair the ADR-0008 trace, append a `Planned` chronology row, and update root current status only to acknowledge the plan. Run documentation, ADR, and diff checks. The milestone succeeds when documentation can route a future executor here while TASK-004 and DG-005 stay `Pending` and searches still find no migration implementation artifact.
+At registration, create this active plan, index it, link it from TASK-004, repair the ADR-0008 trace, append a `Planned` chronology row, and update root current status only to acknowledge the plan. Run documentation, ADR, and diff checks. This milestone succeeded while TASK-004 and DG-005 were both `Pending` and searches found no migration implementation artifact; later TASK-018 resolution changed only the gate state and did not start TASK-004.
 
-### Milestone 1: Satisfy the external gate and start deliberately
+### Milestone 1: Consume the resolved external gate and start deliberately
 
 
 Do no migration implementation in this milestone. Completed [TASK-018](./completed/TASK-018-postgresql-migration-lock-identity-decision.md) preserves its Decision Review Contract, bounded DG-005 option comparison, repository checkpoints, collision-safe ADR allocation, exact project-owner approval, reciprocal lifecycle metadata, and DG-005 resolution. TASK-004 consumes only accepted ADR-0015.
@@ -268,7 +275,7 @@ Prove connection ownership separately: the factory constructs, holds, terminates
 ### Milestone 7: Prove successor lock semantics and concurrency
 
 
-Use only the accepted successor's opaque target, loopback/no-TLS startup, session ownership, v2 literal, restricted identifiers, framing, five positive vectors, and negative uppercase/Unicode fixtures. Prove the 63-character boundary and 64-character rejection for database/schema/user, truncated-user defense, exact `current_user`, PostgreSQL 18.6/`180006`, exact encoding/identifier limit, reserved-name rejection, every nonempty `PG*` rejection, fixed factory fields, suppression of Sequelize's extra version-bootstrap connection, exactly one physical factory-owned session, the eight ordered OIDs/values, and both exact two-field text binds before proving identical key derivation at every supported entry point. Decode the raw StartupMessage and prove exact ordered forwarding of `options=-c client_encoding=UTF8 -c search_path=pg_catalog` plus the serializer-appended direct `client_encoding=UTF8`; distinguish the `getStartupConf()` and serializer responsibilities; and prove PostgreSQL applies both controls after authentication but before `search_path` and client-encoding initialization, `ReadyForQuery`, and every Sequelize SQL statement. Forged handles must fail before Sequelize construction. Two real callers on the same namespace must both perform artifact preflight, then serialize through the accepted lock so the waiter reads history after the winner commits and completes as a no-op. Distinct schemas inside one database must remain safe even under a forced 64-bit collision; equal keys in distinct databases must not contend because advisory locks are database-local. Two ordinary disjoint namespaces using the same immutable build must overlap observably. Prove bounded timeout, destructive timeout recovery, lock visibility/release, and consistent redacted diagnostics.
+Use only ADR-0015's opaque target, loopback/no-TLS startup, session ownership, v2 literal, restricted identifiers, framing, five positive vectors, and negative uppercase/Unicode fixtures. Prove the 63-character boundary and 64-character rejection for database/schema/user, truncated-user defense, exact `current_user`, PostgreSQL 18.6/`180006`, exact encoding/identifier limit, reserved-name rejection, every nonempty `PG*` rejection, fixed factory fields, suppression of Sequelize's extra version-bootstrap connection, exactly one physical factory-owned session, the eight ordered OIDs/values, and both exact two-field text binds before proving identical key derivation at every supported entry point. Decode the raw StartupMessage and prove exact ordered forwarding of `options=-c client_encoding=UTF8 -c search_path=pg_catalog` plus the serializer-appended direct `client_encoding=UTF8`; distinguish the `getStartupConf()` and serializer responsibilities; and prove PostgreSQL applies both controls after authentication but before `search_path` and client-encoding initialization, `ReadyForQuery`, and every Sequelize SQL statement. Forged handles must fail before Sequelize construction. Two real callers on the same namespace must both perform artifact preflight, then serialize through the accepted lock so the waiter reads history after the winner commits and completes as a no-op. Distinct schemas inside one database must remain safe even under a forced 64-bit collision; equal keys in distinct databases must not contend because advisory locks are database-local. Two ordinary disjoint namespaces using the same immutable build must overlap observably. Prove bounded timeout, destructive timeout recovery, lock visibility/release, and consistent redacted diagnostics.
 
 Run two complete integration invocations concurrently with different run IDs. They build once, share the same immutable artifact, allocate disjoint PostgreSQL state, and clean only their own namespaces. Failure or cancellation in one run must not delete the other's schema or artifact. The lifecycle reports primary and cleanup failures separately.
 
@@ -303,18 +310,18 @@ python -B .agents/skills/govern-adrs/scripts/validate_adrs.py --repo .
 git diff --check
 ```
 
-Expected registration result: the tree contains only the authorized documentation changes; both validators pass, with only any already-known nonblocking warning; diff checking passes; TASK-004 and DG-005 remain `Pending`.
+Historical registration result: the tree contained only the authorized documentation changes; both validators passed with only the already-known nonblocking warning; diff checking passed; and TASK-004 and DG-005 remained `Pending` at registration.
 
 Before task start, re-establish the authority barrier:
 
 ```powershell
-rg -n "DG-005|TASK-004" docs/IMPLEMENTATION_PLAN.md README.md docs/plans/README.md
+rg -n "DG-005|TASK-004|AUTH-001" docs/IMPLEMENTATION_PLAN.md README.md docs/plans/README.md
 rg -n "^# ADR-|^- Status:|^- Supersedes:|^- Superseded by:" docs/adrs docs/adrs/superseded
 rg -n "DPL-DEC-[0-9]{3}" docs/execution/decision-and-progress-log.md
 git status --short
 ```
 
-Expected result: DG-005 is `Resolved` by an accepted reciprocal successor, no ADR or DPL ID collision exists, the successor—not this plan—owns the new lock contract, and the working tree is understood before the coordinator changes TASK-004 to `In progress`.
+Expected result: DG-005 is `Resolved` by an accepted reciprocal successor; AUTH-001 is still `Authorized` only within the exact personal, educational, non-commercial portfolio and ADR-0014 direct-URL/ordinary-caching boundary, or affected image-specific work remains paused for owner review; no ADR or DPL ID collision exists; the successor—not this plan—owns the new lock contract; and the working tree is understood before the coordinator changes TASK-004 to `In progress`.
 
 The following interfaces do not exist at plan registration. They are anticipated authoritative commands that TASK-004 must create under the exact later DPL records; update this plan before the first Red if the recorded names differ:
 
@@ -364,7 +371,7 @@ For the final isolated checkout, create a verified temporary directory outside t
 ## Validation and Acceptance
 
 
-Registration has no production TDD cycle because it changes only planning/navigation documents. Its replacement evidence is validator success, plan-index/task-link consistency, a clean negative-scope search, and unchanged `Pending` states.
+Registration has no production TDD cycle because it changes only planning/navigation documents. Its replacement evidence is validator success, plan-index/task-link consistency, a clean negative-scope search, the current scope-bound AUTH-001 join, and unchanged `Pending` states.
 
 Implementation acceptance requires recorded assignment identity, worker role, terminal compliant lease result, exact Red/Green/post-Refactor command and outcome, primary-coordinator diff inspection, and primary acceptance for every behavior slice. A worker summary, passing guard, plan checkbox, or CI configuration is insufficient by itself.
 
@@ -373,13 +380,13 @@ The following matrix is cumulative:
 | Contract | Required observable evidence | Authority boundary |
 |---|---|---|
 | Empty namespace | One selected emitted artifact creates the accepted schema/history from empty PostgreSQL; second up no-ops | FR-BE-003, NFR-003, TASK-004, ADR-0003, ADR-0012 successor, HS-011 |
-| Schema | Explicit character search columns, global favorite, comment PK/FK/index, valid relationship acceptance, orphan rejection, non-null text image URL, aligned models | ADR-0003, ADR-0005, ADR-0014, HS-011 |
+| Schema | Explicit character search columns, global favorite, comment PK/FK/index, valid relationship acceptance, orphan rejection, non-null text image URL, aligned models | ADR-0003, ADR-0005, ADR-0014, AUTH-001, HS-011 |
 | Negative schema | No users/auth, soft deletion, normalized location/episode, image subsystem, opaque payload, sync-owned schema, or specialized unmeasured index | ADR-0003, ADR-0005, ADR-0014, HS-011 |
 | Artifact integrity | Exact normative vector and all path/byte/mapping/allowlist/publication/tampering/native-ESM cases pass before database access | ADR-0002 and unaffected ADR-0012 artifact clauses |
 | History and rollback | Exact-prefix checksummed history, read-only status, bounded selectors, rollback/reapply, drift rejection before mutation | Unaffected ADR-0012 lifecycle clauses |
 | Atomic failure | Forward, rollback, history, interruption, incompatible-DDL, cleanup, and ambiguous-commit cases preserve the defined pre-command state/recovery boundary | ADR-0012 successor and ADR-0010 |
-| Application namespace | Only private-`WeakMap` handles from the validated loader/ADR-0011 allocator pass; clones, proxies, JSON, empty/uppercase/Unicode/hyphen/64-character names, reserved databases/schemas, incompatible startup identity, and every nonempty `PG*` fail before mutation, with pre/post database/schema text observations exact | Accepted DG-005 successor, ADR-0003, ADR-0011 |
-| Lock/concurrency | Five v2 vectors pass in both reference runtimes; same namespace serializes after fresh read; forced same-database schema collision remains safe; equal keys in distinct databases do not contend; hung/late acquisition destroys and retires the session at deadline; ordinary disjoint namespaces overlap | DG-005 successor, ADR-0011, unaffected ADR-0012 clauses |
+| Application namespace | Only private-`WeakMap` handles from the validated loader/ADR-0011 allocator pass; clones, proxies, JSON, empty/uppercase/Unicode/hyphen/64-character names, reserved databases/schemas, incompatible startup identity, and every nonempty `PG*` fail before mutation, with pre/post database/schema text observations exact | ADR-0015, ADR-0003, ADR-0011 |
+| Lock/concurrency | Five v2 vectors pass in both reference runtimes; same namespace serializes after fresh read; forced same-database schema collision remains safe; equal keys in distinct databases do not contend; hung/late acquisition destroys and retires the session at deadline; ordinary disjoint namespaces overlap | ADR-0015, ADR-0011 |
 | Interfaces | Workspace/root build, up, status, down, preparation, emitted validation and result codes work from documented CWDs on Windows and CI | ADR-0011 and ADR-0012 successor |
 | Forbidden coupling | Network-disabled run finds no import/seed/upstream API, Redis, GraphQL, HTTP/startup migration, TS-source execution, CLI/default storage, sync, or published-build deletion | ADR-0008, ADR-0012 successor, HS-002, HS-011 |
 | Test portfolio | Root integration is real, nonempty, isolated, and ordered unit -> integration -> application -> smoke; no skipped/focused/weakened/residual test artifact | ADR-0010, ADR-0011, HS-017 |
@@ -387,7 +394,8 @@ The following matrix is cumulative:
 
 TASK-004 is done only when all of these are true:
 
-- DG-005 was resolved before any controlled artifact was added, and the implementation matches the accepted successor rather than ADR-0012's prohibited NFC `v1` identity.
+- DG-005 was resolved before any controlled artifact was added, and the implementation matches ADR-0015 rather than ADR-0012's prohibited NFC `v1` identity.
+- AUTH-001 remained `Authorized` within the exact personal, educational, non-commercial portfolio and ADR-0014 direct-URL/ordinary-caching boundary throughout affected image-schema work; any reopen trigger was reconciled before that work resumed.
 - Forward migration from empty PostgreSQL plus documented rollback, no-op, drift, failure, recovery, lock, concurrency, artifact, command, and cleanup behavior passes against real isolated PostgreSQL with no external API call.
 - Strict no-emit and native emitted-ESM evidence passes under exact locked dependencies on Windows and GitHub-hosted CI.
 - A committed clean checkout reproduces install, infrastructure, migrations, tests, build, and documentation checks without unowned residue.
@@ -405,6 +413,8 @@ Plan registration and validation are safe to repeat. Do not rewrite or delete hi
 Migration build is idempotent only by the accepted content-addressed contract: identical authenticated inputs may reuse an exactly verified immutable publication; commands never replace or delete it. Up/status/down must implement their accepted no-op and bounded semantics. Failed mutating commands leave schema and history at the pre-command state; ambiguous commit never retries automatically. Integration cleanup removes only the run's exact database/schema and reports cleanup failure separately.
 
 DG-005 is resolved, but absence of separate TASK-004 execution authorization still requires stopping before implementation. If accepted ADR-0015 later conflicts with this plan, update the authority first, then this living plan, then obtain fresh review where required. Never infer a lock contract from the old `v1` vectors.
+
+If an AUTH-001 reopen trigger is observed, stop affected image-schema writes, update the implementation plan's canonical authorization record first, and resume only after the project owner records a current disposition and the ordinary task, plan, and specification synchronization is complete.
 
 For worker execution, one coordinator-owned lease exists at a time. Unexpected paths, baseline drift, guard failure, false Red, frozen-test change, or semantic concern stops writes. Preserve the worker diff and receipt for inspection; do not reset, revert, or overwrite user/peer work. Reconcile the last accepted barrier, issue a fresh packet/lease, and resume only from the primary coordinator's explicit acceptance.
 
@@ -426,7 +436,7 @@ Absent: Sequelize, Umzug, pg, integration scope, migration runtime/source/comman
 
 Keep later evidence concise in this section:
 
-- accepted DG-005 successor path, approved artifact digest or commit, and authoritative synchronization evidence;
+- accepted ADR-0015 path, approved artifact digest or commit, and authoritative synchronization evidence;
 - task-start authorization and exact start baseline;
 - DPL IDs for exact dependency/configuration/DDL choices;
 - each cycle ID, Red lease/receipt, frozen-test hash, Green lease/receipt, exact commands, and primary acceptance;
@@ -435,13 +445,13 @@ Keep later evidence concise in this section:
 - Windows, GitHub Actions, and clean-checkout commit/run evidence;
 - final review verdict and documentation validator summaries.
 
-Link to ADR-0012 and its successor for normative path, byte, manifest, transaction, rollback, and concurrency details instead of duplicating their full contracts here. Link to the [completed TASK-002 decision plan](./completed/TASK-002-sequelize-migration-lifecycle-decision.md) for historical research/review, and to the execution log for chronology.
+Link to historical ADR-0012 and current [ADR-0015](../adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) for normative path, byte, manifest, transaction, rollback, and concurrency details instead of duplicating their full contracts here. Link to the [completed TASK-002 decision plan](./completed/TASK-002-sequelize-migration-lifecycle-decision.md) for historical research/review, and to the execution log for chronology.
 
 
 ## Interfaces and Dependencies
 
 
-The completed task must establish these exact architectural interfaces, subject to the accepted successor where noted:
+The completed task must establish these exact architectural interfaces under accepted ADR-0015:
 
 - Authored migration root: `apps/api/src/infrastructure/database/migrations/`.
 - Immutable publication root: `apps/api/dist/infrastructure/database/migrations/builds/<build-id>/`.
@@ -455,9 +465,9 @@ The completed task must establish these exact architectural interfaces, subject 
 - Root `test:integration` lifecycle interface and a unique Node-environment migration/persistence project; root `test` order becomes unit, integration, application, smoke.
 - Explicit one-shot delivery migration before application startup; no HTTP/GraphQL or implicit startup surface.
 
-Dependencies are fixed by the anticipated successor rather than selected here: Node.js `24.18.0`, npm `11.16.0`, TypeScript `6.0.3`, PostgreSQL `18.6` / `postgres:18.6-alpine`, Sequelize `6.37.7`, Umzug `3.8.3`, `pg` `8.22.0`, and `pg-hstore` `2.3.4`, with `pg-protocol` `1.15.0` and `pgpass` `1.0.5` pinned transitively in the sole root lockfile. Do not use ranges, Sequelize 7 alpha/CLI, or substitute packages. Before implementation and delivery evidence, confirm that 18.6 remains the latest PostgreSQL 18 minor; a later minor requires explicit source/runtime compatibility review and replaces the implementation pin when guarantees reproduce. Any guarantee-changing or unreproducible version change requires a successor ADR. Reuse native ESM, Vitest `4.1.10`, and the GitHub Actions route.
+Dependencies are fixed by accepted [ADR-0015](../adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) rather than selected here: Node.js `24.18.0`, npm `11.16.0`, TypeScript `6.0.3`, PostgreSQL `18.6` / `postgres:18.6-alpine`, Sequelize `6.37.7`, Umzug `3.8.3`, `pg` `8.22.0`, and `pg-hstore` `2.3.4`, with `pg-protocol` `1.15.0` and `pgpass` `1.0.5` pinned transitively in the sole root lockfile. Do not use ranges, Sequelize 7 alpha/CLI, or substitute packages. Before implementation and delivery evidence, confirm that 18.6 remains the latest PostgreSQL 18 minor; a later minor requires explicit source/runtime compatibility review and replaces the implementation pin when guarantees reproduce. Any guarantee-changing or unreproducible version change requires a successor ADR. Reuse native ESM, Vitest `4.1.10`, and the GitHub Actions route.
 
-The accepted successor owns the restricted identifier domain, opaque target issuance, exact profile and pre-connection guard, migration-lock version literal, text catalog-bound identity, framing, vectors, signed PostgreSQL binding, database-local collision semantics, timeout/destruction contract, rebind limits, lock lifetime, least-privilege proof, and session/connection ownership. This plan consumes those values and intentionally does not reopen them.
+Accepted ADR-0015 owns the restricted identifier domain, opaque target issuance, exact profile and pre-connection guard, migration-lock version literal, text catalog-bound identity, framing, vectors, signed PostgreSQL binding, database-local collision semantics, timeout/destruction contract, rebind limits, lock lifetime, least-privilege proof, and session/connection ownership. This plan consumes those values and intentionally does not reopen them.
 
 
 ## Revision Note
@@ -493,3 +503,4 @@ The accepted successor owns the restricted identifier domain, opaque target issu
 - 2026-08-14 / Codex primary coordinator: Recorded the complete startup/version/comparison primary integrated barrier and exact corrected Proposed ADR-0015 SHA-256 `E649A26C334C16BC0B3800ECCB07C2F315F176EC0896C60D72E843765355B3E6`. Fresh independent review, explicit owner approval, and separate TASK-004 execution authorization remain. TASK-004 status, dependencies, milestones, and implementation are unchanged.
 - 2026-08-14 / Codex primary coordinator: Recorded fresh independent `REVISE` on exact SHA-256 `E649A26C334C16BC0B3800ECCB07C2F315F176EC0896C60D72E843765355B3E6`, the owner's direct repair authorization, and the resulting precision-corrected Proposed ADR-0015 SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`. Fresh independent review, explicit owner approval, and separate TASK-004 execution authorization remain. TASK-004 status, dependencies, milestones, and implementation are unchanged.
 - 2026-08-14 / Codex primary coordinator: Reconciled fresh independent exact-artifact `PASS` with no finding on ADR-0015 proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1` and the project owner's explicit approval of those bytes. Accepted ADR-0015 now governs this plan, ADR-0012 is Superseded, DG-005 is Resolved, and TASK-018 is Complete. TASK-004 remains `Pending`, unstarted, and dependent only on TASK-002/TASK-003 because separate execution authorization is still required; no package, image, migration, test, or implementation changed.
+- 2026-08-14 / Codex primary coordinator: Synchronized the project owner's non-commercial portfolio clarification by making this plan consume canonical AUTH-001 only within the exact ADR-0014 direct-URL and ordinary-caching scope and by linking the implementation plan's reopen conditions. Updated Progress, Decision Log, Outcomes, the affected current context, the pre-start authority-barrier command, validation/acceptance, and recovery handling together. TASK-004 remains `Pending`, unstarted, and dependent only on TASK-002/TASK-003; no task edge, ADR status, implementation artifact, runtime evidence, or acceptance result changed.
