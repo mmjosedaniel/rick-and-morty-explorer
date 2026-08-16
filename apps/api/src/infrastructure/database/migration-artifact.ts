@@ -182,8 +182,10 @@ async function collectInputs(): Promise<ArtifactInput[]> {
     "apps/api/src/infrastructure/database/migration-artifact-contract.ts",
     "apps/api/src/infrastructure/database/migration-artifact.ts",
     "apps/api/src/infrastructure/database/postgres-lifecycle.ts",
+    "apps/api/tsconfig.json",
     "apps/api/tsconfig.migrations.json",
     "package-lock.json",
+    "tsconfig.base.json",
     ...(await listMigrationSources()),
   ].sort(compareUtf8);
   assertCanonicalPaths(paths);
