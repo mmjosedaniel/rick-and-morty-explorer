@@ -1,4 +1,4 @@
 interface:
   display_name: "Plan Implementation"
   short_description: "Turn requirements and ADRs into executable plans"
-  default_prompt: "Use $plan-implementation to create a dependency-ordered implementation plan for this repository."
+  default_prompt: "Use $plan-implementation to create a scoped, dependency-ordered plan with milestone contracts, risk tiers, validation, and execution budgets."

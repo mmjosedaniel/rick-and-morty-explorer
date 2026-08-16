@@ -8,7 +8,7 @@ Feature: Non-negotiable application and delivery constraints
   isolation, validation, and evidence boundaries. Human-controlled decisions
   must not proceed until their governing decision gates are resolved.
 
-  @HS-001 @repository_baseline @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0010 @ADR-0011
+  @HS-001 @repository_baseline @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0011 @ADR-0016
   Rule: Test-harness work must follow accepted ADR-0011
 
     Scenario Outline: Keep controlled work inside the accepted harness boundary
@@ -25,7 +25,7 @@ Feature: Non-negotiable application and delivery constraints
         | an executable check for a derived scenario             | an ordinary test mapped to stable traceability IDs                      |
         | the first executable application test                  | a task-registered application project with separate strict type-checking |
         | the walking-skeleton real-browser smoke                | one Chromium-only Playwright project with two owned processes           |
-        | the first production-behavior Red-Green-Refactor cycle | the smallest registered scope owned by the active implementation task   |
+        | the first production milestone-slice Red-Green-Refactor cycle | the minimum coherent registered scope with independent test and implementation ownership |
 
   @HS-002 @repository_baseline @DG-002 @DG-005 @FR-BE-003 @FR-BE-004 @DEL-002 @AC-009 @AC-012 @ADR-0015
   Rule: Migration-lifecycle work must follow accepted ADR-0015
@@ -546,16 +546,32 @@ Feature: Non-negotiable application and delivery constraints
         | 768   |
         | 1280  |
 
-  @HS-017 @repository_baseline @adopted_optional @OR-004 @OR-007 @ADR-0010 @ADR-0014 @DG-001
+  @HS-017 @repository_baseline @adopted_optional @OR-004 @OR-007 @ADR-0014 @ADR-0016 @DG-001
   Rule: The automated test portfolio covers the selected risks
 
-    Scenario: Drive each production behavior through one TDD cycle
+    Scenario: Drive each production milestone slice through one test-first cycle
       Given DG-001 has been resolved and the relevant test boundary exists
-      When a production behavior is changed
-      Then the smallest relevant test fails first for the intended reason during Red
-      And only enough production behavior is added to pass during Green
-      And the relevant scope remains green after Refactor
-      And the handoff records the exact Red, Green, and post-Refactor commands and outcomes
+      And the test owner has classified each intended scenario as EXISTING_AND_COVERED, EXISTING_BUT_UNCOVERED, MISSING, REGRESSION, PARTIAL, CONFLICTING, or UNKNOWN
+      When a coherent milestone slice changes production behavior
+      Then its minimum coherent test set fails first for one intended shared reason during Red
+      And the coordinator freezes the accepted test boundary before the implementation owner starts
+      And the implementation owner reuses a fresh accepted Red unless evidence is missing or stale, the worktree or contract drifted, or external state can change the result
+      And the implementation owner adds the smallest complete production change required for Green
+      And the focused scope remains green after any Refactor
+      And focused scope reaches Green for every coherent slice
+      And the milestone records one affected-suite and relevant type-check or build join
+      And the milestone records one risk-proportional independent semantic review
+      And the handoff records the exact Red, Green, affected-scope, and milestone commands and outcomes
+
+    Scenario: Avoid artificial cycles and unrelated behavior batches
+      Given preflight finds covered, uncovered, partial, missing, regressed, conflicting, or uncertain behavior
+      When the milestone slice is formed
+      Then EXISTING_AND_COVERED records passing test and implementation evidence without a new cycle
+      And EXISTING_BUT_UNCOVERED adds passing characterization evidence without Green or a production edit
+      And only a coordinator-confirmed explicit gap of PARTIAL may enter the cycle
+      And CONFLICTING and UNKNOWN stop dependent work for reconciliation or bounded investigation
+      And unrelated goals, contracts, boundaries, or change surfaces remain separate slices
+      And no next slice begins before the current slice is Green
 
     Scenario: Meet the adopted frontend test commitment
       Given the frontend test scope selected after DG-001 exists
@@ -589,12 +605,20 @@ Feature: Non-negotiable application and delivery constraints
       And no test is weakened or deleted merely to make implementation pass
       And production behavior does not branch on the test environment
 
-    Scenario: Audit test relevance before completing a plan or milestone
-      Given an implementation plan or major milestone is otherwise complete
-      When the required test-relevance audit runs
+    Scenario: Audit affected test relevance before completing a milestone
+      Given an implementation milestone is otherwise complete
+      When the milestone test-relevance audit runs
       Then affected tests remain traceable to current requirements, ADRs, contracts, or confirmed regressions
+      And affected fixtures, mocks, helpers, snapshots, skipped tests, and focused tests are removed or have an explicit current consumer
+      And the affected test scopes and relevant strict type-check or build boundary pass after justified maintenance
+
+    Scenario: Audit complete test relevance at task closure
+      Given an implementation plan and its owning task are otherwise complete
+      When the closure test-relevance audit runs
+      Then suite-wide tests and support artifacts remain traceable to current requirements, ADRs, contracts, or confirmed regressions
       And residual fixtures, mocks, helpers, snapshots, skipped tests, and focused tests are removed or have an explicit current consumer
-      And affected and complete test scopes pass after justified maintenance
+      And the complete authoritative test scopes pass at closure
+      And a repeated complete scope identifies the risk, drift, failed prerequisite, or evidence invalidation that required it
 
   @HS-018 @repository_baseline @mandatory @DEL-001 @DEL-002 @DEL-003 @NFR-006 @AC-012 @ADR-0003 @ADR-0006 @ADR-0008 @ADR-0014 @ADR-0015
   Rule: Delivery claims require reproducible evidence
@@ -624,7 +648,7 @@ Feature: Non-negotiable application and delivery constraints
       And the instructions cover prerequisites, non-secret configuration, installation, infrastructure, migration, import, development, test, build, and all four GraphQL use cases
       And the instructions describe the third-party avatar URL, CSP, CORS, referrer, privacy, cache, outage, fallback, and rights boundaries when image delivery exists
 
-  @HS-019 @repository_baseline @mandatory @NFR-004 @ADR-0002 @ADR-0006 @ADR-0010 @ADR-0014
+  @HS-019 @repository_baseline @mandatory @NFR-004 @ADR-0002 @ADR-0006 @ADR-0014 @ADR-0016
   Rule: Mandatory code quality remains structured and reviewable
 
     @minimum_assessment

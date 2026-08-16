@@ -1,6 +1,6 @@
 # Project-Scoped Codex Agents
 
-This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, and stopping condition for each spawned instance. Write-capable implementation workers receive the canonical [Worker Assignment Packet v1](./execplan-implementation-workflow.md#worker-assignment-packet-v1), whose required fields are a minimum context floor rather than a maximum reading boundary.
+This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, budget, and stopping condition for each instance. Write-capable implementation workers receive the canonical [Milestone Assignment Packet v2](./execplan-implementation-workflow.md#milestone-assignment-packet-v2), whose compact capsule supplies exact authority anchors and accepted evidence for one coherent milestone slice.
 
 These agents support repository work. They do not change product scope, approve architecture, resolve a decision gate, replace an ExecPlan, or count as implementation or acceptance evidence. All agents remain subject to the root [repository guidelines](../AGENTS.md) and must begin repository work from the [documentation map](../README.md#documentation-map).
 
@@ -25,24 +25,28 @@ Project-scoped `.codex` configuration and hooks load only for a trusted project.
 |---|---|---|---|
 | [`technology_researcher`](./agents/technology-researcher.toml) | Read only | Investigate one assigned technical option against common criteria and return primary-source evidence in a fixed structure | Repository edits, final synthesis, architecture approval, or task and gate status changes |
 | [`decision_analyst`](./agents/decision-analyst.toml) | Read only | Audit research comparability and Decision Review Contract coverage, rank options, and return a traceable recommendation, ADR outline, and synthesis-readiness verdict | Repository edits, ADR numbering or approval, owner-controlled choices, or task and gate status changes |
-| [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Try to falsify an assigned pre-draft decision contract or exact final artifact against repository authorities and reproducible evidence | Editing the reviewed work, approving owner-controlled decisions, or taking closure ownership |
-| [`test_worker`](./agents/test-worker.toml) | Workspace write under an explicit lease | Add one smallest test for an assigned behavior slice and prove the intended Red | Production behavior, evidence-document edits, architecture decisions, status changes, Green authorization, or task closure |
-| [`code_worker`](./agents/code-worker.toml) | Workspace write under an explicit lease | Perform bounded setup or minimum Green with optional same-turn behavior-preserving Refactor | Changing an accepted test, evidence-document edits, selecting architecture, status changes, or task closure |
+| [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Try to falsify an ordinary higher-risk decision contract, milestone, or integrated final artifact against repository authorities and reproducible evidence | Editing the reviewed work, approving owner-controlled decisions, or taking closure ownership |
+| [`milestone_reviewer`](./agents/milestone-reviewer.toml) | Read only | Review one ordinary completed implementation milestone proportionally and reuse fresh evidence | Critical-risk review, editing, or closure ownership |
+| [`critical_reviewer`](./agents/critical-reviewer.toml) | Read only | Perform maximum-effort adversarial review when a named critical trigger applies | Routine milestone review, editing, or closure ownership |
+| [`test_worker`](./agents/test-worker.toml) | Workspace write under an explicit lease | Perform read-only preflight, then own one coherent milestone Red or passing characterization | Production behavior, evidence-document edits, architecture decisions, status changes, Green authorization, or task closure |
+| [`code_worker`](./agents/code-worker.toml) | Workspace write under an explicit lease | Perform bounded setup or milestone Green with optional same-turn behavior-preserving Refactor | Changing an accepted test, evidence-document edits, selecting architecture, status changes, or task closure |
 
 Codex identifies each custom agent by the `name` field inside its TOML file. The filenames follow the same names in kebab case for navigation only.
 
 ## Model and Reasoning Policy
 
-The workflow uses one model family with role-specific reasoning effort:
+The workflow routes model and reasoning effort by responsibility and risk:
 
 | Execution role | Model and effort | Rationale |
 |---|---|---|
-| Primary coordinating thread | `gpt-5.6-sol` with `max` when available | Owns synthesis, write-lease routing, integration, state reconciliation, approval handling, and final closure. It is the sole writer for decision work and normally delegates implementation writes. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
+| Primary coordinating thread | `gpt-5.6-sol`, `medium` by default; `high` for S2 or equivalent cross-boundary synthesis; `max` only for S3/critical triggers or explicit owner direction | Owns synthesis, write-lease routing, integration, state reconciliation, approval handling, and final closure. It is the sole writer for decision work and normally delegates implementation writes. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
 | `technology_researcher` | `gpt-5.6-sol`, `high` | Each instance has a bounded, parallel, evidence-gathering assignment. |
 | `decision_analyst` | `gpt-5.6-sol`, `xhigh` | Must reconcile multiple reports, contract coverage, ranking, and decide-now versus prove-later boundaries. |
-| `independent_reviewer` | `gpt-5.6-sol`, `max` | Performs quality-first adversarial exploration and verification at the highest-risk checkpoints. |
-| `test_worker` | `gpt-5.6-sol`, `medium` | Owns one narrow test-side slice and returns concise Red evidence. |
-| `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup or minimum Green with an optional same-turn Refactor. |
+| `milestone_reviewer` | `gpt-5.6-terra`, `high` | Reviews an ordinary completed milestone proportionally without paying maximum-effort cost. |
+| `independent_reviewer` | `gpt-5.6-sol`, `high` | Reviews ordinary higher-risk milestones, decision checkpoints, and integrated final states. |
+| `critical_reviewer` | `gpt-5.6-sol`, `max` | Performs quality-first adversarial review only for named critical triggers. |
+| `test_worker` | `gpt-5.6-sol`, `medium` | Performs preflight and owns one coherent milestone test contract while preserving a separate test context. |
+| `code_worker` | `gpt-5.6-sol`, `medium` | Owns bounded setup or milestone Green with an optional same-turn Refactor while preserving a separate code context. |
 
 Each custom-agent file's explicit `model` and `model_reasoning_effort` values take precedence over the corresponding parent settings. Omitted session settings inherit from the parent, while current-turn runtime overrides can still supersede agent-file sandbox and approval defaults. The primary coordinator must confirm its actual model, reasoning, permissions, and working-tree state at the start of a consequential decision or implementation run. `Ultra` is not a substitute for these topologies: proactive delegation may help independent work, but the repository still requires named barriers, explicit write ownership, fresh review, bounded correction, and owner approval where applicable.
 
@@ -92,7 +96,26 @@ For decision work, the primary thread is deliberately not duplicated as a custom
 
 ### Implementation work
 
-Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary retains integration, evidence acceptance, exception handling, approvals, authoritative status, and closure while delegating bounded edits to `test_worker` and `code_worker` through sequential path leases. Each spawn receives the minimum-but-extensible `Worker Assignment Packet v1`; additional context and reading are allowed, but they never expand a binding assignment field or the lease. The primary opens and terminally closes the [automatic write-lease guard](./write-lease-guard.md), then inspects the receipt, actual diff, command results, and handoff. Red precedes Green; the code worker may Refactor in the same Green turn only while tests stay green and frozen. Any rejected or ambiguous result stops writes for coordinator triage rather than entering an exhaustive automatic state machine. A fresh `independent_reviewer` examines each integrated candidate final state before the primary reconciles closure.
+Write-authorized implementation ExecPlans use the complementary [worker-first ExecPlan implementation workflow](./execplan-implementation-workflow.md). The primary retains integration, evidence acceptance, exception handling, approvals, authoritative status, and closure while delegating bounded edits to separate `test_worker` and `code_worker` contexts through sequential path leases.
+
+For each coherent milestone slice, the primary creates one compact `Milestone Assignment Packet v2`, keeps one test-worker instance and one code-worker instance alive only for that milestone, and retires them after the milestone barrier. Agent persistence reduces repeated context loading but never persists write authority: every write turn has a fresh packet, baseline, digest, lease ID, and terminal close. If a live instance is unavailable, the primary respawns it from the same capsule.
+
+The test worker first performs read-only preflight and returns `EXISTING_AND_COVERED`, `EXISTING_BUT_UNCOVERED`, `MISSING`, `REGRESSION`, `PARTIAL`, `CONFLICTING`, or `UNKNOWN`. Existing covered behavior needs no write. Existing uncovered behavior receives a guarded passing characterization. Missing or regressed behavior follows serial Red then Green. For `PARTIAL`, the coordinator confirms and isolates the explicit missing gap before only that gap follows Red then Green. `CONFLICTING` or `UNKNOWN` stops for triage.
+
+The primary opens and terminally closes the [automatic write-lease guard](./write-lease-guard.md), then inspects the receipt, actual diff, command results, and handoff. Red precedes Green when behavior is missing or regressed; accepted Red evidence can be reused without duplicate execution only while its command, working directory, relevant-tree fingerprint, environment fingerprint, and no-drift condition still match. The code worker may Refactor in the same Green turn only while tests stay green and frozen.
+
+Default milestone limits are one preflight, one coherent Red or characterization, one Green, at most one same-contract correction per role, one review correction loop, stop after the same decisive failure twice, and stop after two no-diff write handoffs. More than three TDD cycles in one milestone requires rescoping instead of silent microcycling.
+
+Review is risk-routed:
+
+| Tier | Typical surface | Review route |
+|---|---|---|
+| `S0` | Documentation-only or deterministic mechanical work inside an implementation ExecPlan milestone | Fresh `milestone_reviewer` at Terra high, reusing deterministic evidence; S0 work outside an implementation ExecPlan needs no LLM reviewer unless another trigger applies |
+| `S1` | Ordinary bounded application milestone | Fresh `milestone_reviewer` at Terra high |
+| `S2` | Cross-boundary database, API, platform, or integration milestone | Fresh `independent_reviewer` at Sol high |
+| `S3` | Security, irreversible data, concurrency, locking, recovery, custom integrity or identity, or cross-platform byte equivalence | Fresh `critical_reviewer` at Sol max |
+
+An unresolved Blocker or Major from an ordinary reviewer, or explicit project-owner direction, also triggers critical review. Final ordinary integration uses a fresh `independent_reviewer`; use `critical_reviewer` only when a critical trigger remains. Reviewers reuse fresh evidence and rerun missing, stale, contradictory, externally mutable, or risk-critical checks rather than reflexively repeating every suite.
 
 The [agent-flow metrics policy](./agent-flow-metrics.md) is an optional, non-blocking observation sidecar. Use it only when corrections, false Reds, regressions, time, or exact token coverage are worth measuring. Metrics never replace the lease guard, ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
 
@@ -134,7 +157,9 @@ Custom agents do not run automatically merely because their files exist. The coo
 
 ```text
 Act as the primary coordinator for the exact TASK-* and its owning ExecPlan.
-Use gpt-5.6-sol with max reasoning for the primary thread when available.
+Use gpt-5.6-sol with medium reasoning for ordinary primary coordination. Escalate
+the primary to high only for S2 or equivalent cross-boundary synthesis, and to max
+only for an S3/critical trigger or explicit project-owner direction.
 
 Before research, create or verify the living Decision Review Contract in the
 ExecPlan. Have one read-only technology_researcher instance evaluate each option
@@ -206,9 +231,9 @@ The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-
 
 ## Permission and Evidence Boundaries
 
-All five custom agent definitions set `model = "gpt-5.6-sol"`. The researcher, analyst, and reviewer remain `read-only` with `high`, `xhigh`, and `max` reasoning according to role. The test and code workers use `medium` reasoning and `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
+The custom definitions route model and effort by role: research and analysis remain Sol high/xhigh; ordinary independent review is Sol high; milestone review is Terra high; critical review is Sol max; and test and code workers remain Sol medium. Review roles are read-only. Test and code workers use `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Test-worker preflight is read-only by workflow contract and has no lease; the configured sandbox does not itself enforce that narrower phase, so any write is a violation. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
 
-Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to the test and code workers in the serial order defined by the implementation guide. The coordinator records accepted evidence and any exceptional primary-thread implementation edit with its reason, paths, and validation.
+Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to persistent milestone-local test and code workers in the serial order defined by the implementation guide. Persistence retains role context, not leases or authority. The coordinator records accepted evidence identities and any exceptional primary-thread implementation edit with its reason, paths, and validation.
 
 Agent output and flow metrics are supporting observations, not self-validating proof. A terminal compliant lease receipt proves only that net non-ignored repository changes stayed within the pinned path contract and Git control state; it does not prove semantic correctness. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage, while a lease-guard failure freezes the write branch.
 

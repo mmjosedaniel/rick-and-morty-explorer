@@ -17,16 +17,17 @@ This document is the canonical implementation roadmap. Its `TASK-*` records are 
 Use these rules when executing the graph:
 
 1. A node is **ready** only when every `May start after` task is `Complete` and every gate named by that node is `Resolved`. `Ready` is an eligibility condition, not an additional persisted task status.
-2. One primary owner or coordinating assistant owns a node, its status, its integrated evidence, and its documentation closure. For an authorized implementation ExecPlan, `test_worker` and `code_worker` may edit only the bounded paths in their sequential write leases; the coordinator opens and terminally closes each lease through the repository's automatic write-lease guard before accepting a handoff. Workers do not inherit integration, approval, status, evidence-acceptance, or closure ownership.
+2. One primary owner or coordinating assistant owns a node, its status, its integrated evidence, and its documentation closure. For an authorized implementation ExecPlan, `test_worker` and `code_worker` independently own the test and implementation phases of each coherent milestone slice and may edit only the bounded paths in their sequential write leases; the coordinator opens and terminally closes each lease through the repository's automatic write-lease guard before accepting a handoff. Workers do not inherit integration, approval, status, evidence-acceptance, or closure ownership.
 3. Run ready nodes in parallel only when their write scopes do not overlap or when the primary owners agree on an explicit merge order. Within one Git worktree, the automatic guard permits only one active worker write lease; use separate worktrees when independent task owners intentionally execute in parallel. Never run `test_worker` and `code_worker` concurrently within the same Red-Green-Refactor cycle. Shared ADR numbers, root manifests, lockfiles, schemas, ExecPlans, execution records, and current-status documents require one explicit owner and an ordered handoff.
 4. Before implementation, the node owner reads only the mapped requirements, optional dispositions, accepted ADRs, active gates, `SPEC-*`/`HS-*` rules, applicable design documents and recorded reversible decisions, and current repository evidence needed by that node.
-5. Move a node from `Pending` to `In progress` only with an evidence-linked progress-log entry. Production behavior then advances through one observable Red-Green-Refactor cycle at a time under ADR-0010.
+5. Move a node from `Pending` to `In progress` only with an evidence-linked progress-log entry. Production behavior then advances through one preflight-classified, coherent milestone-slice Red-Green-Refactor cycle at a time under ADR-0016. Use ADR-0016's exact seven classifications: covered existing behavior records evidence, uncovered existing behavior adds passing characterization without Green, only missing behavior, regressions, or a coordinator-confirmed partial gap may open Red, and conflicting or unknown evidence stops dependent work.
 6. Mark a node `Complete` only after its falsifiable definition of done, task-specific validation, test-relevance review when applicable, and universal documentation gate all pass. Downstream assistants must not infer completion from plans, generated files, or another assistant's unverified handoff.
 7. If execution exposes a consequential choice outside an accepted ADR, stop only the dependent branch, create or activate the applicable decision gate, and continue other ready nodes when their scopes remain independent.
+8. A future node that materially touches ADR-0015's migration lifecycle must complete ADR-0016's extension-cost watch before Red and compare the estimate with observed change amplification before closure. Preserve the existing large migration-lifecycle integration test as delivered evidence; do not split it during unrelated feature work, and place new scenarios in focused family-specific files behind shared fixtures when the accepted boundary permits. A requirement, reproduced incident, compatibility change, or successor ADR must justify every net-new lifecycle variant; examples and prior exhaustive matrices do not create product scope by themselves.
 
 This roadmap is not an ExecPlan. The repository has adopted the root [ExecPlan convention](../PLANS.md), and node-scoped plans are registered in the [plan index](./plans/README.md). Active plans live directly under `docs/plans/`; completed plans remain as historical evidence under `docs/plans/completed/`. An ExecPlan may provide concrete commands, discoveries, decisions, and recovery steps for its owning node, but it cannot replace this graph, change dependencies, resolve gates, or expand requirement scope. The completed [TASK-001](./plans/completed/TASK-001-test-harness-decision.md), [TASK-002](./plans/completed/TASK-002-sequelize-migration-lifecycle-decision.md), and [TASK-018](./plans/completed/TASK-018-postgresql-migration-lock-identity-decision.md) ExecPlans preserve their execution history. TASK-018 resolved DG-005 without changing TASK-004 dependencies; the project owner later supplied the separate TASK-004 execution authorization on 2026-08-14.
 
-The [project-scoped Codex agent guide](../.codex/README.md) defines five reusable roles and separates decision work from implementation work. Decision research, analysis, and review remain read-only, with the primary as the sole decision-artifact writer. During an authorized [worker-first ExecPlan implementation](../.codex/execplan-implementation-workflow.md), the primary normally delegates bounded repository edits to the workspace-write test and code workers while retaining integration, status, evidence acceptance, project-owner approval handling, and the universal documentation gate. These roles are execution helpers, not graph nodes or task owners.
+The [project-scoped Codex agent guide](../.codex/README.md) defines seven reusable roles and separates decision work from implementation work. Decision research, analysis, and review remain read-only, with the primary as the sole decision-artifact writer. During an authorized [worker-first ExecPlan implementation](../.codex/execplan-implementation-workflow.md), the primary normally delegates bounded repository edits to the workspace-write test and code workers while retaining integration, status, evidence acceptance, project-owner approval handling, and the universal documentation gate. These roles are execution helpers, not graph nodes or task owners.
 
 ## Decision-gate policy
 
@@ -65,7 +66,7 @@ Every downstream AUTH-001 join in this plan assumes the scope-bound continuity a
 |---|---|---|---|---|
 | DG-001 | Resolved | [ADR-0011](./adrs/0011-define-the-typescript-test-harness.md) selects Vitest projects, jsdom, milestone-aware unit/integration/application boundaries, and one Chromium-only Playwright process smoke. | Resolved direction may be implemented only by TASK-003 and later owning tasks; acceptance is not harness evidence. | NFR-004; OR-001, OR-004, OR-007 (adopted optional); ADR-0001 (Superseded), ADR-0002, ADR-0010, ADR-0011, ADR-0014 |
 | DG-002 | Resolved | Now-Superseded [ADR-0012](./adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md) historically selected the private build-first programmatic Umzug 3 lifecycle; accepted [ADR-0015](./adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) carries that lifecycle forward as the current whole-record authority. | Resolved direction may be implemented only by TASK-004 and later owning tasks. Separate TASK-004 execution authorization was received on 2026-08-14; acceptance remains distinct from runner, migration, migrated-database, or ERD evidence. | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012; OR-001 (adopted optional); ADR-0001 (Superseded), ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0012 (Superseded), ADR-0014, ADR-0015 |
-| DG-003 | Pending | Select the frontend GraphQL client and query-cache implementation, including operation type generation, error handling, cache behavior, explicit post-mutation refetching, and its test boundary. | Adding the client dependency or provider, generating client operation artifacts, writing the first frontend data-access test that depends on the selected client or cache, or writing frontend query, mutation, hook, or cache configuration code. | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, OR-003 (adopted optional), AC-001, AC-002, AC-003, AC-004, AC-005; ADR-0002, ADR-0006, ADR-0009, ADR-0010 |
+| DG-003 | Pending | Select the frontend GraphQL client and query-cache implementation, including operation type generation, error handling, cache behavior, explicit post-mutation refetching, and its test boundary. | Adding the client dependency or provider, generating client operation artifacts, writing the first frontend data-access test that depends on the selected client or cache, or writing frontend query, mutation, hook, or cache configuration code. | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, OR-003 (adopted optional), AC-001, AC-002, AC-003, AC-004, AC-005; ADR-0002, ADR-0006, ADR-0009, ADR-0016 |
 | DG-004 | Resolved | Now-Superseded [ADR-0013](./adrs/superseded/0013-materialize-character-images-during-ingestion.md) historically selected validated ingestion-time copies in PostgreSQL and an exact same-origin content-addressed asset route, and superseded ADR-0004. | Historical resolution only; future image-delivery work follows resolved DG-006, accepted ADR-0014, and Authorized AUTH-001. | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003; ADR-0001 (Superseded), ADR-0003, ADR-0004 (Superseded), ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012 (Superseded), ADR-0013 (Superseded), ADR-0014, ADR-0015 |
 | DG-005 | Resolved | Accepted [ADR-0015](./adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md), prepared by completed [TASK-018](#task-018---resolve-the-postgresql-migration-lock-namespace-identity), selects `RESTRICTED-ASCII-DOMAIN`, exact catalog-bound `migrations:v2` identity, PostgreSQL 18.6, the closed local/CI startup profile, opaque target provenance, and destructive lock-deadline recovery. Fresh independent review returned `PASS` with no finding on exact proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`; the project owner explicitly approved those bytes on 2026-08-14. | Historical gate only. The separate TASK-004 execution authorization was received on 2026-08-14; controlled artifacts may now be added only through the active task and its worker-first/TDD barriers. | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012; OR-001 (adopted optional); ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0012 (Superseded), ADR-0014, ADR-0015 |
 | DG-006 | Resolved | Accepted [ADR-0014](./adrs/0014-persist-and-deliver-character-image-urls-directly.md) selects persistence and direct browser use of the exact validated official `Character.image` URL after comparing a fixed-target runtime proxy and retained ingestion-time byte materialization. | Resolved direction may be implemented only by owning downstream tasks after their dependencies. [AUTH-001](#auth-001---character-image-content-rights-authorization) is Authorized under disposition A for the accepted direct boundary; acceptance and authorization are not image-delivery evidence. | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003; ADR-0001 (Superseded), ADR-0003, ADR-0004 (Superseded), ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0013 (Superseded), ADR-0014 |
@@ -228,7 +229,7 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-014 | Pending | TASK-013 | Clean-clone delivery verification |
 | TASK-015 | Pending | TASK-014 | No unresolved release-blocking gate or ADR follow-up |
 
-TASK-003 is `Complete` after TASK-001 completion, DG-001 resolution, separate project-owner execution authorization, successful implementation/runtime verification, and its documentation gate. TASK-002, TASK-004, TASK-016, TASK-017, and TASK-018 are also `Complete`; ADR-0015 is accepted; DG-005 is resolved; and AUTH-001 is `Authorized` under disposition A. TASK-004 completed after the project owner's separate 2026-08-14 execution directive without adding TASK-018 as a dependency. TASK-005 and TASK-006 are now unblocked by TASK-004 and may proceed in parallel when their own remaining joins and work are satisfied. TASK-007 and TASK-008 branch from the backend path; TASK-009 selects the frontend client after stable GraphQL operations exist; TASK-010 joins the imported-data, GraphQL, client, and walking-skeleton branches for the first product vertical slice. TASK-008 and TASK-010 then join directly before TASK-011; TASK-009 remains a transitive predecessor through TASK-010, and every implementation branch joins before TASK-013 through TASK-015. Each production task must complete one observable Red-Green-Refactor cycle at a time under ADR-0010.
+TASK-003 is `Complete` after TASK-001 completion, DG-001 resolution, separate project-owner execution authorization, successful implementation/runtime verification, and its documentation gate. TASK-002, TASK-004, TASK-016, TASK-017, and TASK-018 are also `Complete`; ADR-0015 and ADR-0016 are accepted; DG-005 is resolved; and AUTH-001 is `Authorized` under disposition A. TASK-004 completed under the then-current ADR-0010 after the project owner's separate 2026-08-14 execution directive without adding TASK-018 as a dependency. TASK-005 and TASK-006 are now unblocked by TASK-004 and may proceed in parallel when their own remaining joins and work are satisfied. TASK-007 and TASK-008 branch from the backend path; TASK-009 selects the frontend client after stable GraphQL operations exist; TASK-010 joins the imported-data, GraphQL, client, and walking-skeleton branches for the first product vertical slice. TASK-008 and TASK-010 then join directly before TASK-011; TASK-009 remains a transitive predecessor through TASK-010, and every implementation branch joins before TASK-013 through TASK-015. Pending and future production tasks use preflight-classified milestone-slice Red-Green-Refactor under ADR-0016 while preserving independent test and implementation ownership.
 
 TASK-001 allocated ADR-0011, TASK-002 allocated ADR-0012, and TASK-016 allocated ADR-0013 only after their pre-draft research and independent-review barriers passed and collision checks reconfirmed the sequence. TASK-017 likewise allocated ADR-0014 only after `DRAFT READY`, triggered fresh IR-A `PASS`, and a collision check confirmed ADR-0013 as the prior highest number; fresh final IR-B passed before project-owner approval. TASK-018 was allocated only after a repository-wide task-ID collision check confirmed TASK-017 as the prior highest task. It later allocated Proposed ADR-0015 only after full research/re-entry, renewed `DRAFT READY`, a distinct fresh IR-A `PASS`, and a fresh ADR collision check confirmed ADR-0014 as the prior highest record. Fourth- and fifth-correction evidence and historical direct SHA-256 `9B90D8BF366E83E038F53AFA5D520B28786F9C768B765B8FA45EC34D4A4C1528` remain preserved; the owner subsequently selected the proportional restricted profile and authorized its direct documentation-only rewrite. Stable IDs retain chronology even when a successor changes the current graph join.
 
@@ -328,7 +329,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** An explicit importer transactionally stores upstream IDs 1 through 15 and preserves application-owned state on repeat runs.
 - **Mapped scope:** FR-BE-004, AC-009.
-- **Governing decisions:** ADR-0007, ADR-0008, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0007, ADR-0008, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-004 and TASK-017; DG-006 is resolved and AUTH-001 is Authorized under disposition A; may run in parallel with TASK-006.
 - **Expected artifacts:** Validated upstream adapter, import service and command, exact `Character.image` URL/ID binding for IDs 1 through 15, deterministic fixtures, and integration tests for idempotency, rollback, ownership preservation, and post-commit invalidation requests.
 - **Validation:** Record Red, Green, and post-Refactor evidence for exactly 15 distinct IDs, exact requested-ID/payload-ID/avatar-URL association, hostile URL rejection, repeatability, bounded upstream failure, atomic rollback, and no live external API use in automated tests.
@@ -339,7 +340,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** The Express HTTP boundary exposes project-owned character list/detail queries, all five filters, stable errors, and bounded request metadata logging.
 - **Mapped scope:** FR-BE-001, FR-BE-002, FR-BE-006, NFR-003, AC-007, AC-008, AC-011.
-- **Governing decisions:** ADR-0003, ADR-0006, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0003, ADR-0006, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-004 and TASK-017; DG-006 is resolved and AUTH-001 is Authorized under disposition A for the exact absolute image URL mapping. Use deterministic database fixtures so non-image work need not wait for TASK-005.
 - **Expected artifacts:** Version-controlled GraphQL schema, Express integration, thin resolvers, application services, repositories, exact stored absolute `imageUrl` projection with no image asset or proxy route, validation/error mapping, request middleware, and unit/integration tests.
 - **Validation:** Record TDD evidence for the Express-hosted boundary, list/detail projections, each filter and one combined filter, literal metacharacters, missing/invalid IDs, internal-error redaction, and one bounded structured log record.
@@ -350,7 +351,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** Equivalent character searches reuse a validated finite-lived Redis projection and safely fall back to PostgreSQL.
 - **Mapped scope:** FR-BE-005, NFR-003, AC-010; OR-008 (adopted optional).
-- **Governing decisions:** ADR-0006, ADR-0007, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0006, ADR-0007, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-005 and TASK-006; DG-006 is resolved and AUTH-001 is Authorized under disposition A for caching the exact absolute image URL.
 - **Expected artifacts:** Canonical key builder, cache adapter/service integration, namespaced real-Redis tests, injected failure tests, and import invalidation integration.
 - **Validation:** Record TDD evidence for miss, hit, empty result, TTL, canonical equivalence and distinction, malformed values, isolation, bounded timeout, fail-open behavior, SCAN/UNLINK invalidation, and post-commit invalidation failure.
@@ -361,7 +362,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** GraphQL mutations persist single-user favorite state and bounded plain-text comments in PostgreSQL.
 - **Mapped scope:** FR-FE-004, FR-FE-005, FR-BE-001, FR-BE-003, AC-004, AC-005.
-- **Governing decisions:** ADR-0003, ADR-0005, ADR-0006, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0003, ADR-0005, ADR-0006, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-006; DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
 - **Expected artifacts:** Application services, mutation resolvers, validation, deterministic comment ordering/pagination, and GraphQL/persistence tests.
 - **Validation:** Record TDD evidence for persistence across API restarts, valid and invalid comments, newest-first bounded reads, missing IDs, safe markup rendering contract, and no interaction-driven search-cache invalidation.
@@ -372,7 +373,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** DG-003 has an owner-approved accepted ADR for the client, query cache, generated operations, error behavior, refetching, and test boundary.
 - **Mapped scope:** FR-FE-001 through FR-FE-005, NFR-001, AC-001 through AC-005; OR-003 (adopted optional).
-- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0010.
+- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0016.
 - **Prerequisites and gates:** Stable operations from TASK-006; this task resolves DG-003, while DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
 - **Expected artifacts:** The next unused ADR, updated ADR index, this gate record, and affected frontend specification guidance.
 - **Validation:** Run the ADR validator and verify that generated types, request mocking, error mapping, explicit detail refetching, and cache ownership are measurable.
@@ -383,7 +384,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** The React list route renders character cards, deterministic A-Z/Z-A sorting, and URL-owned status/species/gender filters.
 - **Mapped scope:** FR-FE-001, FR-FE-002, NFR-001, AC-001, AC-002; OR-003 and OR-004 (adopted optional).
-- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0014, ADR-0016.
 - **Design inputs:** [UI field visibility](./ui/README.md#ui-field-visibility-decision) and [visual foundations](./ui/visual-foundations.md); use the [Storybook pilot guidance](./ui/storybook-workflow.md) only if that reversible pilot is activated.
 - **Prerequisites and gates:** TASK-005 and TASK-009; DG-001 through DG-004 and DG-006 are resolved through completed decision paths, and AUTH-001 is Authorized under disposition A for browser image work.
 - **Expected artifacts:** List route, generated operations, query integration, card and controls, URL normalization, loading/empty/error states, and focused component/route tests.
@@ -395,7 +396,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** The addressable detail route renders character data and supports durable favorite and comment interactions with clear mutation errors.
 - **Mapped scope:** FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, NFR-005, AC-003, AC-004, AC-005; OR-004 (adopted optional).
-- **Governing decisions:** ADR-0005, ADR-0006, ADR-0009, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0005, ADR-0006, ADR-0009, ADR-0014, ADR-0016.
 - **Design inputs:** [UI field visibility and states](./ui/README.md#ui-field-visibility-decision) and [visual foundations](./ui/visual-foundations.md); use the [Storybook pilot guidance](./ui/storybook-workflow.md) only if that reversible pilot is active.
 - **Prerequisites and gates:** TASK-008 and the routing foundation from TASK-010; DG-001 through DG-004 and DG-006 are resolved through completed decision paths, and AUTH-001 is Authorized under disposition A for detail image work.
 - **Expected artifacts:** Detail route/view, favorite and comment controls, explicit post-mutation detail refetch, validation/error presentation, and component/route tests.
@@ -407,11 +408,11 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** List and detail flows remain readable and operable across the selected viewports and all required data/image states.
 - **Mapped scope:** NFR-001, NFR-002, NFR-005, AC-006; OR-004 (adopted optional).
-- **Governing decisions:** ADR-0009, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0009, ADR-0014, ADR-0016.
 - **Design inputs:** [UI data-driven constraints](./ui/README.md#data-driven-design-constraints), [planned mockup coverage](./ui/README.md#planned-mockup-coverage), and [responsive visual foundations](./ui/visual-foundations.md#responsive-type-scale).
 - **Prerequisites and gates:** TASK-011; AUTH-001 is Authorized under disposition A for image fallback and display work.
 - **Expected artifacts:** Tailwind styles using both Grid and Flexbox appropriately, accessible labels/alternative text, layout-safe image fallback, and responsive component/browser checks.
-- **Validation:** Record TDD evidence at the smallest component boundary, then deterministic build/browser checks at 375, 768, and 1280 pixels for loading, empty, error, image failure, list, and detail states.
+- **Validation:** Record one coherent component milestone-slice Red-Green-Refactor packet, then deterministic build/browser checks at 375, 768, and 1280 pixels for loading, empty, error, image failure, list, and detail states.
 - **Documentation impact:** User-facing behavior guidance or screenshots only when they reflect reproducible implementation, plus current status, plan, and execution log.
 - **Done when:** SPEC-007 and applicable HS-016 behavior pass without clipped required content or broken recovery controls.
 
@@ -419,7 +420,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** The implemented system has strict TypeScript, intentional module boundaries, relevant comments, and a risk-focused automated test portfolio with no residual scaffolding.
 - **Mapped scope:** NFR-004; OR-001, OR-004, OR-007, OR-008 (adopted optional).
-- **Governing decisions:** ADR-0002, ADR-0006, ADR-0007, ADR-0010, ADR-0014.
+- **Governing decisions:** ADR-0002, ADR-0006, ADR-0007, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-007 and TASK-012; all active implementation gates and other implementation branches are complete through those dependency paths.
 - **Expected artifacts:** Passing type/lint/build/test automation, at least three meaningful frontend component/layout tests, backend search unit coverage, real boundary integration coverage, and a recorded test-relevance audit.
 - **Validation:** Run every authoritative repository quality command; inspect dependency direction, skipped/focused tests, test-only production branches, unused fixtures/mocks/helpers/snapshots, and requirement/ADR traceability.
@@ -430,7 +431,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** Reviewers can access, understand, configure, run, test, build, initialize, and exercise the complete application from a clean public clone.
 - **Mapped scope:** DEL-001, DEL-002, DEL-003, NFR-006, AC-012.
-- **Governing decisions:** ADR-0003, ADR-0006, ADR-0008, ADR-0010, ADR-0012 (historical and Superseded), ADR-0014, ADR-0015.
+- **Governing decisions:** ADR-0003, ADR-0006, ADR-0008, ADR-0012 (historical and Superseded), ADR-0014, ADR-0015, ADR-0016.
 - **Prerequisites and gates:** TASK-013 completed.
 - **Expected artifacts:** Public committed source, ERD derived from migration state with no image relation, prerequisites/configuration/install/infrastructure/migration/import/dev/test/build instructions, examples for all four GraphQL use cases, and documentation of the third-party avatar dependency, strict URL contract, CSP/CORS/referrer/privacy/cache/outage behavior, and recorded rights disposition.
 - **Validation:** Verify anonymous repository access, perform the documented workflow from a clean clone, compare the ERD with a freshly migrated schema, and run every documented command and GraphQL example.
@@ -441,7 +442,7 @@ The liveness route is operational process evidence only. It does not query Postg
 
 - **Outcome:** A dated review reports every AC independently and separates minimum-assessment readiness from adopted optional repository commitments.
 - **Mapped scope:** FR-FE-001 through FR-FE-005; FR-BE-001 through FR-BE-006; NFR-001 through NFR-006; DEL-001 through DEL-003; AC-001 through AC-012; adopted OR-001, OR-003, OR-004, OR-007, OR-008.
-- **Governing decisions:** The current accepted ADR portfolio as applicable, including ADR-0002, ADR-0003, ADR-0005 through ADR-0011, ADR-0014, ADR-0015, and every later accepted gate-resolution ADR added by TASK-009; ADR-0001, ADR-0004, ADR-0012, and ADR-0013 remain historical Superseded records.
+- **Governing decisions:** The current accepted ADR portfolio as applicable, including ADR-0002, ADR-0003, ADR-0005 through ADR-0009, ADR-0011, ADR-0014 through ADR-0016, and every later accepted gate-resolution ADR added by TASK-009; ADR-0001, ADR-0004, ADR-0010, ADR-0012, and ADR-0013 remain historical Superseded records.
 - **Prerequisites and gates:** TASK-014 completed; all earlier tasks are complete through its dependency path, with no unresolved release-blocking gate or ADR follow-up.
 - **Expected artifacts:** A dated acceptance review, exact command evidence, residual gap list, and synchronized root delivery status.
 - **Validation:** Apply the repository acceptance matrix and all authoritative quality gates from a clean environment; use browser checks only after deterministic build and service checks pass.
@@ -463,7 +464,7 @@ This is planning traceability, not implementation evidence. Exact behavioral exa
 | NFR-001 | TASK-003, TASK-009, TASK-010, TASK-011, TASK-012, TASK-016, TASK-017, then TASK-015 |
 | NFR-002, NFR-005; AC-006 | TASK-012, then TASK-015 |
 | NFR-003 | TASK-003 through TASK-008, then TASK-015 |
-| NFR-004 | Every production task under ADR-0010, with portfolio closure in TASK-013 |
+| NFR-004 | Pending and future production tasks under ADR-0016, with portfolio closure in TASK-013; completed work retains ADR-0010 as historical authority |
 | DEL-002; AC-012 ERD foundation | TASK-004 for the migrated-schema foundation, then TASK-014 and TASK-015 for the ERD artifact and delivery evidence |
 | NFR-006; DEL-001, DEL-003; AC-012 final delivery | TASK-014, then TASK-015 |
 | Adopted OR-001 | TASK-002 and TASK-018 for migration-decision foundations; TASK-003, TASK-004, TASK-006, TASK-007, TASK-010 through TASK-013 for implementation/quality; TASK-013 and TASK-015 for portfolio/delivery closure |
@@ -478,6 +479,7 @@ The following conditions are outside the current delivery baseline and are not a
 - A scheduled or multi-instance import requires the worker coordination and cache-invalidation decision required by ADR-0007 and ADR-0008.
 - Soft deletion requires a superseding persistence decision because ADR-0003 defers it and it would affect default scopes, imports, and cache invalidation.
 - Pagination or material dataset growth requires revisiting the deferred indexing and query-plan decision in ADR-0003, server-side ordering and the GraphQL contract in ADR-0006, the cached projection and key policy in ADR-0007, and frontend URL state in ADR-0009.
+- Future work that materially extends ADR-0015's migration lifecycle must first record its mapped obligations, reused versus new tests, projected milestone slices and handoffs, focused and full-suite runtime, and net-new custom lifecycle surface. Compare observed cost after the milestone; disproportionate extension cost requires project-owner review and, if the accepted boundary changes, a successor ADR rather than an edit to ADR-0015.
 
 ## References
 

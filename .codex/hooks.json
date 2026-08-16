@@ -1,9 +1,9 @@
 {
-  "description": "Non-blocking lifecycle telemetry for the worker-first implementation flow.",
+  "description": "Non-blocking lifecycle telemetry for milestone-oriented worker and reviewer roles.",
   "hooks": {
     "SubagentStart": [
       {
-        "matcher": "^(test_worker|code_worker|independent_reviewer)$",
+        "matcher": "^(test_worker|code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
         "hooks": [
           {
             "type": "command",
@@ -17,7 +17,7 @@
     ],
     "SubagentStop": [
       {
-        "matcher": "^(test_worker|code_worker|independent_reviewer)$",
+        "matcher": "^(test_worker|code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
         "hooks": [
           {
             "type": "command",

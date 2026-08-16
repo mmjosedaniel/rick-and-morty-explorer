@@ -1,11 +1,11 @@
 # ADR-0010: Use a Targeted Automated Testing Strategy
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-09
 - Decision owners: Project maintainers
 - Related requirements: NFR-004, OR-004, OR-007, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009, AC-010, AC-011, AC-012
 - Supersedes: None
-- Superseded by: None
+- Superseded by: [ADR-0016](./0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
 
 ## Context
 
