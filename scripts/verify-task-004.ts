@@ -205,7 +205,10 @@ function reserveLoopbackPort(): Promise<number> {
 function childEnvironment(command: VerificationCommand): NodeJS.ProcessEnv {
   const environment = Object.fromEntries(
     Object.entries(process.env).filter(
-      ([name]) => !/^PG/iu.test(name) && !name.startsWith("POSTGRES_"),
+      ([name]) =>
+        !/^PG/iu.test(name) &&
+        !name.startsWith("POSTGRES_") &&
+        name !== "REDIS_PORT",
     ),
   );
   if (

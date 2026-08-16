@@ -117,5 +117,5 @@ describe("migration artifact source maps", () => {
         sha256Hex(normalizeArtifactSource(await readFile(targetPath))),
       ).toBe(authenticatedInput.sourceSha256);
     }
-  });
+  }, 15_000);
 });

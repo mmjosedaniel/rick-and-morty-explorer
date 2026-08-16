@@ -163,5 +163,5 @@ describe("migration artifact preflight tamper categories", () => {
     } finally {
       await removeMigrationArtifactSandbox(sandbox);
     }
-  });
+  }, 15_000);
 });

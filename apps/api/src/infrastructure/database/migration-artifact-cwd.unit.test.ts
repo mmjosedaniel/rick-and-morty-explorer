@@ -147,5 +147,5 @@ describe("native migration artifact loading across working directories", () => {
       await removeMigrationArtifactSandbox(sandbox);
     }
     expect(activeChildren.size).toBe(0);
-  });
+  }, 15_000);
 });

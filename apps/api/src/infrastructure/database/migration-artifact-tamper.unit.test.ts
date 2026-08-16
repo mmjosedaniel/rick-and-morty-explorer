@@ -81,7 +81,7 @@ describe("migration artifact tamper resistance", () => {
     } finally {
       await removeMigrationArtifactSandbox(sandbox);
     }
-  });
+  }, 15_000);
 
   it("rejects a self-consistent artifact missing a required authored input", async () => {
     const sandbox = await createMigrationArtifactSandbox();

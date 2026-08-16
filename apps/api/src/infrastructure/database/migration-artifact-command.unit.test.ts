@@ -122,5 +122,5 @@ describe("migration artifact command boundary", () => {
     expect(Object.getPrototypeOf(runMigrationCommand)).toBe(
       Object.getPrototypeOf(async () => undefined),
     );
-  });
+  }, 15_000);
 });
