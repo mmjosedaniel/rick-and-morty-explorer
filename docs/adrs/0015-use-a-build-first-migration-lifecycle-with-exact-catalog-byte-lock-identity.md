@@ -523,7 +523,7 @@ The score is 92/100. The owner-selected ASCII/local profile is proportional for 
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
 - [Gherkin specification index](../specs/README.md)
 - [Completed TASK-018 decision ExecPlan](../plans/completed/TASK-018-postgresql-migration-lock-identity-decision.md)
-- [TASK-004 waiting ExecPlan](../plans/TASK-004-relational-persistence-from-migrations.md)
+- [TASK-004 completed ExecPlan](../plans/completed/TASK-004-relational-persistence-from-migrations.md)
 - [PostgreSQL REL_18_6 backend startup source (`backend_startup.c`)](https://raw.githubusercontent.com/postgres/postgres/REL_18_6/src/backend/tcop/backend_startup.c)
 - [PostgreSQL REL_18_6 session initialization and startup-option source (`postinit.c`)](https://raw.githubusercontent.com/postgres/postgres/REL_18_6/src/backend/utils/init/postinit.c)
 - [PostgreSQL REL_18_6 GUC precedence source (`guc.c`)](https://raw.githubusercontent.com/postgres/postgres/REL_18_6/src/backend/utils/misc/guc.c)
