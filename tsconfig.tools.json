@@ -19,6 +19,8 @@
     "tests/smoke/walking-skeleton.smoke.test.ts",
     "tests/smoke/fixtures/never-ready-api.ts",
     "scripts/verify-smoke-lifecycle.ts",
-    "scripts/validate-tailwind.ts"
+    "scripts/validate-tailwind.ts",
+    "scripts/migrate.ts",
+    "scripts/verify-task-004.ts"
   ]
 }
