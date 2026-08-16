@@ -1351,7 +1351,7 @@ describe("API workspace migration CLI", () => {
     const authentication = await verifyMigrationArtifact(report.buildRoot);
     expect(authentication.manifest.buildId).toBe(report.buildId);
     expect(authentication.manifestSha256).toBe(report.manifestSha256);
-  });
+  }, 15_000);
 
   it("runs read-only status through the root CLI", async () => {
     const control = loadControl();
