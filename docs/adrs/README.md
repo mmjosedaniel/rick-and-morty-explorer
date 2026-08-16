@@ -12,7 +12,7 @@ The records describe the architectural direction. They do not claim that the cor
 - ADR numbers are sequential and are never reused.
 - New records start as `Proposed` and become `Accepted` only after project-owner approval.
 - An accepted ADR is not rewritten to reverse its decision. A new ADR must supersede it, and both records must link to each other.
-- Owner-directed archival grouping may move a `Superseded` record under [`superseded/`](./superseded/) without changing its stable filename, ID, status, score, decision semantics, or history. Every move must repair links, keep the central index authoritative, preserve validator discovery, and record the organizational rationale.
+- Store every `Superseded` record under [`superseded/`](./superseded/) without changing its stable filename, ID, status, score, decision semantics, or history. Relocation must repair inbound and internal links, keep this central index authoritative, preserve validator discovery, and record the organizational rationale in the execution chronology.
 - `Related requirements` records requirements materially addressed by a decision, including optional requirements that the decision may adopt or defer. The metadata does not by itself claim adoption or implementation; optional disposition is recorded in the table below.
 - Official technology names and external API field names remain unchanged where accuracy or compatibility requires them.
 
@@ -52,18 +52,18 @@ An ADR cannot be recommended for acceptance if it contradicts a mandatory requir
 
 | ADR | Decision | Status | Score | Recommendation | Primary requirements |
 |---|---|---|---:|---|---|
-| [ADR-0001](./0001-use-a-modular-monolith-workspace.md) | Use a modular monolith workspace | Superseded | 92 | Accept | NFR-001, NFR-003, NFR-004, OR-008, AC-012 |
+| [ADR-0001](./superseded/0001-use-a-modular-monolith-workspace.md) | Use a modular monolith workspace | Superseded | 92 | Accept | NFR-001, NFR-003, NFR-004, OR-008, AC-012 |
 | [ADR-0002](./0002-use-typescript-across-the-stack.md) | Use TypeScript across the stack | Accepted | 87 | Accept | OR-001, NFR-004 |
 | [ADR-0003](./0003-use-postgresql-for-relational-persistence.md) | Use PostgreSQL for relational persistence | Accepted | 89 | Accept | FR-BE-002, FR-BE-003, AC-008, AC-009, AC-012 |
-| [ADR-0004](./0004-use-the-database-as-the-runtime-source-of-truth.md) | Use the database as the runtime source of truth | Superseded | 91 | Accept | FR-BE-001, FR-BE-003, FR-BE-004 |
+| [ADR-0004](./superseded/0004-use-the-database-as-the-runtime-source-of-truth.md) | Use the database as the runtime source of truth | Superseded | 91 | Accept | FR-BE-001, FR-BE-003, FR-BE-004 |
 | [ADR-0005](./0005-use-single-user-persistence-for-character-interactions.md) | Use single-user persistence for character interactions | Accepted | 82 | Accept with follow-up | FR-FE-004, FR-FE-005, AC-004, AC-005 |
 | [ADR-0006](./0006-define-a-use-case-oriented-graphql-contract.md) | Define a use-case-oriented GraphQL contract | Accepted | 92 | Accept | FR-BE-001, FR-BE-002, FR-BE-006, AC-007, AC-008, AC-011, AC-012 |
 | [ADR-0007](./0007-use-cache-aside-for-character-searches.md) | Use cache-aside for character searches | Accepted | 95 | Accept | FR-BE-005, OR-008, AC-010 |
 | [ADR-0008](./0008-use-deterministic-bootstrap-and-idempotent-sync.md) | Use deterministic bootstrap and idempotent synchronization | Accepted | 90 | Accept | FR-BE-004, AC-009 |
 | [ADR-0009](./0009-keep-frontend-state-close-to-its-owner.md) | Keep frontend state close to its owner | Accepted | 90 | Accept | FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-002, OR-003 |
-| [ADR-0010](./0010-use-a-targeted-automated-testing-strategy.md) | Use a targeted automated testing strategy | Superseded | 89 | Accept | NFR-004, OR-004, OR-007 |
+| [ADR-0010](./superseded/0010-use-a-targeted-automated-testing-strategy.md) | Use a targeted automated testing strategy | Superseded | 89 | Accept | NFR-004, OR-004, OR-007 |
 | [ADR-0011](./0011-define-the-typescript-test-harness.md) | Define the TypeScript test harness | Accepted | 92 | Accept | NFR-004, OR-001, OR-004, OR-007 |
-| [ADR-0012](./0012-use-a-build-first-programmatic-migration-lifecycle.md) | Use a build-first programmatic migration lifecycle | Superseded | 91 | Accept | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012, OR-001 |
+| [ADR-0012](./superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md) | Use a build-first programmatic migration lifecycle | Superseded | 91 | Accept | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012, OR-001 |
 | [ADR-0013](./superseded/0013-materialize-character-images-during-ingestion.md) | Materialize character images during ingestion | Superseded | 91 | Accept | FR-FE-001, FR-FE-003, NFR-001, NFR-005, AC-001, AC-003 |
 | [ADR-0014](./0014-persist-and-deliver-character-image-urls-directly.md) | Persist and deliver character image URLs directly | Accepted | 86 | Accept | FR-FE-001, FR-FE-003, NFR-001, NFR-003, NFR-004, NFR-005, OR-008, AC-001, AC-003, AC-007, AC-012 |
 | [ADR-0015](./0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) | Use a build-first migration lifecycle with restricted ASCII catalog-bound lock identity | Accepted | 92 | Accept | FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012, OR-001 |

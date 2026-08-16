@@ -7,7 +7,7 @@
 - Supersedes: None
 - Superseded by: ADR-0013
 
-ADR-0013 superseded this record on 2026-08-11. This file remains unchanged below as historical decision and rationale. [ADR-0013](./superseded/0013-materialize-character-images-during-ingestion.md) preserves the direct supersession link, while accepted [ADR-0014](./0014-persist-and-deliver-character-image-urls-directly.md) is the current authority carrying forward PostgreSQL product-data authority and replacing the character-image delivery boundary.
+ADR-0013 superseded this record on 2026-08-11. This file remains unchanged below as historical decision and rationale. [ADR-0013](./0013-materialize-character-images-during-ingestion.md) preserves the direct supersession link, while accepted [ADR-0014](../0014-persist-and-deliver-character-image-urls-directly.md) is the current authority carrying forward PostgreSQL product-data authority and replacing the character-image delivery boundary.
 
 ## Context
 
@@ -84,8 +84,8 @@ Redis is an optimization in front of PostgreSQL, not an authority. A Redis miss 
 
 ## References
 
-- [Requirements specification](../REQUIREMENTS.md)
-- [ADR-0003](./0003-use-postgresql-for-relational-persistence.md)
-- [ADR-0007](./0007-use-cache-aside-for-character-searches.md)
-- [ADR-0008](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
-- [ADR index](./README.md)
+- [Requirements specification](../../REQUIREMENTS.md)
+- [ADR-0003](../0003-use-postgresql-for-relational-persistence.md)
+- [ADR-0007](../0007-use-cache-aside-for-character-searches.md)
+- [ADR-0008](../0008-use-deterministic-bootstrap-and-idempotent-sync.md)
+- [ADR index](../README.md)

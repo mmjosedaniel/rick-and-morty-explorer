@@ -6,7 +6,7 @@
 - Decision owners: Project owner and project maintainers
 - Related requirements: NFR-004, OR-004, OR-007, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009, AC-010, AC-011, AC-012
 - Related decisions: ADR-0010, ADR-0011, ADR-0015
-- Supersedes: [ADR-0010](./0010-use-a-targeted-automated-testing-strategy.md)
+- Supersedes: [ADR-0010](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
 - Superseded by: None
 
 ## Context
@@ -162,7 +162,7 @@ The project owner authorized this repository-policy decision on 2026-08-16. Acce
 - [Repository guidelines](../../AGENTS.md)
 - [ExecPlan standard](../../PLANS.md)
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
-- [ADR-0010: Targeted automated testing strategy](./0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0010: Targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
 - [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
 - [ADR-0015: Build-first migration lifecycle with exact catalog-bound identity](./0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md)
 - [Agentic workflow efficiency audit](../reviews/2026-08-16-agentic-workflow-efficiency-audit.md)

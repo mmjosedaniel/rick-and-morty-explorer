@@ -191,7 +191,7 @@ Instrumentation should either be reduced to a small reliable dataset and activat
 The audit found several internal tensions:
 
 - [AGENTS.md](../../AGENTS.md#implementation-simplicity-and-clean-code) requires KISS and YAGNI for workflow machinery, while the implementation workflow makes packets, leases, separate Red/Green workers, and fresh correction assignments mandatory for all owner-authorized implementation ExecPlans.
-- [ADR-0010](../adrs/0010-use-a-targeted-automated-testing-strategy.md) seeks high confidence from a small targeted suite and warns about infrastructure-test friction, while TASK-004 adopted exhaustive matrices and a 9,174-line integration test.
+- [ADR-0010](../adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md) seeks high confidence from a small targeted suite and warns about infrastructure-test friction, while TASK-004 adopted exhaustive matrices and a 9,174-line integration test.
 - The documentation map discourages reading the entire repository, while fresh workers must repeatedly reconstruct a broad authority chain and the reviewer must reconcile every contract/receipt pair.
 - The repository advises linking to authoritative owners instead of duplicating prose, while execution rules require overlapping state in multiple living and historical surfaces.
 

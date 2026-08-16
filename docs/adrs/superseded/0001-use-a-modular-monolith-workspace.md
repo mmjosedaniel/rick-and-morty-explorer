@@ -7,7 +7,7 @@
 - Supersedes: None
 - Superseded by: ADR-0014
 
-[ADR-0014](./0014-persist-and-deliver-character-image-urls-directly.md) superseded this record on 2026-08-11. The body below remains historical evidence; ADR-0014 carries forward the unaffected workspace, modular-monolith, infrastructure, isolation, command, and no-microservice rules while narrowing only the browser avatar boundary.
+[ADR-0014](../0014-persist-and-deliver-character-image-urls-directly.md) superseded this record on 2026-08-11. The body below remains historical evidence; ADR-0014 carries forward the unaffected workspace, modular-monolith, infrastructure, isolation, command, and no-microservice rules while narrowing only the browser avatar boundary.
 
 ## Context
 
@@ -96,6 +96,6 @@ Integration tests will use a PostgreSQL database or schema and a Redis key prefi
 
 ## References
 
-- [Requirements specification](../REQUIREMENTS.md)
-- [Technical assessment](../FULL_STACK_TECHNICAL_ASSESSMENT.md)
-- [ADR index](./README.md)
+- [Requirements specification](../../REQUIREMENTS.md)
+- [Technical assessment](../../FULL_STACK_TECHNICAL_ASSESSMENT.md)
+- [ADR index](../README.md)

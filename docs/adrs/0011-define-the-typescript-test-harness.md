@@ -161,9 +161,9 @@ Reversal is required when no supported Node.js version overlaps stable Vitest an
 
 - [Requirements specification](../REQUIREMENTS.md)
 - [ADR index](./README.md)
-- [ADR-0001: Modular monolith workspace](./0001-use-a-modular-monolith-workspace.md)
+- [ADR-0001: Modular monolith workspace](./superseded/0001-use-a-modular-monolith-workspace.md)
 - [ADR-0002: TypeScript across the stack](./0002-use-typescript-across-the-stack.md)
-- [ADR-0010: Targeted automated testing strategy](./0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0010: Targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
 - [Gherkin specification index](../specs/README.md)
 - [Completed TASK-001 ExecPlan](../plans/completed/TASK-001-test-harness-decision.md)

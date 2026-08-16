@@ -90,6 +90,6 @@ The optional 12-hour scheduler is deferred from the initial scope. If later acce
 
 - [Requirements specification](../REQUIREMENTS.md)
 - [ADR-0003](./0003-use-postgresql-for-relational-persistence.md)
-- [ADR-0004](./0004-use-the-database-as-the-runtime-source-of-truth.md)
+- [ADR-0004](./superseded/0004-use-the-database-as-the-runtime-source-of-truth.md)
 - [ADR-0007](./0007-use-cache-aside-for-character-searches.md)
 - [ADR index](./README.md)

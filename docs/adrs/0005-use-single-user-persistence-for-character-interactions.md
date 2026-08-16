@@ -92,5 +92,5 @@ Comment reads will use deterministic newest-first ordering and bounded arguments
 
 - [Requirements specification](../REQUIREMENTS.md)
 - [ADR-0003](./0003-use-postgresql-for-relational-persistence.md)
-- [ADR-0004](./0004-use-the-database-as-the-runtime-source-of-truth.md)
+- [ADR-0004](./superseded/0004-use-the-database-as-the-runtime-source-of-truth.md)
 - [ADR index](./README.md)

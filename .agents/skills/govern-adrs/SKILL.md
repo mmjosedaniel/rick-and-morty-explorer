@@ -56,6 +56,7 @@ For an already accepted complex ADR, preserve the decision and historical eviden
 - Change `Proposed` records while they are under review, preserving their intent and review history.
 - Mark a record `Accepted` only with project-owner approval.
 - Never rewrite an accepted decision to reverse it. Create a new ADR, mark the old one `Superseded`, and add reciprocal links.
+- Store every `Superseded` record under `docs/adrs/superseded/` using its unchanged stable filename. When relocating it, repair inbound and internal links, update the central ADR index, record the organizational change in the execution chronology, and rerun both ADR and documentation validation.
 - Use `Rejected` for an evaluated decision not selected, and `Deprecated` only when it is no longer recommended without a direct replacement.
 - Keep filenames and historical records stable after acceptance.
 

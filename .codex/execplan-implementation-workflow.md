@@ -309,4 +309,4 @@ or claim implementation evidence without the corresponding repository and runtim
 - [Agent-flow metrics](./agent-flow-metrics.md)
 - [Verify repository skill](../.agents/skills/verify-repository/SKILL.md)
 - [ADR-0016, current milestone-slice TDD decision](../docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
-- [ADR-0010, superseded historical testing decision](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0010, superseded historical testing decision](../docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md)
