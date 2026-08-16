@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import {
   copyFile,
   lstat,
@@ -214,7 +215,22 @@ async function runMigrationCompiler(outputRoot: string): Promise<void> {
     { outDir: outputRoot },
     configuration,
   );
-  const program = ts.createProgram(parsed.fileNames, parsed.options);
+  const authoredSourcePaths = new Set(parsed.fileNames);
+  const compilerHost = ts.createCompilerHost(parsed.options);
+  const readCompilerFile = compilerHost.readFile.bind(compilerHost);
+  compilerHost.readFile = (fileName) => {
+    if (!authoredSourcePaths.has(fileName)) {
+      return readCompilerFile(fileName);
+    }
+    return new TextDecoder("utf-8", { fatal: true }).decode(
+      normalizeArtifactSource(readFileSync(fileName)),
+    );
+  };
+  const program = ts.createProgram(
+    parsed.fileNames,
+    parsed.options,
+    compilerHost,
+  );
   const emit = program.emit();
   const diagnostics = [...ts.getPreEmitDiagnostics(program), ...emit.diagnostics];
   if (emit.emitSkipped || diagnostics.length > 0) {

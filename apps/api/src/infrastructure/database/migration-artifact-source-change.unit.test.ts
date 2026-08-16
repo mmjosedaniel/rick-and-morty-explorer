@@ -8,6 +8,10 @@ import {
   createMigrationArtifactSandbox,
   removeMigrationArtifactSandbox,
 } from "./migration-artifact-sandbox.test.js";
+import {
+  normalizeArtifactSource,
+  sha256Hex,
+} from "./migration-artifact-contract.js";
 
 interface FileSnapshot {
   readonly path: string;
@@ -212,6 +216,56 @@ describe("migration artifact authored input identity", () => {
       throw new Error(
         `MIGRATION_ARTIFACT_TRANSITIVE_COMPILER_CONFIG_IDENTITY_MISSING cases=${missingCases.join(",")}`,
       );
+    }
+  }, 15_000);
+
+  it("keeps artifact identity stable when only authored source line endings differ", async () => {
+    const sandbox = await createMigrationArtifactSandbox();
+    try {
+      const authoredMigration = join(
+        sandbox.repositoryRoot,
+        "apps/api/src/infrastructure/database/migrations/20260814000000-create-relational-schema.ts",
+      );
+      const canonicalSource = normalizeArtifactSource(
+        await readFile(authoredMigration),
+      );
+      await writeFile(authoredMigration, canonicalSource);
+
+      const first = await sandbox.migrationArtifact.buildMigrationArtifact();
+      const firstAuthentication =
+        await sandbox.migrationArtifact.verifyMigrationArtifact(first.buildRoot);
+      expect(firstAuthentication.manifest.buildId).toBe(first.buildId);
+      expect(firstAuthentication.manifestSha256).toBe(first.manifestSha256);
+
+      const crlfSource = Buffer.from(
+        new TextDecoder("utf-8", { fatal: true })
+          .decode(canonicalSource)
+          .replaceAll("\n", "\r\n"),
+        "utf8",
+      );
+      expect(crlfSource).not.toEqual(canonicalSource);
+      await writeFile(authoredMigration, crlfSource);
+      expect(sha256Hex(normalizeArtifactSource(crlfSource))).toBe(
+        sha256Hex(canonicalSource),
+      );
+
+      const second = await sandbox.migrationArtifact.buildMigrationArtifact();
+      const secondAuthentication =
+        await sandbox.migrationArtifact.verifyMigrationArtifact(second.buildRoot);
+      expect(secondAuthentication.manifest.buildId).toBe(second.buildId);
+      expect(secondAuthentication.manifestSha256).toBe(second.manifestSha256);
+
+      const stableIdentity =
+        second.buildId === first.buildId &&
+        JSON.stringify(secondAuthentication.manifest.files) ===
+          JSON.stringify(firstAuthentication.manifest.files);
+      if (!stableIdentity) {
+        throw new Error(
+          "MIGRATION_ARTIFACT_OUTPUT_LINE_ENDING_IDENTITY_UNSTABLE",
+        );
+      }
+    } finally {
+      await removeMigrationArtifactSandbox(sandbox);
     }
   }, 15_000);
 });
