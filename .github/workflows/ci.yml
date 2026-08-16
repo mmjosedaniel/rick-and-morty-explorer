@@ -52,12 +52,6 @@ jobs:
       - name: Validate Tailwind output
         run: npm run validate:tailwind
 
-      - name: Run test suite
-        run: npm test
-
-      - name: Verify smoke lifecycle
-        run: npm run test:smoke:lifecycle
-
       - name: Validate infrastructure configuration
         run: npm run infra:config
 
@@ -66,6 +60,12 @@ jobs:
 
       - name: Inspect infrastructure health
         run: npm run infra:ps
+
+      - name: Run test suite
+        run: npm test
+
+      - name: Verify smoke lifecycle
+        run: npm run test:smoke:lifecycle
 
       - name: Tear down infrastructure
         if: always()

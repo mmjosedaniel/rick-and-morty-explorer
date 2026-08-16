@@ -6,15 +6,25 @@
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "dev": "tsx watch --clear-screen=false src/server.ts",
+    "migration:build": "node dist/infrastructure/database/migration-cli.js build",
+    "migration:down": "node dist/infrastructure/database/migration-cli.js down",
+    "migration:up": "node dist/infrastructure/database/migration-cli.js up",
+    "migration:status": "node dist/infrastructure/database/migration-cli.js status",
     "start": "node dist/server.js",
     "start:smoke": "npm run build && npm run start",
     "test:unit": "vitest run --config ../../vitest.config.ts --project api-unit",
+    "test:integration": "vitest run --config ../../vitest.config.ts --project api-persistence-integration",
     "test:application": "vitest run --config ../../vitest.config.ts --project api-application"
   },
   "dependencies": {
-    "express": "5.2.1"
+    "express": "5.2.1",
+    "pg": "8.22.0",
+    "pg-hstore": "2.3.4",
+    "sequelize": "6.37.7",
+    "umzug": "3.8.3"
   },
   "devDependencies": {
-    "@types/express": "5.0.6"
+    "@types/express": "5.0.6",
+    "@types/pg": "8.20.0"
   }
 }

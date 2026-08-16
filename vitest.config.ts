@@ -47,6 +47,17 @@ export default defineConfig({
           allowOnly: false,
         },
       },
+      {
+        root: apiRoot,
+        test: {
+          name: "api-persistence-integration",
+          environment: "node",
+          include: ["src/**/*.integration.test.ts"],
+          allowOnly: false,
+          fileParallelism: false,
+          maxWorkers: 1,
+        },
+      },
     ],
   },
 });

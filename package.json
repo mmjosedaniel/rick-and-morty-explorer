@@ -14,6 +14,12 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @rick-and-morty/web && npm run build --workspace @rick-and-morty/api",
+    "migrate:build": "tsx scripts/migrate.ts build",
+    "migrate:down": "tsx scripts/migrate.ts down",
+    "migrate:status": "tsx scripts/migrate.ts status",
+    "migrate:up": "tsx scripts/migrate.ts up",
+    "migrate:validate-emitted": "tsx scripts/migrate.ts validate-emitted",
+    "verify:task-004": "tsx scripts/verify-task-004.ts",
     "start": "concurrently --kill-others-on-fail --names web,api \"npm run start --workspace @rick-and-morty/web\" \"npm run start --workspace @rick-and-morty/api\"",
     "browser:install": "playwright install chromium",
     "infra:config": "docker compose -p rick-and-morty-dev config",
@@ -25,10 +31,11 @@
     "typecheck": "tsc --noEmit --project tsconfig.tools.json && tsc --noEmit --project apps/web/tsconfig.json && tsc --noEmit --project apps/api/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",
     "validate:tailwind": "tsx scripts/validate-tailwind.ts",
     "test:unit": "vitest run --config vitest.config.ts --project web-unit --project api-unit",
+    "test:integration": "vitest run --config vitest.config.ts --project api-persistence-integration",
     "test:application": "vitest run --config vitest.config.ts --project web-application --project api-application",
     "test:smoke": "playwright test --config playwright.config.ts",
     "test:smoke:lifecycle": "tsx scripts/verify-smoke-lifecycle.ts",
-    "test": "npm run test:unit && npm run test:application && npm run test:smoke"
+    "test": "npm run test:unit && npm run test:integration && npm run test:application && npm run test:smoke"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",

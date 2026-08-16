@@ -13,9 +13,9 @@ This directory owns the current UI data-needs mapping, design annotations, and f
 
 The [requirements specification](../REQUIREMENTS.md) owns UI scope. Accepted ADRs own the data and state boundaries. The [implementation plan](../IMPLEMENTATION_PLAN.md) owns the frontend task sequence, and the [Gherkin specification index](../specs/README.md) routes observable behavior. A mockup or field mapping remains design intent until source, tests, and runtime evidence demonstrate the behavior.
 
-## Runtime data path
+## Accepted target runtime data path
 
-The upstream character JSON API is an ingestion source, not a browser product-data dependency. The accepted avatar representation is a separate native browser request:
+In the accepted target architecture, the upstream character JSON API is an ingestion source, not a browser product-data dependency. The accepted avatar representation is a separate native browser request:
 
 ```text
 Rick and Morty REST API
@@ -27,15 +27,15 @@ Rick and Morty REST API
        -> https://rickandmortyapi.com/api/character/avatar/<id>.jpeg
 ```
 
-The browser communicates with the project GraphQL API for product data. PostgreSQL remains authoritative for the character-to-image-locator association, while a native image element requests the exact validated upstream avatar URL directly under anonymous CORS, a no-referrer policy, and an enforcing path-qualified CSP. The application does not acquire, store, proxy, cache, or serve image bytes. [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns character ingestion and accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) owns the image boundary.
+In that target, the browser communicates with the project GraphQL API for product data. PostgreSQL remains authoritative for the character-to-image-locator association, while a native image element requests the exact validated upstream avatar URL directly under anonymous CORS, a no-referrer policy, and an enforcing path-qualified CSP. The application will not acquire, store, proxy, cache, or serve image bytes. [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns character ingestion and accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) owns the image boundary. No product GraphQL, persistence, import, or image-delivery path is implemented yet.
 
 The [target system module diagram](../SYSTEM_DIAGRAM.md#module-view) shows these distinct product-data and avatar-representation paths in the complete modular context. ADR-0014 resolves DG-006 and supersedes ADR-0001 and ADR-0013 as whole records while carrying their unaffected architecture forward. ADR-0004 remains Superseded history, and GraphQL remains the only product-data API.
 
 ## Official API field audit
 
-The official character schema exposes the following fields. The application persists only the source-owned subset required by the accepted database and GraphQL contracts.
+The official character schema exposes the following fields. The accepted target persists only the source-owned subset required by the database and GraphQL contracts.
 
-| Upstream field | Official shape | Current application disposition | UI relevance |
+| Upstream field | Official shape | Accepted target disposition | UI relevance |
 |---|---|---|---|
 | `id` | Integer | Persist as the stable character primary key and expose as GraphQL `ID` | Required for list keys, detail routing, queries, and mutations; it does not need a visible label |
 | `name` | String | Persist and expose on summary and detail types | Mandatory visible card text; selected detail heading, sorting input, and image alternative text |
@@ -44,22 +44,22 @@ The official character schema exposes the following fields. The application pers
 | `type` | String | Persist and expose on detail | Show on detail only when non-empty; omit the complete field row when empty |
 | `gender` | String: `Female`, `Male`, `Genderless`, or `unknown` | Persist, expose on detail, and accept as a filter | Selected repository-baseline detail value and adopted gender-filter input |
 | `origin.name` | String | Persist and expose as `origin.name` on detail | Selected repository-baseline detail value and supported backend origin-filter data |
-| `origin.url` | URL string, which can be empty when the origin is unknown | Persist and expose as `origin.url` on detail | Do not show in the current UI |
+| `origin.url` | URL string, which can be empty when the origin is unknown | Persist and expose as `origin.url` on detail | Do not show in the current UI design |
 | `image` | URL string; official images are 300 by 300 pixels | Persist the exact strictly validated absolute `Character.image` URL; summary and detail `imageUrl` return that same value, and native image elements request it directly under ADR-0014 | Required card/detail image with meaningful alternative text, fixed square geometry, and a one-way layout-safe failure state |
-| `location` | Object containing name and URL | Do not persist or expose | Not required by the current UI or project GraphQL contract |
-| `episode` | Array of episode URLs | Do not persist or expose | Not required by the current UI or project GraphQL contract |
+| `location` | Object containing name and URL | Do not persist or expose | Not required by the current UI design or project GraphQL contract |
+| `episode` | Array of episode URLs | Do not persist or expose | Not required by the current UI design or project GraphQL contract |
 | `url` | Character endpoint URL | Do not persist or expose | Redundant because the application owns routing and GraphQL identity |
-| `created` | Timestamp string | Do not persist or expose | Not required by the current UI |
+| `created` | Timestamp string | Do not persist or expose | Not required by the current UI design |
 
 The official REST documentation describes field types but does not publish a JSON Schema or OpenAPI contract that marks character properties as required or nullable. Live character responses use empty strings and the literal `unknown` for several unavailable values rather than `null`, so the ingestion adapter must validate the complete payload instead of relying only on this descriptive table.
 
 For the fixed IDs 1 through 15, the live bulk response was also checked on 2026-08-09. Thirteen characters have an empty `type`, six have an unknown origin with an empty origin URL, four have `status: "unknown"`, and character 13 has `gender: "unknown"`. These are normal baseline values, not exceptional transport failures. Representative design and test fixtures should cover them when relevant to the active task; the empty-type behavior is explicitly selected below.
 
-The upstream collection response also contains an `info` pagination object. It is not a character field and is not required by the current UI because the accepted baseline imports the fixed IDs 1 through 15 and the project GraphQL list is currently unpaginated.
+The upstream collection response also contains an `info` pagination object. It is not a character field and is not required by the current UI design because the accepted baseline imports the fixed IDs 1 through 15 and the accepted GraphQL list contract is unpaginated.
 
 ## UI field visibility decision
 
-[DPL-DEC-005](../execution/decision-and-progress-log.md#decision-log) resolves the assessment's broad requirement to show character details without expanding the accepted GraphQL contract. The current UI shows every descriptive field needed by the list and detail experiences, while keeping transport identifiers, upstream-only metadata, and unavailable comment metadata non-visible.
+[DPL-DEC-005](../execution/decision-and-progress-log.md#decision-log) resolves the assessment's broad requirement to show character details without expanding the accepted GraphQL contract. The current UI design specifies every descriptive field needed by the list and detail experiences, while keeping transport identifiers, upstream-only metadata, and unavailable comment metadata non-visible.
 
 ### Scope classification
 
@@ -143,7 +143,7 @@ The visible detail controls are a favorite toggle reflecting `isFavorite`, a com
 
 Accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) resolves [DG-006](../IMPLEMENTATION_PLAN.md#dg-006---character-image-url-successor-boundary). The explicit importer must bind the requested ID, payload ID, and exact `Character.image` URL; PostgreSQL stores only that locator; GraphQL and the finite Redis summary projection return the same absolute value; and native list and detail images request it with anonymous CORS, no referrer, and the enforcing path-qualified `img-src`. The browser must not call the upstream character JSON API, and the application must not add image bytes, a proxy, or an asset route. Provider availability, redirects, final content, cache freshness, revocation, request telemetry, and visitor metadata disclosure remain documented limitations. ADR-0001 and ADR-0013 are retained as Superseded history, and ADR-0004 remains Superseded through that chronology.
 
-This field audit records the accepted target, not implementation evidence. No migration, importer, URL mapping, CSP header, browser request, fallback, or executable image test exists. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized`; the implementation plan owns its continuity policy, while ADR-0014 independently owns the current direct-URL technical boundary. Mockups and deterministic local fixtures may define the required square image and failure presentation, but authorization does not make them a production path or prove live runtime behavior.
+This field audit records the accepted target, not implementation evidence. No migration, importer, URL mapping, CSP header, browser request, fallback, or executable image test exists. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only within the recorded personal, educational, non-commercial portfolio and direct-URL scope; the implementation plan owns its scope-bound continuity and reopen policy, while ADR-0014 independently owns the current direct-URL technical boundary. Mockups and deterministic local fixtures may define the required square image and failure presentation, but authorization does not make them a production path or prove live runtime behavior.
 
 ## Open UI decisions
 
