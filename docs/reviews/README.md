@@ -13,6 +13,10 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 - [2026-08-09 documentation consistency review](./2026-08-09-documentation-consistency-review.md) — records the aligned pre-TASK-003 roadmap, target module view, UI guidance, specifications, and execution records before application implementation began.
 - [2026-08-09 initial documentation work review](./2026-08-09-latest-documentation-work-review.md) — establishes the initial `0/12` readiness baseline and records the earlier TASK-001-through-TASK-015 documentation batch. Its filename is retained for stable historical links; it predates DG-004, TASK-016, HS-020, the UI documentation, and the target system diagram.
 
+## Workflow Audits
+
+- [2026-08-16 agentic workflow efficiency audit](./2026-08-16-agentic-workflow-efficiency-audit.md) — reconstructs TASK-004 scope, 209 serial assignments across 109 cycles, validation and documentation amplification, root causes, a risk-tiered target workflow, model routing, stop budgets, and a measurement plan. It is advisory and changes no requirement, ADR, task status, or implementation behavior.
+
 ## Review Rules
 
 - Use an ISO date and a stable descriptive filename.
