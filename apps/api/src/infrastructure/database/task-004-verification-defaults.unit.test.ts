@@ -111,7 +111,6 @@ const checks = [
   "test-integration",
   "test-application",
   "test-smoke",
-  "test-root",
   "build",
   "validate-tailwind",
   "test-smoke-lifecycle",
@@ -290,7 +289,6 @@ describe("TASK-004 verification default entry", () => {
         npmArgs(npmExecPath, "run", "test:integration"),
         npmArgs(npmExecPath, "run", "test:application"),
         npmArgs(npmExecPath, "run", "test:smoke"),
-        npmArgs(npmExecPath, "test"),
         npmArgs(npmExecPath, "run", "build"),
         npmArgs(npmExecPath, "run", "validate:tailwind"),
         npmArgs(npmExecPath, "run", "test:smoke:lifecycle"),
@@ -324,7 +322,7 @@ describe("TASK-004 verification default entry", () => {
         expect(defaultMocks.childInvocations.map(({ file }) => file)).toEqual([
           ...Array(4).fill(process.execPath),
           ...Array(3).fill("docker"),
-          ...Array(22).fill(process.execPath),
+          ...Array(21).fill(process.execPath),
           "python",
           "python",
           "git",
@@ -332,11 +330,11 @@ describe("TASK-004 verification default entry", () => {
           "git",
           "docker",
         ]);
-        const composeIndices = new Set([4, 5, 6, 34]);
+        const composeIndices = new Set([4, 5, 6, 33]);
         const namespaceIndices = new Set([
           9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
         ]);
-        const controlOnlyIndices = new Set([20, 21, 22, 23, 24, 25]);
+        const controlOnlyIndices = new Set([20, 21, 22, 23, 24]);
         for (const [index, { options }] of defaultMocks.childInvocations.entries()) {
           expect(options).toMatchObject({
             cwd: repositoryRoot,

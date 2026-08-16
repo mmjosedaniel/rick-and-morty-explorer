@@ -1,4 +1,4 @@
 interface:
   display_name: "Govern ADRs"
   short_description: "Create and validate architecture decisions"
-  default_prompt: "Use $govern-adrs to review and validate the architecture decisions in this repository."
+  default_prompt: "Use $govern-adrs to review architecture decisions for traceability, proportionality, and portfolio validity."

@@ -33,7 +33,7 @@ The observable result of this plan is documentation and approval evidence, not a
 - Observation: The repository currently contains documentation only, so a configuration spike inside the working tree would cross HS-001 before the gate is resolved.
   Evidence: `git ls-files` contains no application manifest, lockfile, test configuration, application source, or executable product test; `docs/specs/HARD_SPEC.feature` lines under HS-001 prohibit those artifacts while DG-001 is pending.
 - Observation: ADR-0010 already fixes the testing philosophy and risk portfolio. TASK-001 must select execution tooling and boundaries without reopening TDD, the required frontend and backend coverage, or the real PostgreSQL and Redis requirements.
-  Evidence: `docs/adrs/0010-use-a-targeted-automated-testing-strategy.md` requires Red-Green-Refactor, deterministic fixtures, real infrastructure integration, a narrow optional browser smoke, and a plan-completion test-relevance audit.
+  Evidence: `docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md` requires Red-Green-Refactor, deterministic fixtures, real infrastructure integration, a narrow optional browser smoke, and a plan-completion test-relevance audit.
 - Observation: Project-scoped Codex agents are reusable role configurations, while each spawned instance still needs a bounded task-specific assignment; the primary thread remains the coordinator rather than delegating closure to another custom agent.
   Evidence: `.codex/agents/` defines stable research, decision-analysis, and review behavior; `.codex/README.md` defines the instance contract and TASK-001 topology without creating a task runner or product dependency.
 - Observation: On this Windows working tree, `git diff --check` can exit successfully while Git emits line-ending conversion warnings that are not whitespace-error findings.
@@ -234,7 +234,7 @@ If an authority update was partially applied after approval, use `git diff` and 
 
 At authoring time, the relevant tracked-tree evidence is:
 
-    Highest ADR: docs/adrs/0010-use-a-targeted-automated-testing-strategy.md
+    Highest ADR: docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md
     TASK-001 status: Pending
     DG-001 status: Pending
     Application manifests: none

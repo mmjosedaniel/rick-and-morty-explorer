@@ -284,7 +284,7 @@ The effective accepted decisions are:
 
 - [ADR-0002](../../adrs/0002-use-typescript-across-the-stack.md): strict TypeScript, ESM, documented Node.js/browser targets, runtime input validation, separate no-emit type checking, and production-build proof.
 - [ADR-0006](../../adrs/0006-define-a-use-case-oriented-graphql-contract.md): GraphQL remains the sole product API. The operational liveness exception must not become a parallel REST product surface.
-- [ADR-0010](../../adrs/0010-use-a-targeted-automated-testing-strategy.md): one observable Red-Green-Refactor cycle at a time, exact handoff evidence, deterministic tests, and a completion test-relevance audit.
+- [ADR-0010](../../adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md): one observable Red-Green-Refactor cycle at a time, exact handoff evidence, deterministic tests, and a completion test-relevance audit.
 - [ADR-0011](../../adrs/0011-define-the-typescript-test-harness.md): Vitest projects with explicit Node/jsdom environments, a separate strict `typecheck`, one Chromium/one-worker Playwright smoke with two owned processes, incremental scope activation, no TASK-003 integration scope, and lifecycle cleanup evidence.
 - [ADR-0014](../../adrs/0014-persist-and-deliver-character-image-urls-directly.md): current carried-forward workspace, shared-package, root-command, Compose, one-process API, isolation, and no-microservice rules. Its image semantics are outside TASK-003.
 

@@ -28,7 +28,7 @@ Keep the ExecPlan's `Progress`, `Surprises & Discoveries`, `Decision Log`, and `
 
 For consequential decision work, follow the risk-tiered collaboration policy in the [project-scoped Codex guide](.codex/README.md); keep its Decision Review Contract inside the owning ExecPlan, preserve the primary thread as sole decision-artifact writer and closure owner, and stop at owner-controlled approval boundaries.
 
-For an owner-authorized implementation ExecPlan whose task is `In progress`, follow the [worker-first implementation workflow](.codex/execplan-implementation-workflow.md). That guide and the linked [write-lease guard](.codex/write-lease-guard.md) own packet, lease, handoff, correction, and review mechanics. The primary coordinator retains integration, evidence acceptance, approvals, authoritative status, exception handling, and closure, and records the reason, paths, and validation for any exceptional direct implementation edit. [Agent-flow metrics](.codex/agent-flow-metrics.md) remain optional and may be used only when a documented present question justifies their overhead.
+For an owner-authorized implementation ExecPlan whose task is `In progress`, follow the [worker-first implementation workflow](.codex/execplan-implementation-workflow.md). That guide and the linked [write-lease guard](.codex/write-lease-guard.md) own milestone packets, sequential leases, handoffs, bounded corrections, evidence reuse, and risk-routed review mechanics. The primary coordinator retains integration, evidence acceptance, approvals, authoritative status, exception handling, and closure, and records the reason, paths, and validation for any exceptional direct implementation edit. [Agent-flow metrics](.codex/agent-flow-metrics.md) remain optional and may be used only when a documented present question justifies their overhead.
 
 ## Documentation Preservation
 
@@ -73,20 +73,16 @@ Use modern, stable ECMAScript features supported by the repository's documented 
 
 ## Test-Driven Development
 
-All production behavior changes must follow the TDD workflow documented in [ADR-0010](docs/adrs/0010-use-a-targeted-automated-testing-strategy.md).
+All production behavior changes must follow the milestone-slice TDD workflow documented in [ADR-0016](docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md).
 
-Apply the three laws of TDD:
+Before authoring a test, inspect the relevant implementation and test boundary and classify the requested contract as `EXISTING_AND_COVERED`, `EXISTING_BUT_UNCOVERED`, `MISSING`, `REGRESSION`, `PARTIAL`, `CONFLICTING`, or `UNKNOWN`. Do not manufacture a Red for behavior that already exists. Reuse existing passing coverage for `EXISTING_AND_COVERED`, add passing characterization evidence for `EXISTING_BUT_UNCOVERED`, test only the missing gap for `PARTIAL`, and stop for coordinator triage on `CONFLICTING` or `UNKNOWN`.
 
-1. Do not write production code unless it is required to make a failing test pass.
-2. Do not write more test code than is sufficient to produce the next failure; a compilation or type-check failure counts as a failure.
-3. Do not write more production code than is sufficient to make the currently failing test pass.
+Use one coherent milestone-slice Red-Green-Refactor cycle at a time:
 
-Use one observable Red-Green-Refactor cycle at a time:
+- Red: the test owner adds the minimum coherent set of related tests that proves one observable milestone contract is missing or regressed, then runs the focused scope and confirms the intended failure. A slice may contain multiple assertions or scenarios when they jointly prove the same outcome or boundary; do not split it into microcycles merely because individual assertions can fail separately.
+- Green: the implementation owner works in a separate context against the accepted, frozen test contract, changes only what the slice requires, and runs the focused scope until it passes.
+- Refactor: improve structure only within the slice while its focused tests remain green, then validate the affected milestone boundary.
 
-- Red: add the smallest relevant test and run it to confirm that it fails for the intended reason.
-- Green: implement only the behavior required by that test and run the relevant test scope until it passes.
-- Refactor: improve structure only while the relevant tests remain green, then run them again.
+Start every bug fix with a failing regression test. Choose the smallest coherent test boundary that can prove the outcome; use an integration test first when the behavior belongs to GraphQL wiring, PostgreSQL, Redis, migrations, or another real boundary. Do not commit exploratory production code, skipped tests, focused tests, or test-only branches that change production behavior. Generated artifacts and declarative configuration do not require artificial unit tests, but their observable build, migration, or runtime outcomes require automated validation.
 
-Start every bug fix with a failing regression test. Choose the smallest test boundary that can prove the behavior; use an integration test first when the behavior belongs to GraphQL wiring, PostgreSQL, Redis, migrations, or another real boundary. Do not commit exploratory production code, skipped tests, focused tests, or test-only branches that change production behavior. Generated artifacts and declarative configuration do not require artificial unit tests, but their observable build, migration, or runtime outcomes require automated validation.
-
-In progress updates and final handoffs, report the command and intended failure observed during Red, the passing command observed during Green, and the validation performed after Refactor.
+Run focused checks at Red and Green, the affected suite and build or type boundary at each milestone, and complete authoritative gates once at task closure unless risk, drift, or a failed prerequisite requires an earlier full run. Reuse passing command evidence only when command, working directory, relevant-tree fingerprint, environment fingerprint, and mutable external-state identity are unchanged. In progress updates and final handoffs, report the preflight classification, exact Red and Green evidence when applicable, milestone validation, reused evidence, and closure validation.

@@ -110,9 +110,9 @@ Favorite and comment mutations do not invalidate search keys because the GraphQL
 ## References
 
 - [Requirements specification](../REQUIREMENTS.md)
-- [ADR-0001](./0001-use-a-modular-monolith-workspace.md)
-- [ADR-0004](./0004-use-the-database-as-the-runtime-source-of-truth.md)
+- [ADR-0001](./superseded/0001-use-a-modular-monolith-workspace.md)
+- [ADR-0004](./superseded/0004-use-the-database-as-the-runtime-source-of-truth.md)
 - [ADR-0006](./0006-define-a-use-case-oriented-graphql-contract.md)
 - [ADR-0008](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
-- [ADR-0010](./0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0010](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
 - [ADR index](./README.md)

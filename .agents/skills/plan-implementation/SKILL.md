@@ -9,11 +9,11 @@ Turn the repository documentation into an executable plan without confusing prop
 
 ## Establish the planning baseline
 
-1. Read the nearest `AGENTS.md` files, the root `README.md` documentation map and current status, and the existing `docs/IMPLEMENTATION_PLAN.md`.
-2. Read `docs/REQUIREMENTS.md`, `docs/FULL_STACK_TECHNICAL_ASSESSMENT.md`, `docs/adrs/README.md`, and every ADR that affects the requested scope.
-3. Use the ADR index's architecture coverage only to locate relevant decisions; verify exact scope in the requirements and individual ADRs.
+1. Read the nearest `AGENTS.md` files and the root `README.md` documentation map, then locate the exact task or repository-policy owner.
+2. Read the applicable entry in `docs/IMPLEMENTATION_PLAN.md`, the ADR index, specification routing index, and only the requirement, assessment, ADR, specification, design, and evidence anchors mapped to the requested scope. Read the whole portfolio only for portfolio-wide planning.
+3. Use indexes only to locate relevant authorities; verify exact scope in their owning documents.
 4. Inspect the repository tree and authoritative manifests before describing existing code, commands, or dependencies.
-5. Record missing, contradictory, or unapproved inputs as assumptions or decision gates. Do not silently resolve scope-changing ambiguity.
+5. Record missing, contradictory, or unapproved inputs as assumptions or decision gates. Do not silently resolve scope-changing ambiguity or preload unrelated documentation as precautionary context.
 
 ## Interpret scope correctly
 
@@ -38,9 +38,17 @@ Turn the repository documentation into an executable plan without confusing prop
    - executable or observable validation;
    - documentation impact, affected authority owners, and required links or an explicit no-impact reason;
    - a falsifiable definition of done.
-4. Separate implementation work from optional enhancements, deferred work, and release-readiness checks.
-5. Check that every mandatory requirement, required deliverable, and acceptance criterion maps to at least one task and one validation activity.
-6. Identify the critical path, work that can run in parallel, and risks that could invalidate later work.
+4. For each implementation milestone, also define:
+   - one coherent observable contract and its preflight target;
+   - separate test and implementation ownership, relevant paths, and frozen boundaries;
+   - risk tier and concrete escalation triggers;
+   - focused, milestone, and closure validation responsibilities;
+   - maximum cycles, worker turns, corrections, repeated failures, and no-diff outcomes;
+   - acceptance yield expected from the milestone;
+   - disjoint read-only or write-isolated branches eligible for parallel execution.
+5. Separate implementation work from optional enhancements, deferred work, and release-readiness checks.
+6. Check that every mandatory requirement, required deliverable, and acceptance criterion maps to at least one task and one validation activity.
+7. Identify the critical path, safe parallel work, and risks that could invalidate later work. Do not serialize independent read-only research, but never run Red and Green writers concurrently against the same slice.
 
 ## Produce the requested artifact
 
@@ -52,4 +60,4 @@ Turn the repository documentation into an executable plan without confusing prop
 
 ## Final quality check
 
-Verify that the plan is dependency-ordered, fully traceable, honest about ADR approval, explicit about optional scope, and testable without invented commands or evidence. Every work item must inherit the root README task-closure documentation gate before it can be marked complete.
+Verify that the plan is dependency-ordered, fully traceable, honest about ADR approval, explicit about optional scope, proportional to the outcome, and testable without invented commands or evidence. Reject milestones that combine unrelated behavior, omit a preflight route, repeat complete suites at every worker handoff, or have no stop budget. Every work item must inherit the root README task-closure documentation gate before it can be marked complete.

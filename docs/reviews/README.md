@@ -15,7 +15,7 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Workflow Audits
 
-- [2026-08-16 agentic workflow efficiency audit](./2026-08-16-agentic-workflow-efficiency-audit.md) — reconstructs TASK-004 scope, 209 serial assignments across 109 cycles, validation and documentation amplification, root causes, a risk-tiered target workflow, model routing, stop budgets, and a measurement plan. It is advisory and changes no requirement, ADR, task status, or implementation behavior.
+- [2026-08-16 agentic workflow efficiency audit](./2026-08-16-agentic-workflow-efficiency-audit.md) — reconstructs TASK-004 scope, 209 serial assignments across 109 cycles, validation and documentation amplification, root causes, a risk-tiered target workflow, model routing, stop budgets, and a measurement plan. Its appended owner disposition preserves independent test and implementation roles while adopting milestone-slice TDD, preflight, proportional validation, and an ADR-0015 extension-cost watch through ADR-0016; the original audit findings remain advisory historical evidence.
 
 ## Review Rules
 

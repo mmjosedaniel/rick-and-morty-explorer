@@ -191,7 +191,7 @@ Instrumentation should either be reduced to a small reliable dataset and activat
 The audit found several internal tensions:
 
 - [AGENTS.md](../../AGENTS.md#implementation-simplicity-and-clean-code) requires KISS and YAGNI for workflow machinery, while the implementation workflow makes packets, leases, separate Red/Green workers, and fresh correction assignments mandatory for all owner-authorized implementation ExecPlans.
-- [ADR-0010](../adrs/0010-use-a-targeted-automated-testing-strategy.md) seeks high confidence from a small targeted suite and warns about infrastructure-test friction, while TASK-004 adopted exhaustive matrices and a 9,174-line integration test.
+- [ADR-0010](../adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md) seeks high confidence from a small targeted suite and warns about infrastructure-test friction, while TASK-004 adopted exhaustive matrices and a 9,174-line integration test.
 - The documentation map discourages reading the entire repository, while fresh workers must repeatedly reconstruct a broad authority chain and the reviewer must reconcile every contract/receipt pair.
 - The repository advises linking to authoritative owners instead of duplicating prose, while execution rules require overlapping state in multiple living and historical surfaces.
 
@@ -358,3 +358,17 @@ TASK-004's cost was structurally predictable once ADR-0015 scope and the fixed w
 The repository should preserve the controls that found real defects: TDD ordering, PostgreSQL boundary evidence, early cross-platform clean-checkout validation, hosted CI, and independent semantic review. It should remove or narrow the controls that did not scale: separate Red/Green instances for every behavior, full-context reloads, per-half-cycle leases, duplicated suite execution, manual review of conforming bookkeeping, and documentation of every micro-event in several places.
 
 The first pilot should implement the fast path, capsule, preflight, validation cadence, and five basic metrics on one S1 or S2 task. If quality remains stable, those changes should become the default and the existing strict topology should remain available only for explicitly budgeted S3 work.
+
+## Owner Disposition — 2026-08-16
+
+The project owner accepted the audit's core diagnosis with the following binding adjustments, now recorded by [ADR-0016](../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md):
+
+- retain test-first development, but use one coherent milestone slice rather than micro-level Red-Green cycles for every assertion;
+- retain independent `test_worker` and `code_worker` ownership because separate contexts provide useful challenge and output quality;
+- require the exact `EXISTING_AND_COVERED`, `EXISTING_BUT_UNCOVERED`, `MISSING`, `REGRESSION`, `PARTIAL`, `CONFLICTING`, and `UNKNOWN` preflight classifications; existing-but-uncovered behavior receives passing characterization evidence without Green, a partial gap proceeds only after coordinator confirmation, and conflicting or unknown evidence stops dependent work;
+- remove redundant validation, run focused Green after each coherent slice, and run one affected-boundary join plus independent semantic review after each ExecPlan milestone with reasoning depth proportional to risk;
+- keep model and reasoning-level selection as risk-tiered operational routing rather than fixed architectural policy;
+- preserve completed plans, reviews, ADRs, and TASK-004 chronology as historical evidence; and
+- keep ADR-0015 unchanged while adding a proportional extension-cost watch before future work expands its migration lifecycle.
+
+This disposition does not adopt the audit's combined-writer default or recommend removing the separate test and implementation roles. It also does not remove completed TASK-004 work. The owner authorized ADR-0016 as repository policy without a product `TASK-*`, decision gate, or ExecPlan because adding those artifacts solely to reduce workflow overhead would reproduce the problem being corrected. Pending and future implementation work follows ADR-0016; completed TASK-004 retains ADR-0010 as its point-in-time authority.

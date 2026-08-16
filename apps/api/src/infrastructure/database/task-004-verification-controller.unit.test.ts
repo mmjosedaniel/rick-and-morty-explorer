@@ -87,7 +87,6 @@ const dependentSteps = [
   "test-integration",
   "test-application",
   "test-smoke",
-  "test-root",
   "build",
   "validate-tailwind",
   "test-smoke-lifecycle",
@@ -130,7 +129,6 @@ const expectedEvents = [
   "test-integration",
   "test-application",
   "test-smoke",
-  "test-root",
   "build",
   "validate-tailwind",
   "test-smoke-lifecycle",
@@ -263,6 +261,7 @@ describe("TASK-004 verification controller", () => {
     expect(new Set(reservedPorts).size).toBe(2);
     expect(namespaceControls).toEqual([control]);
     expect(namespaceBodyCalls).toBe(1);
+    expect(expectedSteps).toHaveLength(34);
     expect(observedCommands.map(({ stepId }) => stepId)).toEqual(expectedSteps);
 
     const dockerSteps = new Set([
@@ -290,7 +289,6 @@ describe("TASK-004 verification controller", () => {
       "test-integration",
       "test-application",
       "test-smoke",
-      "test-root",
     ]);
     const apiSteps: ReadonlySet<string> = new Set(dependentSteps.filter((step) => step.startsWith("api-")));
 

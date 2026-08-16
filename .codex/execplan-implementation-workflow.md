@@ -1,12 +1,12 @@
 # Implement an ExecPlan with Worker Agents
 
-This guide defines the normal implementation path for an authorized ExecPlan. It deliberately keeps exception handling outside the main graph: when a lease, handoff, command, requirement, or review result is not acceptable, writing stops and the primary coordinator decides what the new assignment must be.
+This guide defines the normal implementation path for an authorized ExecPlan. Work advances by coherent, independently verifiable milestone slices rather than one agent turn per assertion or microbehavior. It deliberately keeps exception handling outside the main graph: when a classification, lease, handoff, command, requirement, budget, or review result is not acceptable, writing stops and the primary coordinator decides what the new assignment must be.
 
 The workflow adds three controls without replacing the ExecPlan:
 
-- a small, extensible assignment packet so a worker receives enough context to start safely;
+- a compact milestone capsule and assignment packet so each role starts with only the authority and evidence it needs;
 - a machine-verified write lease so the worker can change only the assigned paths; and
-- serial Red-Green-Refactor handoffs with one independent review of each candidate final state.
+- separate test and code contexts, serial Red-Green-Refactor handoffs when behavior is missing or regressed, milestone review, and risk-scaled final review.
 
 ## When to use this flow
 
@@ -14,51 +14,63 @@ Use it when the project owner authorizes implementation of an active ExecPlan an
 
 The flow supports:
 
+- read-only preflight by the milestone's persistent `test_worker` before any test lease;
+- `evidence` by `test_worker` for a passing characterization of existing uncovered behavior;
 - `setup` by `code_worker` for separately planned declarative or infrastructure work;
-- `red` by `test_worker` for one observable behavior slice;
-- `green` plus optional behavior-preserving Refactor by `code_worker` in one implementation turn.
+- `red` by `test_worker` for one coherent observable milestone-slice contract;
+- `green` plus optional behavior-preserving Refactor by `code_worker` in one implementation turn; and
+- proportional milestone review followed by risk-routed integrated review.
 
-Only one write-capable worker lease may be active in one worktree. The Red and Green workers for a behavior cycle are always sequential.
+Only one write-capable worker lease may be active in one worktree. Test and code workers remain separate and their write phases are always sequential. The coordinator should keep one test-worker instance and one code-worker instance alive only for the current milestone so bounded follow-ups retain role-local context. Persistence never carries a lease across turns: every write follow-up receives a fresh packet, baseline, digest, and terminally closed lease. Retire both workers at the milestone barrier; if the runtime cannot preserve an instance, respawn from the capsule.
 
 ## Roles
 
 | Role | Responsibility |
 |---|---|
-| Primary coordinator | Selects the next authorized slice, creates packets and leases, accepts or rejects handoffs, integrates evidence, handles approvals and exceptions, and owns final closure. |
-| `test_worker` | Writes only the smallest assigned test-side change and proves the intended Red. |
-| `code_worker` | Performs bounded setup or reaches minimum Green and optionally Refactors in the same turn. It never changes an accepted test. |
-| `independent_reviewer` | Reviews the integrated candidate state and evidence read-only. It does not repair findings or close the task. |
+| Primary coordinator | Defines milestone contracts and budgets, creates capsules, packets, and leases, accepts or rejects handoffs, integrates evidence, routes risk, handles approvals and exceptions, and owns final closure. |
+| `test_worker` | Performs read-only preflight, then owns a coherent test-side Red or passing characterization under a lease. It never writes production behavior. |
+| `code_worker` | Performs bounded setup or reaches minimum milestone Green and optionally Refactors in the same turn. It never changes an accepted test. |
+| `milestone_reviewer` | Reviews one ordinary completed milestone and its reusable evidence proportionally. It does not repair findings or close the task. |
+| `independent_reviewer` | Reviews ordinary higher-risk milestones or the integrated final state at Sol high. It does not repair findings or close the task. |
+| `critical_reviewer` | Performs maximum-effort review only for a named critical-risk trigger. It does not repair findings or close the task. |
 
 ## Worker Assignment Packet v1
 
-Complete one packet immediately before every write-capable worker spawn. The packet is a minimum context floor, not a maximum: the coordinator may add relevant context, and the worker may inspect additional readable repository files when needed. Additional reading never expands the objective, authority, commands, dependencies, expected result, or write lease.
+Worker Assignment Packet v1 is superseded by the milestone-scoped packet below. This compatibility heading remains so completed historical plans keep resolving; new work must use v2.
 
-Create the stable workflow ID before the first assignment. Use one cycle ID for each bounded setup objective or behavior slice; its Red, Green, and optional Refactor assignments share that behavior-cycle ID.
+## Milestone Assignment Packet v2
+
+Create one compact milestone capsule before preflight and update it only when accepted milestone evidence changes. Complete an assignment packet before preflight and every write turn. The capsule is the role's default context boundary: link exact authority anchors instead of copying whole documents, and expand reading only to resolve a named uncertainty. Additional reading never expands the objective, authority, commands, dependencies, expected result, budget, or write lease.
+
+Create the stable workflow ID before the first assignment. Use one milestone ID for each independently verifiable ExecPlan milestone slice. Preflight, evidence or Red, Green, optional Refactor, bounded corrections, and milestone review share that milestone ID.
 
 Use this template:
 
 ```text
-Worker Assignment Packet v1
+Milestone Assignment Packet v2
 
 Identity
 - Workflow ID:
 - Task ID:
-- Cycle ID:
-- Lease ID:
-- Phase: setup | red | green
+- Milestone ID:
+- Assignment ID:
+- Lease ID: None for preflight
+- Phase: preflight | evidence | setup | red | green
 - Attempt: 1 | 2
 - Worker role: test_worker | code_worker
 - Lease owner:
-- Guard contract digest: inserted after guard start
+- Guard contract digest: None for preflight; inserted after guard start for writes
 
-Authority and objective
+Milestone capsule
 - Owning ExecPlan:
-- Controlling requirement / ADR / gate / SPEC / HS IDs:
-- Objective:
-- Starting barrier:
-- Expected outcome:
+- Observable acceptance contract:
+- Exact requirement / ADR / gate / SPEC / HS anchors:
+- Current-state and preflight evidence IDs:
+- Relevant boundaries and paths:
 - Non-goals:
-- Stop and escalate when:
+- Named uncertainties:
+- Risk tier: S0 | S1 | S2 | S3
+- Review and escalation triggers:
 
 Write scope
 - Allowed files:
@@ -69,38 +81,47 @@ Write scope
 
 Validation
 - Working directory:
-- Commands to run:
-- Expected decisive result:
+- Focused command:
+- Milestone command:
+- Expected decisive result and reusable evidence IDs:
+- Relevant-tree fingerprint:
+- Environment fingerprint or Non-reusable:
 - Known external side effects and cleanup:
 
-Context
-- Required repository reads:
-- Additional context supplied by the coordinator:
+Budget and stopping
+- Maximum worker turns:
+- Maximum corrections:
+- Maximum repeated identical failure:
+- Maximum no-diff outcomes:
+- Validation cadence:
+- Stop and escalate when:
 
 Handoff
 - Report identity and authority, touched paths, exact commands and decisive results,
   outcome, unexpected state, residual risks, and documentation impact.
 ```
 
-Use `None` when a field is intentionally empty. Do not omit the field. Secrets, full transcripts, and unrelated conversation history do not belong in the packet.
+Use `None` when a field is intentionally empty. Do not omit the field. Secrets, full transcripts, whole authority documents, and unrelated conversation history do not belong in the packet.
 
-The active role/phase pairs are `red` with `test_worker`, and `setup` or `green` with `code_worker`. Refactor, when useful, occurs after Green in that same `green` assignment.
+Preflight is a read-only `test_worker` turn with no lease. Active write pairs are `evidence` or `red` with `test_worker`, and `setup` or `green` with `code_worker`; a same-contract correction uses attempt 2 with the original role/phase pair rather than inventing a `correction` phase. Refactor, when useful, occurs after Green in that same Green assignment.
 
-### Binding fields and additional context
+### Binding fields, capsule expansion, and evidence identity
 
-The packet may grow when the assignment needs more explanation, examples, logs, diagrams, or repository references. A worker may also discover and read additional relevant files. These additions are safe while they only improve understanding.
+The coordinator may add a concise log excerpt, diagram, or exact repository reference when it resolves a named uncertainty. A worker may discover and read an additional relevant file, but must report why the capsule was insufficient. These additions are safe only while they improve understanding without silently widening context or scope.
 
-Stop the worker if new information changes a binding field: task or cycle identity, phase, worker role, objective, governing authority, expected outcome, validation command, dependency, side effect, or write scope. The coordinator must close the current lease and decide whether a new packet is authorized.
+Stop the worker if new information changes a binding field: task or milestone identity, phase, worker role, objective, governing authority, expected outcome, risk tier, validation command, dependency, side effect, budget, or write scope. The coordinator must close any current lease and decide whether a new packet or milestone contract is authorized.
+
+Accepted command evidence may be reused only when all of these still match: exact command, working directory, relevant-tree fingerprint, environment fingerprint, and guard-backed no-drift state. Evidence against a mutable PostgreSQL, Redis, browser, network, clock, or other external boundary is `Non-reusable` unless the packet pins an isolated run identity and state. Reuse avoids duplicate execution; it never converts a worker report into proof. Any mismatch invalidates the evidence and requires the proportional command to run again.
 
 ### Guard projection
 
-Before spawning the worker, the coordinator passes these packet fields unchanged to the [automatic write-lease guard](./write-lease-guard.md):
+Before each write turn, the coordinator passes these packet fields unchanged to the [automatic write-lease guard](./write-lease-guard.md):
 
 | Packet field | Guard input |
 |---|---|
 | Workflow ID | `--workflow-id` |
 | Task ID | `--task-id` |
-| Cycle ID | `--cycle-id` |
+| Milestone ID | `--cycle-id` |
 | Lease ID | `--lease-id` |
 | Phase | `--phase` |
 | Attempt | `--attempt` |
@@ -111,72 +132,115 @@ Before spawning the worker, the coordinator passes these packet fields unchanged
 | Forbidden files | repeated `--forbid-file` |
 | Forbidden directory roots | repeated `--forbid-dir-root` |
 
-The coordinator drafts the packet, starts the guard, inserts the returned digest, confirms that the projection matches, and only then spawns the worker. The guard proves path and repository-control compliance; it does not prove that the test, code, command result, or design is correct.
+For a write turn, the coordinator drafts the packet, starts the guard, inserts the returned digest, confirms that the projection matches, and only then authorizes the persistent or newly spawned worker to write. Preflight has no guard because it is read-only. The guard proves path and repository-control compliance; it does not prove that the classification, test, code, command result, evidence identity, or design is correct.
 
 ## Normal flow
 
 ```mermaid
 flowchart TD
-    A["Coordinator confirms TASK In progress and loads the ExecPlan"] --> B{"Next authorized work?"}
-    B -- "Setup" --> C["Packet and guarded lease: code_worker performs setup"]
-    B -- "Behavior" --> D["Packet and guarded lease: test_worker proves Red"]
-    C --> E{"Lease compliant and setup accepted?"}
-    D --> F{"Lease compliant and Red accepted?"}
-    E -- "No" --> X["Stop writes; coordinator triages and reconciles"]
+    A["Coordinator confirms TASK In progress and defines milestone capsule, budget, and risk"] --> B["Persistent test_worker performs read-only preflight"]
+    B --> C{"Classification"}
+    C -- "EXISTING_AND_COVERED" --> H["Accept fresh existing evidence"]
+    C -- "EXISTING_BUT_UNCOVERED" --> D["Guarded evidence lease: characterize existing behavior"]
+    C -- "MISSING or REGRESSION" --> E["Guarded Red lease: prove coherent milestone contract"]
+    C -- "PARTIAL" --> U["Coordinator confirms the explicit missing gap and issues a reconciled packet"]
+    U --> E
+    C -- "CONFLICTING or UNKNOWN" --> X["Stop writes; coordinator triages and reconciles"]
+    D --> F{"Lease and characterization accepted?"}
+    E --> G{"Lease and Red accepted?"}
     F -- "No" --> X
-    F -- "Yes" --> G["Freeze tests; new packet and lease: code_worker reaches Green and may Refactor"]
-    G --> H{"Lease compliant and implementation accepted?"}
-    H -- "No" --> X
-    E -- "Yes" --> I["Coordinator records accepted evidence"]
-    H -- "Yes" --> I
-    I --> B
-    B -- "Closure" --> J{"Complete validation, relevance, and documentation checks pass?"}
+    G -- "No" --> X
+    F -- "Yes" --> H
+    G -- "Yes" --> I["Freeze tests; persistent code_worker reaches Green and may Refactor"]
+    I --> J{"Lease and Green accepted?"}
     J -- "No" --> X
-    J -- "Yes" --> K["One fresh independent_reviewer checks the candidate state"]
-    K --> L{"PASS or accepted non-blocking follow-ups?"}
-    L -- "No" --> X
-    L -- "Yes" --> M["Primary coordinator reconciles authorities and closes"]
+    J -- "Yes" --> H
+    H --> K{"Proportional milestone validation passes?"}
+    K -- "No" --> X
+    K -- "Yes" --> L{"Risk route"}
+    L -- "S0 or S1" --> M["Fresh milestone_reviewer"]
+    L -- "S2" --> O["Fresh independent_reviewer"]
+    L -- "S3 or critical trigger" --> P["Fresh critical_reviewer"]
+    M --> Q{"Accepted verdict?"}
+    O --> Q
+    P --> Q
+    Q -- "No" --> X
+    Q -- "Yes" --> N
+    N --> R{"More milestones?"}
+    R -- "Yes" --> A
+    R -- "No" --> S["Complete closure validation and risk-routed integrated review"]
+    S --> T["Primary coordinator reconciles authorities and closes"]
 ```
 
-`X` is intentionally terminal. The diagram does not guess whether the problem belongs to the test, implementation, environment, authority, or lease. After inspection, the coordinator may create a corrected assignment, a new behavior slice, request owner direction, or stop the task. Any resumed work re-enters at `B` with a newly valid packet and lease.
+`X` is intentionally terminal. The diagram does not guess whether the problem belongs to classification, test, implementation, environment, authority, budget, or lease. After inspection, the coordinator may authorize one bounded same-contract correction, redefine the milestone before writes resume, request owner direction, or stop the task. Any resumed write work uses a newly valid packet and lease.
 
-## Serial TDD operation
+## Preflight routing
 
-For each behavior slice:
+The persistent test worker returns exactly one classification before any test write:
 
-1. The coordinator creates a fresh cycle ID and assigns `red` to `test_worker`.
-2. The test worker adds only the smallest relevant test and runs the focused command. The intended behavioral failure must be observable and unrelated failures do not count as Red.
-3. The coordinator closes the lease, inspects the test and result, and either accepts the Red or stops for triage. Once accepted, test-owned paths are frozen for the rest of the cycle.
-4. The coordinator assigns `green` to `code_worker` under a new packet and lease. The code worker first reproduces the accepted Red, writes only the production behavior required to make it pass, and may perform a small behavior-preserving Refactor while the focused test remains green.
-5. The coordinator closes the implementation lease, inspects the complete production diff and unchanged frozen tests, and accepts the Green and any Refactor evidence together.
-6. The coordinator records concise Red, Green, and post-Refactor evidence in the living ExecPlan before selecting the next slice.
+| Classification | Required route |
+|---|---|
+| `EXISTING_AND_COVERED` | Record the exact implementation, test, and focused-command evidence. Do not add a test or spawn Green. |
+| `EXISTING_BUT_UNCOVERED` | Use a guarded `evidence` assignment to add one passing characterization test. Do not manufacture Red or spawn Green. |
+| `MISSING` | Use the ordinary Red then Green route. |
+| `REGRESSION` | Prove the regression with a focused Red, then use the ordinary Green route. |
+| `PARTIAL` | The coordinator confirms the explicit missing gap and narrows the milestone contract; only that gap follows Red then Green. If the gap cannot be isolated without changing a binding field, stop and issue a reconciled packet before writing. |
+| `CONFLICTING` | Stop because implementation, tests, or authorities disagree. Reconcile the contract before writing. |
+| `UNKNOWN` | Stop because available evidence cannot support another classification. Acquire evidence or request direction. |
 
-A separately planned `setup` assignment may occur before any dependent behavior slice. It must not smuggle production behavior into configuration work and must have its own observable structural, build, or runtime check.
+Search absence alone never proves `MISSING`. The preflight handoff must cite exact source or test locations and the safe focused command when one exists. If a read-only preflight command cannot run without creating caches, generated output, or mutable external state, return `UNKNOWN` or let the coordinator run an explicitly safe diagnostic; do not silently write without a lease.
+
+## Coherent milestone-slice TDD
+
+For each milestone slice whose preflight result is `MISSING` or `REGRESSION`:
+
+1. The coordinator uses the milestone ID and assigns `red` to the persistent `test_worker` under a fresh lease.
+2. The test worker adds the smallest coherent test-side change sufficient to prove one indivisible milestone outcome. Related assertions may travel together when splitting them would create artificial handoffs; future milestone behavior may not.
+3. The coordinator closes the lease, inspects the actual test diff and focused result, and either accepts the Red or stops for triage. Once accepted, test-owned paths are frozen for the rest of the milestone.
+4. The coordinator assigns `green` to the persistent `code_worker` under a new packet and lease. The worker may reuse the accepted Red without rerunning it only when its full evidence identity remains fresh. Otherwise it reproduces Red before editing.
+5. The code worker writes only the production behavior required by the accepted milestone contract and may perform a small behavior-preserving Refactor while frozen tests stay unchanged. It reruns the focused check after an actual Refactor, not when no Refactor occurred.
+6. The coordinator closes the implementation lease, inspects the complete production diff and unchanged frozen tests, and accepts Green and any Refactor evidence together.
+7. The coordinator runs the milestone validation cadence, records concise evidence identities in the living ExecPlan, routes review by risk, and retires both milestone workers after acceptance.
+
+This is still one observable Red-Green-Refactor cycle at a time. “Coherent” changes the handoff granularity, not the order: production code never precedes an accepted Red when behavior is missing or regressed.
+
+A separately planned `setup` assignment may occur before any dependent milestone slice. It must not smuggle production behavior into configuration work and must have its own observable structural, build, or runtime check.
 
 ## Corrections and exceptions
 
-A worker never continues writing after its lease is terminal. Guard violations, ambiguous concurrent changes, pre-existing failures, wrong Red failures, blocked dependencies, rejected handoffs, and review findings all take the same immediate action: stop writes and return control to the coordinator. Never repair them by reverting user or peer work automatically.
+A worker never continues writing after its lease is terminal. Guard violations, ambiguous concurrent changes, stale evidence, exhausted budgets, pre-existing failures, wrong Red failures, blocked dependencies, rejected handoffs, and review findings all take the same immediate action: stop writes and return control to the coordinator. Never repair them by reverting user or peer work automatically.
 
-After triage, any authorized fix starts through the ordinary assignment loop with a reconciled tree, a complete packet, and a fresh baseline, lease ID, digest, and worker turn. The coordinator may label it attempt 2 when it is genuinely a correction of the same bounded assignment; a changed test contract, objective, authority, dependency, scope, or behavior is a new assignment. The graph does not encode separate correction routes.
+After triage, the coordinator may send the same persistent role one correction follow-up only when the milestone contract, objective, authority, dependency, expected outcome, and scope remain unchanged. It uses attempt 2, a fresh complete packet, reconciled tree, baseline, lease ID, and digest. A second unsuccessful correction, a repeated identical decisive failure, two no-diff write handoffs in the milestone, or any binding-field change stops automatic continuation and requires rescoping, a fresh instance, owner direction, or task stop. Permission to fix one named finding never resets this budget.
+
+Default milestone budgets are one preflight, one coherent Red or characterization, one Green, at most one correction per role, and one review correction loop. A milestone may define stricter limits. More than three TDD cycles inside one milestone indicates that the milestone or contract should be split or re-evaluated; do not silently continue microcycling.
 
 ## Concise worker handoffs
 
 Every worker handoff contains only what the coordinator needs to verify and resume:
 
-1. `Assignment` - packet identity, objective, controlling IDs, phase, attempt, and contract digest.
+1. `Assignment` - workflow, task, milestone, assignment, objective, controlling IDs, phase, attempt, evidence IDs, and contract digest when applicable.
 2. `Lease and changes` - allowed scope, touched paths, unexpected paths, and concise diff intent.
-3. `Validation` - exact commands, exit codes, and decisive results; Green includes the reproduced Red and post-Refactor result.
+3. `Validation` - exact commands, exit codes, decisive results, and evidence reused or invalidated; Green includes reused or reproduced Red and a post-Refactor result only when Refactor occurred.
 4. `Outcome` - the role-specific outcome plus any blocker, residual risk, and documentation impact.
 
 The coordinator compares the handoff with the packet, terminal receipt, actual diff, and command evidence. A worker summary alone never accepts a barrier.
 
-## Final review and closure
+## Milestone and final review
 
-After all planned slices and required evidence are integrated, the coordinator runs the ExecPlan's focused and complete checks, test-relevance audit, documentation validation, and authoritative status checks. A fresh `independent_reviewer` then reviews the complete candidate state, exact diff, packets, terminal receipts, TDD order, and evidence.
+After each milestone's worker handoffs are accepted, the coordinator runs the milestone's proportional affected checks and routes review:
+
+- `S0`: inside an implementation ExecPlan, a fresh `milestone_reviewer` performs the smallest semantic review at Terra high and reuses deterministic evidence. S0 work outside an implementation ExecPlan needs no LLM reviewer unless another trigger applies.
+- `S1`: a fresh `milestone_reviewer` reviews the scoped milestone at Terra high.
+- `S2`: a fresh `independent_reviewer` reviews the milestone at Sol high.
+- `S3`: a fresh `critical_reviewer` reviews at Sol max.
+
+Critical triggers override the nominal tier: security; irreversible migration or data-loss risk; concurrency, locking, or recovery; custom serialization, integrity, or identity contracts; cross-platform byte equivalence; an unresolved Blocker or Major from an ordinary reviewer; or explicit project-owner direction. Reviewers reuse fresh evidence under the identity rule and rerun only missing, stale, contradictory, externally mutable, or risk-critical checks.
+
+After all milestones are integrated, the coordinator runs the ExecPlan's closure checks, test-relevance audit, documentation validation, and authoritative status checks. A fresh `independent_reviewer` performs ordinary integrated review; use `critical_reviewer` only when an integrated critical trigger remains. The final reviewer concentrates on cross-milestone interaction, unresolved findings, changed evidence, and closure rather than replaying every already accepted milestone.
 
 - `PASS` permits coordinator reconciliation and closure when every task gate also passes.
 - `PASS WITH FOLLOW-UPS` permits closure only when the coordinator dispositions every item and none conflicts with a definition of done, validation result, or documentation gate.
-- `REVISE` or `BLOCKED` stops closure. The coordinator classifies the finding and, if further work is authorized, resumes through a new ordinary assignment and later requests a fresh complete review.
+- `REVISE`, `BLOCKED`, or `ESCALATE TO CRITICAL REVIEW` stops advancement. The coordinator classifies the finding and, if further work is authorized, uses the bounded correction rule or risk escalation before requesting proportional re-review.
 
 The reviewer never edits the repository and no agent report can change authoritative task, gate, ADR, or approval state.
 
@@ -188,38 +252,46 @@ The [agent-flow metrics](./agent-flow-metrics.md) are an optional, best-effort s
 
 ```text
 Act as the primary coordinator for the authorized TASK-* and its living ExecPlan.
-Confirm that the canonical task is In progress and load only the mapped requirements,
-accepted ADRs, active gates, and SPEC/HS rules needed for the next slice.
+Confirm that the canonical task is In progress. Define the next coherent, independently
+verifiable milestone slice with its acceptance contract, exact authority anchors,
+non-goals, risk tier, validation cadence, and worker, correction, no-diff, and repeated-
+failure budgets. Put only that information and accepted evidence identities in Milestone
+Assignment Packet v2; expand reading only to resolve a named uncertainty.
 
-Use the worker-first implementation workflow. Keep one write-capable lease active at a
-time. Before every worker spawn, complete Worker Assignment Packet v1, start the
-automatic write-lease guard with its exact identity and four path lists, insert and
-verify the returned contract digest, and send the complete packet. The packet is the
-minimum required context, not a maximum; provide or allow additional relevant reading
-without expanding any binding assignment field or write scope.
+Keep one persistent test_worker and one persistent code_worker only for this milestone.
+Have test_worker perform read-only preflight before any test lease and return exactly
+EXISTING_AND_COVERED, EXISTING_BUT_UNCOVERED, MISSING, REGRESSION, PARTIAL,
+CONFLICTING, or UNKNOWN. Existing covered behavior needs no write. Existing uncovered
+behavior receives a guarded evidence lease for a passing characterization. Missing or
+regressed behavior receives one coherent guarded Red, followed sequentially by Green.
+PARTIAL routes only its coordinator-confirmed explicit gap through Red and Green;
+CONFLICTING or UNKNOWN stops for coordinator triage.
 
-For each behavior slice, send the smallest Red to test_worker. Close the lease, inspect
-the actual diff and focused failure, and accept Red only when it fails for the intended
-behavioral reason. Freeze the accepted test paths. Then send Green to code_worker under
-a fresh packet and lease. Require it to reproduce Red before production edits, make the
-minimum change, and pass the focused command. It may Refactor in the same turn only
-while behavior and frozen tests remain unchanged and validation stays green. Use
-code_worker setup only for an independent declarative objective with its own check.
+Before every write turn, start the automatic write-lease guard with the packet's exact
+identity and four path lists, insert and verify the digest, and authorize writing only
+under that lease. Close and inspect the lease, actual diff, command evidence, and handoff
+before advancing. Freeze an accepted test boundary. Send Green to the persistent
+code_worker under a fresh packet and lease. Reuse accepted Red evidence only when the
+command, working directory, relevant-tree fingerprint, environment fingerprint, and
+no-drift state still match; otherwise reproduce it. Make minimum Green and run a second
+focused check only after an actual Refactor.
 
-After every worker turn, terminally close the exact lease before accepting the handoff.
-Inspect the receipt, actual diff, commands, and outcome, then record concise accepted
-evidence in the ExecPlan. On any noncompliant lease, rejected handoff, wrong failure,
-scope or authority change, blocked dependency, or conflict, stop writes and triage.
-If more work is authorized after triage, re-enter the ordinary loop with a reconciled
-tree and a fresh packet, baseline, lease ID, digest, and worker turn. Never continue
-under a closed lease or silently expand the prior assignment.
+Allow at most one same-contract correction per role under a fresh lease. Stop after the
+same decisive failure twice, two no-diff write handoffs, exhausted budgets, or any
+binding-field change. Never continue under a closed lease, reset a correction budget,
+or silently turn one milestone into a stream of microcycles.
 
-When planned work is complete, run the ExecPlan's complete validation, relevance,
-documentation, and authority checks. Spawn one fresh read-only independent_reviewer for
-the integrated candidate state. PASS may proceed to coordinator-owned closure;
-PASS WITH FOLLOW-UPS requires explicit disposition; REVISE or BLOCKED stops closure and
-returns control to coordinator triage. After any authorized fix, rerun complete
-validation and request a fresh complete review.
+Run proportional affected validation at the milestone barrier and route review by risk:
+S0 or S1 milestone_reviewer, S2 independent_reviewer, and S3 or a critical trigger
+critical_reviewer. Reuse fresh evidence; rerun only missing, stale,
+contradictory, externally mutable, or risk-critical checks. Retire the milestone workers
+after acceptance.
+
+At task closure, run the ExecPlan's complete validation, relevance, documentation, and
+authority checks. Use a fresh independent_reviewer for ordinary integrated review or a
+critical_reviewer when a critical trigger remains. PASS may proceed to coordinator-owned
+closure; PASS WITH FOLLOW-UPS requires explicit disposition; REVISE, BLOCKED, or
+escalation stops advancement and returns control to coordinator triage.
 
 Metrics are optional and observational. Keep TASK status, approvals, evidence
 acceptance, and final closure with the primary coordinator. Do not stage, commit, push,
@@ -236,4 +308,5 @@ or claim implementation evidence without the corresponding repository and runtim
 - [Automatic write-lease guard](./write-lease-guard.md)
 - [Agent-flow metrics](./agent-flow-metrics.md)
 - [Verify repository skill](../.agents/skills/verify-repository/SKILL.md)
-- [ADR-0010](../docs/adrs/0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0016, current milestone-slice TDD decision](../docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
+- [ADR-0010, superseded historical testing decision](../docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md)

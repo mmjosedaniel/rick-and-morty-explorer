@@ -112,7 +112,6 @@ const postNamespaceSteps = [
   "test-integration",
   "test-application",
   "test-smoke",
-  "test-root",
   "build",
   "validate-tailwind",
   "test-smoke-lifecycle",
@@ -132,7 +131,6 @@ const controlOnlySteps: ReadonlySet<string> = new Set([
   "test-integration",
   "test-application",
   "test-smoke",
-  "test-root",
 ]);
 
 const lowerHex64 = /^[0-9a-f]{64}$/u;
@@ -336,8 +334,6 @@ function commandInvocation(
       return npm("run", "test:application");
     case "test-smoke":
       return npm("run", "test:smoke");
-    case "test-root":
-      return npm("test");
     case "build":
       return npm("run", "build");
     case "validate-tailwind":

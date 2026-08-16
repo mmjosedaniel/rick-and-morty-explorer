@@ -91,5 +91,5 @@ The optional method-decorator feature is not adopted by this decision. Experimen
 - [Requirements specification](../REQUIREMENTS.md)
 - [Technical assessment](../FULL_STACK_TECHNICAL_ASSESSMENT.md)
 - [Repository guidelines](../../AGENTS.md)
-- [ADR-0001](./0001-use-a-modular-monolith-workspace.md)
+- [ADR-0001](./superseded/0001-use-a-modular-monolith-workspace.md)
 - [ADR index](./README.md)

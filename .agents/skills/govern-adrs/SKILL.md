@@ -9,11 +9,11 @@ Keep architectural decisions specific, falsifiable, traceable, and consistent wi
 
 ## Gather decision context
 
-1. Read the applicable `AGENTS.md` files and the root `README.md` documentation map.
-2. Read `docs/REQUIREMENTS.md`, `docs/FULL_STACK_TECHNICAL_ASSESSMENT.md`, and `docs/adrs/README.md`.
-3. Read `docs/IMPLEMENTATION_PLAN.md` when the decision originates from, changes, or resolves a decision gate.
-4. Read every ADR that constrains or could conflict with the decision.
-5. Inspect implementation evidence when the decision describes current behavior. Do not infer implementation from documentation alone.
+1. Read the applicable `AGENTS.md` files, the root `README.md` documentation map, and `docs/adrs/README.md`.
+2. Follow the index to the exact requirement and assessment sections mapped to the decision. Read the full requirement and assessment portfolios only for a portfolio-wide review.
+3. Read the applicable gate and task entries in `docs/IMPLEMENTATION_PLAN.md` when the decision originates from, changes, or resolves them.
+4. Read only the ADRs that constrain, conflict with, or are superseded by the decision; expand scope when a concrete compatibility question requires it.
+5. Inspect implementation evidence when the decision describes current behavior. Do not infer implementation from documentation alone or load unrelated documents as precautionary context.
 
 ## Decide whether an ADR is warranted
 
@@ -24,22 +24,39 @@ Prefer a short implementation note when the choice is local, easily reversible, 
 ## Create or revise a decision
 
 1. Assign the next unused four-digit ID and an English kebab-case filename.
-2. Start a new decision as `Proposed`.
+2. Start a new decision as `Proposed` unless the project owner has already approved the decision substance and explicitly requested its implementation; record that approval evidence when accepting it in the same change.
 3. Distinguish mandatory, optional, and deferred requirements in the context and drivers.
 4. Compare at least two credible alternatives in addition to the selected option.
 5. State one concrete decision that can be disproved by inspecting the system.
 6. Record positive and negative consequences, residual risks, mitigations, reversal triggers, and measurable validation.
 7. Link exact requirement IDs and related ADRs. Treat `Related requirements` as an addressed-by relationship, not as proof that an optional requirement is adopted or implemented; record optional adoption or deferral explicitly in the ADR index.
-8. Score the ADR with the rubric in `docs/adrs/README.md`; derive the recommendation from the score and the rubric's acceptance gates.
+8. Complete the proportionality gate below, then score the ADR with the rubric in `docs/adrs/README.md`; derive the recommendation from the score and the rubric's acceptance gates.
 9. Update the decision index and architecture coverage without claiming implementation. When the decision resolves a gate, update that gate only after project-owner approval.
 
 Use these required sections in order: `Context`, `Decision drivers`, `Considered options`, `Decision`, `Consequences`, `Risks and mitigations`, `Validation`, `Evaluation`, and `References`.
+
+## Enforce proportionality before approval
+
+Do not recommend or accept a decision until the record compares the selected option with the smallest credible baseline across:
+
+- implementation and changed-file surface;
+- test count, test runtime, and slow-boundary coverage;
+- tooling and documentation surface;
+- recurring execution, review, and operator burden;
+- expected friction when extending the next two plausible features;
+- reversibility and cost of removing the decision;
+- source-mandatory work versus stricter adopted-optional commitments.
+
+Reject a more complex option when its present evidence does not justify the added recurring burden. A policy introduced by the same ADR is not evidence of need. If correctness, security, compatibility, or an accepted requirement requires the larger surface, state the exact driver and add a measurable cost guardrail or reversal trigger.
+
+For an already accepted complex ADR, preserve the decision and historical evidence. Future tasks that touch its boundary must record actual change amplification—affected subsystems, tests, slow commands, documentation, and compatibility obligations—and keep new variants behind stable existing interfaces. Consider a successor only after observed extension cost becomes disproportionate; do not remove delivered work merely to simplify the workflow.
 
 ## Preserve decision history
 
 - Change `Proposed` records while they are under review, preserving their intent and review history.
 - Mark a record `Accepted` only with project-owner approval.
 - Never rewrite an accepted decision to reverse it. Create a new ADR, mark the old one `Superseded`, and add reciprocal links.
+- Store every `Superseded` record under `docs/adrs/superseded/` using its unchanged stable filename. When relocating it, repair inbound and internal links, update the central ADR index, record the organizational change in the execution chronology, and rerun both ADR and documentation validation.
 - Use `Rejected` for an evaluated decision not selected, and `Deprecated` only when it is no longer recommended without a direct replacement.
 - Keep filenames and historical records stable after acceptance.
 

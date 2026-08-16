@@ -62,7 +62,7 @@ Current lifecycle orientation after the later successor: accepted [ADR-0014](../
 
 
 - Observation: A direct browser image request conflicts with ADR-0001's no-external-character-API browser dependency as well as ADR-0004's GraphQL-only and ingestion-only boundary, while the original DG-004 wording named only ADR-0004 and ADR-0006 for reconciliation.
-  Evidence: `docs/adrs/0001-use-a-modular-monolith-workspace.md`, `docs/adrs/0004-use-the-database-as-the-runtime-source-of-truth.md`, and `docs/IMPLEMENTATION_PLAN.md` DG-004 validation wording.
+  Evidence: `docs/adrs/superseded/0001-use-a-modular-monolith-workspace.md`, `docs/adrs/superseded/0004-use-the-database-as-the-runtime-source-of-truth.md`, and `docs/IMPLEMENTATION_PLAN.md` DG-004 validation wording.
 - Observation: The ADR portfolio defines whole-record `Superseded` lifecycle and reciprocal links but no partial-supersession status. A scoped image exception therefore cannot leave contradictory accepted text active or invent a lifecycle label.
   Evidence: `docs/adrs/README.md` convention and status definitions. The future ADR must preserve a compatible interpretation or supersede through the documented lifecycle while carrying forward unaffected constraints.
 - Observation: ADR-0003 already anticipates an image URL column, but DG-004 prohibits persistence behavior that assigns image-location semantics. TASK-004 does not depend on TASK-016, so a neutral column and a selected delivery meaning must not be conflated.
@@ -72,7 +72,7 @@ Current lifecycle orientation after the later successor: accepted [ADR-0014](../
 - Observation: The public API documents image URLs but does not publish an availability or permanence commitment. Its About page does not claim ownership of the images, so the API software's BSD license must not be treated as an image-content license.
   Evidence: `https://rickandmortyapi.com/documentation/#character-schema` and `https://rickandmortyapi.com/about`; these are planning-baseline observations that formal research must refresh and qualify.
 - Observation: ADR-0010 and ADR-0011 constrain deterministic image validation, and ADR-0012 becomes relevant if the selected strategy changes persisted schema, even though the original TASK-016 governing list ended at ADR-0009.
-  Evidence: `docs/adrs/0010-use-a-targeted-automated-testing-strategy.md`, `docs/adrs/0011-define-the-typescript-test-harness.md`, and `docs/adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md`.
+  Evidence: `docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md`, `docs/adrs/0011-define-the-typescript-test-harness.md`, and `docs/adrs/superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md`.
 - Observation: One direct-upstream planning probe was completed before this Decision Review Contract existed. It may inform the contract's evidence routes but cannot satisfy the formal symmetric research barrier.
   Evidence: The Durable Research Record labels the probe as non-creditable planning input and leaves all three candidate reports incomplete.
 - Observation: The specification index's character-image row omitted both TASK-007's cached `imageUrl` behavior and TASK-011's SPEC-003 detail-image evidence, even though adjacent routing and the canonical task records assign those owners.
@@ -237,16 +237,16 @@ TASK-016 directly maps [FR-FE-001](../../REQUIREMENTS.md#fr-fe-001---character-l
 
 Accepted decisions narrow the choice:
 
-- [ADR-0001](../../adrs/0001-use-a-modular-monolith-workspace.md) defines the modular browser/API boundary and currently rejects a browser dependency on the external character API.
+- [ADR-0001](../../adrs/superseded/0001-use-a-modular-monolith-workspace.md) defines the modular browser/API boundary and currently rejects a browser dependency on the external character API.
 - [ADR-0003](../../adrs/0003-use-postgresql-for-relational-persistence.md) makes migrations authoritative and anticipates a persisted image URL without defining whether it is upstream- or application-owned.
-- [ADR-0004](../../adrs/0004-use-the-database-as-the-runtime-source-of-truth.md) historically made PostgreSQL the runtime character-data source, project GraphQL the browser data API, and the public API an explicit-ingestion dependency; ADR-0013 now carries forward its unaffected constraints.
+- [ADR-0004](../../adrs/superseded/0004-use-the-database-as-the-runtime-source-of-truth.md) historically made PostgreSQL the runtime character-data source, project GraphQL the browser data API, and the public API an explicit-ingestion dependency; ADR-0013 now carries forward its unaffected constraints.
 - [ADR-0006](../../adrs/0006-define-a-use-case-oriented-graphql-contract.md) fixes non-null `imageUrl` fields in project-owned GraphQL projections and rejects a parallel product REST API.
 - [ADR-0007](../../adrs/0007-use-cache-aside-for-character-searches.md) caches only the CharacterSummary projection, including `imageUrl`, and invalidates it after import commits.
 - [ADR-0008](../../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) requires explicit, idempotent, transactional ingestion and best-effort post-commit cache invalidation. Materialized images therefore need defined publication, rollback, retry, and cleanup semantics.
 - [ADR-0009](../../adrs/0009-keep-frontend-state-close-to-its-owner.md) requires meaningful alternative text, stable image geometry, and a layout-safe failure state.
-- [ADR-0010](../../adrs/0010-use-a-targeted-automated-testing-strategy.md) requires deterministic fixtures and forbids live public-API dependence in automated tests.
+- [ADR-0010](../../adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md) requires deterministic fixtures and forbids live public-API dependence in automated tests.
 - [ADR-0011](../../adrs/0011-define-the-typescript-test-harness.md) assigns DOM semantics to jsdom, actual request/loading observation to the narrow Chromium boundary, and fail-closed network behavior to upstream adapter tests.
-- [ADR-0012](../../adrs/0012-use-a-build-first-programmatic-migration-lifecycle.md) governs any later schema migration required by the selected image contract; TASK-016 defines consequences but implements no migration.
+- [ADR-0012](../../adrs/superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md) governs any later schema migration required by the selected image contract; TASK-016 defines consequences but implements no migration.
 
 Accepted [ADR-0013](../../adrs/superseded/0013-materialize-character-images-during-ingestion.md) selects the ingestion-owned PostgreSQL boundary described by this plan, resolves DG-004, and supersedes ADR-0004. Its separate rights disposition remains unresolved and it grants no implementation evidence.
 

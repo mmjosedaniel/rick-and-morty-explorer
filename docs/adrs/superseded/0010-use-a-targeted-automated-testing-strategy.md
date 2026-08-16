@@ -1,11 +1,11 @@
 # ADR-0010: Use a Targeted Automated Testing Strategy
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-09
 - Decision owners: Project maintainers
 - Related requirements: NFR-004, OR-004, OR-007, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009, AC-010, AC-011, AC-012
 - Supersedes: None
-- Superseded by: None
+- Superseded by: [ADR-0016](../0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
 
 ## Context
 
@@ -136,12 +136,12 @@ Tests will use deterministic fixtures at the external ingestion boundary. Produc
 
 ## References
 
-- [Requirements specification](../REQUIREMENTS.md)
-- [Repository guidelines](../../AGENTS.md)
+- [Requirements specification](../../REQUIREMENTS.md)
+- [Repository guidelines](../../../AGENTS.md)
 - [Codex ExecPlan guidance](https://developers.openai.com/cookbook/articles/codex_exec_plans)
 - [ADR-0001](./0001-use-a-modular-monolith-workspace.md)
-- [ADR-0006](./0006-define-a-use-case-oriented-graphql-contract.md)
-- [ADR-0007](./0007-use-cache-aside-for-character-searches.md)
-- [ADR-0008](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
-- [ADR-0009](./0009-keep-frontend-state-close-to-its-owner.md)
-- [ADR index](./README.md)
+- [ADR-0006](../0006-define-a-use-case-oriented-graphql-contract.md)
+- [ADR-0007](../0007-use-cache-aside-for-character-searches.md)
+- [ADR-0008](../0008-use-deterministic-bootstrap-and-idempotent-sync.md)
+- [ADR-0009](../0009-keep-frontend-state-close-to-its-owner.md)
+- [ADR index](../README.md)

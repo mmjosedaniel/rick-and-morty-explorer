@@ -154,7 +154,7 @@ The GraphQL schema, a development-only explorer, and README operation examples w
 ## References
 
 - [Requirements specification](../REQUIREMENTS.md)
-- [ADR-0004](./0004-use-the-database-as-the-runtime-source-of-truth.md)
+- [ADR-0004](./superseded/0004-use-the-database-as-the-runtime-source-of-truth.md)
 - [ADR-0005](./0005-use-single-user-persistence-for-character-interactions.md)
 - [ADR-0007](./0007-use-cache-aside-for-character-searches.md)
 - [ADR index](./README.md)

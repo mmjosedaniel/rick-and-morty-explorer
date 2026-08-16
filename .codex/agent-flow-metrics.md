@@ -20,7 +20,7 @@ flowchart LR
 
 The two input paths are intentionally separate:
 
-- [`.codex/hooks.json`](./hooks.json) observes `SubagentStart` and `SubagentStop` for `test_worker`, `code_worker`, and `independent_reviewer`. Hooks know lifecycle identity and time, but they do not know whether a failure is a false Red, a correction, or a regression.
+- [`.codex/hooks.json`](./hooks.json) observes `SubagentStart` and `SubagentStop` for `test_worker`, `code_worker`, `milestone_reviewer`, `independent_reviewer`, and `critical_reviewer`. Hooks know lifecycle identity and time, but they do not know a preflight classification, whether a failure is a false Red, a correction, or a regression, or whether evidence was reused.
 - The primary coordinator uses [the metrics CLI](./metrics/agent_flow_metrics.py) to record semantic decisions after inspecting the actual handoff and repository evidence. Workers only echo the assigned workflow, cycle, and lease IDs.
 
 Every invocation publishes one uniquely named JSON file under `logs/agent-flow-metrics/v1/events/`. The repository already ignores `logs/`, and the runtime location remains writable even when the Codex configuration layer is protected from shell writes. Files are written through an atomic same-directory replacement, so concurrent asynchronous hooks never append to a shared file and may safely finish out of order.
@@ -29,8 +29,8 @@ Every invocation publishes one uniquely named JSON file under `logs/agent-flow-m
 
 | Metric | Counted when | Not counted when |
 |---|---|---|
-| Correction | The coordinator records `correction_requested` with the same workflow, task, cycle, phase, and role, plus a new correction lease ID and attempt 2, because a handoff was rejected or an actionable reviewer finding requires additional worker work | Initial assignments, attempts other than 2, clarifications with no new work, new behavior slices, or a stopped/reclassified branch |
-| False Red | The coordinator records `red_rejected` because the observed failure cannot cross the Red acceptance barrier | A valid accepted Red, or a test-side mistake fixed before the first worker handoff |
+| Correction | The coordinator records `correction_requested` with the same workflow, task, coherent milestone cycle, phase, and role, plus a new correction lease ID and attempt 2, because a handoff was rejected or an actionable reviewer finding requires additional worker work | Initial assignments, attempts other than 2, clarifications with no new work, a new milestone slice, preflight routing, passing characterization, or a stopped/reclassified branch |
+| False Red | The coordinator records `red_rejected` because an attempted Red failure cannot cross the Red acceptance barrier | A preflight classification, a passing characterization under `evidence`, a valid accepted Red, or a test-side mistake fixed before the first Red handoff |
 | Confirmed regression | Triage proves that the current workflow change caused a required check which passed in the accepted baseline to fail, then the coordinator records `regression_confirmed` with that check's stable repository or plan-local ID; one stable check is counted at most once per workflow | Pre-existing, transient, infrastructure, unrelated, still-ambiguous, or duplicate/moved check reports |
 | Elapsed time | A start and completion event share the same workflow, lease, or agent ID | Unpaired events; these remain visible as incomplete coverage instead of becoming zero-duration work |
 | Token usage | The runtime or another authoritative source provides an exact nonnegative counter and the coordinator records `token_usage_reported` | Estimates, values inferred from text, or values scraped from a transcript |
@@ -44,7 +44,7 @@ The false-Red rate is rejected Reds divided by all Reds decided by the coordinat
 - `infrastructure_failure`
 - `requirement_mismatch`
 
-Only a coordinator-classified attempt-2 worker correction contributes to the correction metric. A new behavior slice, owner-directed change, or reclassified assignment is not `correction_requested`, even when it follows a rejected handoff or review finding.
+Only a coordinator-classified attempt-2 worker correction contributes to the correction metric. A new milestone slice, owner-directed change, preflight route, passing characterization, or reclassified assignment is not `correction_requested`, even when it follows a rejected handoff or review finding.
 
 Workflow elapsed time measures the coordinator's recorded start-to-completion interval. Lease time measures assigned phases. Agent time comes from linked lifecycle hooks. Summed agent time can exceed workflow wall time when independent agents overlap, so the report keeps these scopes separate.
 
@@ -52,7 +52,7 @@ Input, cached-input, output, and reasoning token counters remain separate. Their
 
 Every coordinator event requires the same workflow and task identity. Lease start, completion, and correction records also require the same cycle, lease, phase, attempt, agent, and role identity; corrections use attempt 2 exactly. A token report for a lease-linked worker must match that task and role, while an identified primary report remains unlinked. Lifecycle pairs must match session, turn, agent, and role. A stable regression check belongs to only one cycle within a workflow.
 
-Each distinct bounded Setup objective uses a fresh dedicated setup cycle ID created after the stable workflow ID and before that Setup assignment; only its attempt-2 correction preserves that ID. Each behavior slice receives a different fresh cycle ID before its Red assignment. The metrics schema correlates these identities but does not authorize their creation or reuse.
+Each distinct bounded Setup objective uses a fresh dedicated setup cycle ID created after the stable workflow ID and before that Setup assignment; only its attempt-2 correction preserves that ID. Each coherent milestone slice uses one cycle ID shared by its preflight context, characterization or Red, Green, and bounded corrections. Preflight itself has no lease event, and a passing characterization is not a Red decision. The metrics schema correlates write-assignment identities but does not authorize their creation, reuse, classification, or evidence acceptance.
 
 Exact logical replays are idempotent: aggregation keeps the first observation, counts it once, and reports the dataset-wide replay count. The validator rejects and the summary excludes contradictory Red decisions, conflicting copies of one logical event or token report, cross-event identity conflicts, and a completion timestamp earlier than its start. An unpaired start or completion remains an explicit coverage gap because background hooks can be cancelled.
 
