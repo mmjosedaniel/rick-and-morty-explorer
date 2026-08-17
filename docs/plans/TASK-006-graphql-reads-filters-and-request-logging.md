@@ -25,7 +25,7 @@ This plan is planning intent, not implementation evidence. At activation, `GET /
 - [x] (2026-08-16 21:28Z) Synchronized the canonical TASK-006 contract, SPEC-013, HS-006, HS-014, specification routing, active-plan index, and append-only execution chronology. Documentation validation passed for 54 Markdown files and 123 scenarios; ADR validation passed for 16 ADRs and 38 mapped requirements with only the established NFR-006 warning; `git diff --check` passed with line-ending conversion warnings only.
 - [x] (2026-08-16 21:35Z) Fresh independent review first identified two Minor traceability issues, then returned `PASS` with no Blocker, Major, or Minor after the canonical task folded setup into the summary slice and HS-014 evidence was split accurately between Milestones 3 and 4.
 - [x] (2026-08-17 01:29Z) Received the project owner's explicit TASK-006 execution authorization; re-inspected clean branch `agent/task-006-graphql-reads` at HEAD `21f2b5c0dc0fb5f4b11e2bf80da8810c5cbbb8a2`, found no TASK-005 branch or peer worktree and no running task-owned Docker infrastructure, and landed the evidence-linked `In progress` activation across the canonical task, current status, plan index, chronology, and this living plan before any implementation worker or lease.
-- [ ] Re-list every `DPL-DEC-*` ID, inspect concurrent TASK-005 work, and record the exact GraphQL runtime/Express adapter, schema representation, server-side type-generation boundary, endpoint, and development explorer choices before Milestone 1 tests or source.
+- [x] (2026-08-17 01:46Z) Re-listed all 39 existing `DPL-DEC-*` IDs immediately before allocating DPL-DEC-040, reconfirmed no TASK-005 branch or peer worktree, and recorded the official-documentation-backed Yoga/GraphQL, checked-in SDL, server resolver-type generation/drift, `/graphql`, and development-only GraphiQL boundary before Milestone 1 tests or source.
 - [ ] Complete Milestone 1 for the Express-hosted query schema, generated resolver types, summary projection, and preserved liveness contract through one preflight-classified slice.
 - [ ] Complete Milestone 2 for the PostgreSQL-backed list and complete five-filter contract through one preflight-classified slice.
 - [ ] Complete independent Milestone 3 for one bounded record on every completed Express request, including `/healthz` and GraphQL success/failure paths.
@@ -42,6 +42,10 @@ This plan is planning intent, not implementation evidence. At activation, `GET /
   Evidence: `docs/IMPLEMENTATION_PLAN.md#task-status-and-dependency-index`, `docs/IMPLEMENTATION_PLAN.md#task-006---expose-graphql-reads-filters-and-request-logging-through-express`, and the 2026-08-16 activation row in `docs/execution/decision-and-progress-log.md`.
 - Observation: The activation baseline has no separate TASK-005 branch or peer worktree, and the Docker engine is unavailable, so no running local Compose project is owned by TASK-005 or TASK-006. Milestone 2 infrastructure remains a future environment prerequisite and cannot reuse activation evidence.
   Evidence: `git worktree list --porcelain`, `git branch --all --list '*task-005*' '*task-006*'`, and `npm run infra:ps` on 2026-08-17 01:29Z.
+- Observation: Current `graphql-yoga` 5.21.2 supports Node 24 and direct Express middleware but peers only GraphQL 15 or 16. Current GraphQL 17.0.2 is therefore incompatible with the selected adapter; GraphQL 16.14.2 is the latest compatible 16.x patch.
+  Evidence: official Yoga Express/GraphiQL/Node documentation and read-only npm registry metadata checked on 2026-08-16, recorded in DPL-DEC-040.
+- Observation: The official Codegen server preset adds module conventions and dependencies intended for larger modular schemas. This milestone needs one schema and one resolver-signature output, so the direct CLI plus TypeScript and TypeScript-resolvers plugins is the smaller complete boundary.
+  Evidence: official GraphQL Code Generator server-preset, plugin, local-schema, ESM, and `--check` documentation checked on 2026-08-16, recorded in DPL-DEC-040.
 - Observation: TASK-005 may run in parallel but is not a TASK-006 prerequisite. Real PostgreSQL tests can create deterministic characters and, if owner-assigned, comments directly in a run-owned migrated namespace, so this plan must neither wait for the importer nor call the live public Rick and Morty API.
   Evidence: the TASK-006 prerequisite text in `docs/IMPLEMENTATION_PLAN.md`, `vitest.config.ts`, and `apps/api/src/infrastructure/database/postgres-lifecycle.ts`.
 - Observation: the current liveness behavior is `EXISTING_AND_COVERED`; manufacturing a Red for it would violate ADR-0016. The product GraphQL boundary is absent, while the absence of image asset/proxy routes is existing but not directly covered.
@@ -105,12 +109,15 @@ This plan is planning intent, not implementation evidence. At activation, `GET /
 - Decision: Activate TASK-006 from the owner's 2026-08-16 directive and keep Milestone 4's comment-read conflict as the only owner-controlled behavior barrier.
   Rationale: TASK-004 and TASK-017 remain `Complete`, DG-006 remains `Resolved`, AUTH-001 remains `Authorized` within its exact direct-URL scope, and the directive explicitly authorizes Milestones 1 through 3 while withholding the Milestone 4 allocation decision. Activation changes task/execution state only and does not create implementation evidence.
   Date/Author: 2026-08-16 / Codex primary coordinator.
+- Decision: Adopt the exact Milestone 1 GraphQL transport, schema, resolver-type generation, endpoint, and explorer boundary recorded in DPL-DEC-040.
+  Rationale: Yoga is the smallest current official direct Express 5 integration, its peer range fixes GraphQL 16.14.2, a pluckable checked-in TypeScript SDL literal avoids a runtime copy/loader, and direct Codegen plugins generate one resolver-signature file with a documented dry-run drift check without adding modular-preset or watch machinery.
+  Date/Author: 2026-08-16 / Codex primary coordinator.
 
 
 ## Outcomes & Retrospective
 
 
-Execution is activated but no behavior milestone has started. The owner-authorized activation moved TASK-006 to `In progress` after confirming its authority and clean repository baseline; it preserved the localized detail-scope checkpoint, server-side schema-type generation, Express-wide request logging, and adopted-optional traceability. No GraphQL package, schema, route, runtime evidence, task-scope change, or acceptance result exists yet. The next action is the pre-Milestone-1 compatibility review and grouped DPL decision, followed by guarded preflight. Update this section after every milestone with achieved behavior, remaining gaps, correction cost, false Reds, review results, and any lesson that changes later work.
+Execution is activated but no behavior milestone has started. The owner-authorized activation moved TASK-006 to `In progress` after confirming its authority and clean repository baseline; DPL-DEC-040 now fixes the smallest compatible Milestone 1 transport, checked-in SDL, resolver-type generation/drift, endpoint, and development explorer boundary. No GraphQL package, schema, route, runtime evidence, task-scope change, or acceptance result exists yet. The next action is the Milestone 1 read-only test-worker preflight. Update this section after every milestone with achieved behavior, remaining gaps, correction cost, false Reds, review results, and any lesson that changes later work.
 
 
 ## Context and Orientation
@@ -251,6 +258,11 @@ Registration checks:
     git diff --check
     git status --short
 
+Milestone 1 pinned dependency installation, authorized only inside its Green write lease:
+
+    npm install --workspace @rick-and-morty/api --save-exact graphql@16.14.2 graphql-yoga@5.21.2
+    npm install --workspace @rick-and-morty/api --save-dev --save-exact @graphql-codegen/cli@7.2.0 @graphql-codegen/typescript@6.1.0 @graphql-codegen/typescript-resolvers@6.1.0
+
 Closed local PostgreSQL profile and available milestone/closure commands:
 
     $env:POSTGRES_USER = 'rick_and_morty'
@@ -389,7 +401,7 @@ Expected production path families, subject to the accepted DPL naming record and
 ## Interfaces and Dependencies
 
 
-The exact GraphQL runtime/Express adapter, server-side resolver-type generator, supporting configuration, and versions are recorded after authorization. They must support pinned Node 24/native ESM/Express 5, ordinary GraphQL-over-HTTP behavior without a parallel server, deterministic types from the checked-in schema, result/error metadata hooks, and one development-only explorer that is unavailable outside the recorded development boundary. ADR-0002 is the demonstrated need for server resolver code generation; frontend operation generation remains TASK-009. Add no client, cache, logging, second HTTP-server, or extra schema-framework dependency without a separate demonstrated TASK-006 need.
+DPL-DEC-040 pins runtime dependencies `graphql-yoga` 5.21.2 and `graphql` 16.14.2 and API development dependencies `@graphql-codegen/cli` 7.2.0, `@graphql-codegen/typescript` 6.1.0, and `@graphql-codegen/typescript-resolvers` 6.1.0. Yoga mounts directly on the existing Express 5 process at `/graphql` and uses `createSchema`; no separate Express adapter, JSON body parser, CORS middleware, or second server is added. One checked-in `apps/api/src/transport/graphql/schema.ts` `/* GraphQL */` SDL literal is the schema authority consumed by runtime and Codegen. API-local `graphql:generate` writes `apps/api/src/transport/graphql/generated/resolver-types.ts`; `graphql:check` uses Codegen `--check`, and the API build runs that drift check before TypeScript emit. Generated output is never hand-edited. Yoga's built-in GraphiQL is enabled only when an explicit development-composition boolean is true and is disabled by default, in tests, and in production. Frontend operation generation remains TASK-009; no client, cache, watch package, server preset, logging dependency, custom loader, or other schema framework is authorized.
 
 The only schema target frozen before owner reconciliation is the undisputed query subset:
 
@@ -438,3 +450,5 @@ No comment-read interface, bound, ordering rule, error contract, or downstream c
 2026-08-16 / Project owner and Codex primary coordinator: Materially revised the living plan for portfolio proportionality without weakening ADR-0016 or the worker-first workflow. The revision supersedes the former global comment barrier and zero-yield dependency milestone, permits summary/filter/logging work after execution authorization, requires schema-derived server resolver types, restores FR-BE-006 to every Express request, combines detail with its query-error boundary, adds an affected-test audit to every milestone, and retains separate clean-environment proof for the distinct build and production-startup boundaries. TASK-006 remains `Pending`; no task scope, comment ownership, package, source, executable test, runtime evidence, gate/authorization status, acceptance result, or external state changed.
 
 2026-08-16 / Project owner and Codex primary coordinator: Activated the owner-authorized ExecPlan after re-inspecting the clean worktree, branch, HEAD, manifests, current Express liveness source and coverage, infrastructure visibility, and concurrent TASK-005 state. TASK-004 and TASK-017 remain `Complete`, DG-006 remains `Resolved`, and AUTH-001 remains `Authorized` only within its recorded portfolio/direct-URL boundary. The coherent activation change moves TASK-006 to `In progress`, synchronizes current status, navigation, chronology, and all living sections, and adds no GraphQL dependency, schema, route, test, production behavior, runtime evidence, acceptance result, or Milestone 4 allocation.
+
+2026-08-16 / Codex primary coordinator: Completed the required pre-Milestone-1 compatibility review against current official Yoga, Apollo Server, GraphQL Code Generator, and npm registry metadata; re-listed DPL-DEC-001 through DPL-DEC-039 immediately before allocating DPL-DEC-040. The grouped decision pins direct Yoga/Express integration, compatible GraphQL 16, a checked-in TypeScript SDL literal, direct resolver-type plugins with dry-run drift checking, `/graphql`, and explicitly development-only GraphiQL. It rejects GraphQL 17 as outside Yoga's peer range and adds no dependency or implementation artifact before the guarded Green.
