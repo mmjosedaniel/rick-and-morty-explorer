@@ -50,6 +50,22 @@ export function createLazyCharacterReadServiceOwner(options: {
       const ownedService = await initializeOnce();
       return ownedService.characterReadService.list(filter);
     },
+    detail: async (id) => {
+      const ownedService = await initializeOnce();
+      const detail = ownedService.characterReadService.detail;
+      if (detail === undefined) {
+        throw new Error("CHARACTER_DETAIL_SERVICE_UNAVAILABLE");
+      }
+      return detail(id);
+    },
+    comments: async (characterId, page) => {
+      const ownedService = await initializeOnce();
+      const comments = ownedService.characterReadService.comments;
+      if (comments === undefined) {
+        throw new Error("CHARACTER_COMMENT_SERVICE_UNAVAILABLE");
+      }
+      return comments(characterId, page);
+    },
   };
 
   return {

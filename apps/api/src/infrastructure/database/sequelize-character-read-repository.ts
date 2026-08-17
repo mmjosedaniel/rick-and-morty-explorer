@@ -1,6 +1,9 @@
 import type {
+  CharacterComment,
+  CharacterDetail,
   CharacterReadRepository,
   CharacterSummary,
+  CommentPage,
   NormalizedCharacterFilter,
 } from "../../application/characters/character-read-service.js";
 
@@ -16,6 +19,20 @@ interface CharacterRow {
   readonly name: string;
   readonly imageUrl: string;
   readonly species: string;
+}
+
+interface CharacterDetailRow extends CharacterRow {
+  readonly status: string;
+  readonly gender: string;
+  readonly type: string;
+  readonly originName: string;
+  readonly originUrl: string;
+  readonly isFavorite: boolean;
+}
+
+interface CharacterCommentRow {
+  readonly id: number;
+  readonly body: string;
 }
 
 const schemaPattern = /^[a-z][a-z0-9_]{0,62}$/u;
@@ -42,6 +59,25 @@ function isCharacterRow(value: unknown): value is CharacterRow {
     typeof row.imageUrl === "string" &&
     typeof row.species === "string"
   );
+}
+
+function isCharacterDetailRow(value: unknown): value is CharacterDetailRow {
+  if (!isCharacterRow(value)) return false;
+  const row = value as Partial<CharacterDetailRow>;
+  return (
+    typeof row.status === "string" &&
+    typeof row.gender === "string" &&
+    typeof row.type === "string" &&
+    typeof row.originName === "string" &&
+    typeof row.originUrl === "string" &&
+    typeof row.isFavorite === "boolean"
+  );
+}
+
+function isCharacterCommentRow(value: unknown): value is CharacterCommentRow {
+  if (typeof value !== "object" || value === null) return false;
+  const row = value as Partial<CharacterCommentRow>;
+  return typeof row.id === "number" && typeof row.body === "string";
 }
 
 export function createSequelizeCharacterReadRepository(options: {
@@ -82,6 +118,53 @@ export function createSequelizeCharacterReadRepository(options: {
         throw new Error("CHARACTER_READ_RESULT_INVALID");
       }
 
+      return rows;
+    },
+    findDetail: async (id: number): Promise<CharacterDetail | null> => {
+      const [rows] = await sequelize.query(
+        `SELECT
+           "id", "name", "image_url" AS "imageUrl", "species", "status",
+           "gender", "character_type" AS "type",
+           "origin_name" AS "originName", "origin_url" AS "originUrl",
+           "is_favorite" AS "isFavorite"
+         FROM "${schema}"."characters"
+         WHERE "id" = $1`,
+        { bind: [id] },
+      );
+
+      if (!Array.isArray(rows) || !rows.every(isCharacterDetailRow)) {
+        throw new Error("CHARACTER_DETAIL_RESULT_INVALID");
+      }
+      const row = rows[0];
+      return row === undefined
+        ? null
+        : {
+            id: row.id,
+            name: row.name,
+            imageUrl: row.imageUrl,
+            species: row.species,
+            status: row.status,
+            gender: row.gender,
+            type: row.type,
+            origin: { name: row.originName, url: row.originUrl },
+            isFavorite: row.isFavorite,
+          };
+    },
+    listComments: async (
+      characterId: number,
+      page: CommentPage,
+    ): Promise<readonly CharacterComment[]> => {
+      const [rows] = await sequelize.query(
+        `SELECT "id", "body"
+         FROM "${schema}"."comments"
+         WHERE "character_id" = $1
+         ORDER BY "created_at" DESC, "id" DESC
+         LIMIT $2 OFFSET $3`,
+        { bind: [characterId, page.limit, page.offset] },
+      );
+      if (!Array.isArray(rows) || !rows.every(isCharacterCommentRow)) {
+        throw new Error("CHARACTER_COMMENT_RESULT_INVALID");
+      }
       return rows;
     },
   };

@@ -8,6 +8,7 @@ import { typeDefs } from "./schema.js";
 
 export interface GraphqlContext {
   readonly characterReadService: CharacterReadService;
+  readonly reportUnexpectedError: (error: unknown) => void;
 }
 
 interface GraphqlHandlerOptions extends GraphqlContext {
@@ -55,10 +56,12 @@ const requestLogPlugin: Plugin<
 export function createGraphqlHandler({
   characterReadService,
   enableGraphiql,
+  reportUnexpectedError,
 }: GraphqlHandlerOptions) {
   return createYoga<GraphqlServerContext, GraphqlContext>({
     schema: createSchema<GraphqlContext>({ typeDefs, resolvers }),
-    context: { characterReadService },
+    context: { characterReadService, reportUnexpectedError },
+    logging: false,
     graphqlEndpoint: "/graphql",
     graphiql: enableGraphiql,
     plugins: [requestLogPlugin],

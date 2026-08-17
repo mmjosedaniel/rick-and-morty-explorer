@@ -82,6 +82,9 @@ const app = createApp({
     createRequestId: randomUUID,
     now: () => performance.now(),
   },
+  reportUnexpectedError: (error) => {
+    console.error(error);
+  },
 });
 
 const server = app.listen(port, host, () => {

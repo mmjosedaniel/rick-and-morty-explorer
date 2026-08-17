@@ -16,6 +16,7 @@ interface AppOptions {
   readonly characterReadService: CharacterReadService;
   readonly enableGraphiql?: boolean;
   readonly requestLogging?: RequestLoggingDependencies;
+  readonly reportUnexpectedError?: (error: unknown) => void;
 }
 
 export function createApp(options?: AppOptions) {
@@ -33,6 +34,7 @@ export function createApp(options?: AppOptions) {
     const graphqlHandler = createGraphqlHandler({
       characterReadService: options.characterReadService,
       enableGraphiql: options.enableGraphiql ?? false,
+      reportUnexpectedError: options.reportUnexpectedError ?? (() => {}),
     });
 
     app.use(
