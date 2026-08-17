@@ -482,6 +482,10 @@ The following conditions are outside the current delivery baseline and are not a
 - Pagination or material dataset growth requires revisiting the deferred indexing and query-plan decision in ADR-0003, server-side ordering and the GraphQL contract in ADR-0006, the cached projection and key policy in ADR-0007, and frontend URL state in ADR-0009.
 - Future work that materially extends ADR-0015's migration lifecycle must first record its mapped obligations, reused versus new tests, projected milestone slices and handoffs, focused and full-suite runtime, and net-new custom lifecycle surface. Compare observed cost after the milestone; disproportionate extension cost requires project-owner review and, if the accepted boundary changes, a successor ADR rather than an edit to ADR-0015.
 
+## Deferred post-MVP engineering follow-ups
+
+- DPL-DEC-041's API-local `skipLibCheck` exception is explicit, non-MVP-blocking compatibility debt for the TypeScript 6.0.3 and `graphql-yoga` 5.21.2 dependency graph. Reassess it after MVP, or earlier after a supported compiler or Yoga dependency update. Retire it only by deleting the flag and passing root typecheck, build, and affected TASK-006 tests; do not force a transitive package outside Yoga's declared version range.
+
 ## References
 
 - [Documentation map and current status](../README.md)
