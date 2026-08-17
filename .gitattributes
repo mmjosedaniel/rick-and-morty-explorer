@@ -1,2 +1,4 @@
 # GraphQL Code Generator emits a canonical terminal blank line; keep every other whitespace check enabled.
 apps/api/src/transport/graphql/generated/resolver-types.ts text eol=lf whitespace=-blank-at-eof
+# Preserve the frozen Red contract's byte-exact identity across Windows clean checkouts.
+apps/api/src/transport/graphql/graphql-summary.application.test.ts text eol=lf
