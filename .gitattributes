@@ -1,2 +1,2 @@
 # GraphQL Code Generator emits a canonical terminal blank line; keep every other whitespace check enabled.
-apps/api/src/transport/graphql/generated/resolver-types.ts whitespace=-blank-at-eof
+apps/api/src/transport/graphql/generated/resolver-types.ts text eol=lf whitespace=-blank-at-eof
