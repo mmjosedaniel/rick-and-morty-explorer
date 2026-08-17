@@ -9,7 +9,7 @@ This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoverie
 
 TASK-006 will turn the existing Express liveness process and migrated PostgreSQL model into the first project-owned product API. When the task is complete, a reviewer can send GraphQL list and owner-reconciled detail queries through Express, observe schema-derived resolver types and explicit PostgreSQL-backed projections, exercise all five required filters with deterministic literal semantics, receive stable redacted errors, and capture one bounded structured record for every completed Express request, including `/healthz` and GraphQL requests. The exact `image_url` already stored in PostgreSQL will be returned as `imageUrl`; no image bytes, asset route, proxy, or upstream character-data query will be introduced.
 
-This plan is planning intent, not implementation evidence. At registration, `GET /healthz`, the TASK-004 migration/model foundation, and the unit, application, integration, and smoke harnesses exist. The API manifest contains no GraphQL runtime or server-side schema-code-generation dependency, `apps/api/src/app.ts` exposes only `/healthz`, `apps/api/src/server.ts` has no product composition, and no schema, generated resolver type, resolver, character read service, business repository, filter implementation, request logger, or product API test exists. TASK-006 remains `Pending` until the project owner separately authorizes implementation and the canonical task is moved to `In progress` before any worker write lease.
+This plan is planning intent, not implementation evidence. At activation, `GET /healthz`, the TASK-004 migration/model foundation, and the unit, application, integration, and smoke harnesses exist. The API manifest contains no GraphQL runtime or server-side schema-code-generation dependency, `apps/api/src/app.ts` exposes only `/healthz`, `apps/api/src/server.ts` has no product composition, and no schema, generated resolver type, resolver, character read service, business repository, filter implementation, request logger, or product API test exists. The project owner authorized TASK-006 implementation on 2026-08-16, and the canonical task is now `In progress`; activation itself supplies no product behavior or acceptance evidence.
 
 
 ## Progress
@@ -24,7 +24,7 @@ This plan is planning intent, not implementation evidence. At registration, `GET
 - [x] (2026-08-16 21:15Z) Revised the registered plan at the project owner's direction to preserve the accepted agentic workflow while removing the standalone dependency milestone, localizing the comment-ownership stop, combining detail with its error contract, requiring server-side schema-derived resolver types, covering every Express request in logging, and adding an affected-test relevance check at each milestone join. No implementation or task state changed.
 - [x] (2026-08-16 21:28Z) Synchronized the canonical TASK-006 contract, SPEC-013, HS-006, HS-014, specification routing, active-plan index, and append-only execution chronology. Documentation validation passed for 54 Markdown files and 123 scenarios; ADR validation passed for 16 ADRs and 38 mapped requirements with only the established NFR-006 warning; `git diff --check` passed with line-ending conversion warnings only.
 - [x] (2026-08-16 21:35Z) Fresh independent review first identified two Minor traceability issues, then returned `PASS` with no Blocker, Major, or Minor after the canonical task folded setup into the summary slice and HS-014 evidence was split accurately between Milestones 3 and 4.
-- [ ] Obtain separate project-owner execution authorization; land the evidence-linked start record, canonical `In progress` state, and synchronized navigation as one coherent documentation change before any implementation worker or lease.
+- [x] (2026-08-17 01:29Z) Received the project owner's explicit TASK-006 execution authorization; re-inspected clean branch `agent/task-006-graphql-reads` at HEAD `21f2b5c0dc0fb5f4b11e2bf80da8810c5cbbb8a2`, found no TASK-005 branch or peer worktree and no running task-owned Docker infrastructure, and landed the evidence-linked `In progress` activation across the canonical task, current status, plan index, chronology, and this living plan before any implementation worker or lease.
 - [ ] Re-list every `DPL-DEC-*` ID, inspect concurrent TASK-005 work, and record the exact GraphQL runtime/Express adapter, schema representation, server-side type-generation boundary, endpoint, and development explorer choices before Milestone 1 tests or source.
 - [ ] Complete Milestone 1 for the Express-hosted query schema, generated resolver types, summary projection, and preserved liveness contract through one preflight-classified slice.
 - [ ] Complete Milestone 2 for the PostgreSQL-backed list and complete five-filter contract through one preflight-classified slice.
@@ -38,8 +38,10 @@ This plan is planning intent, not implementation evidence. At registration, `GET
 ## Surprises & Discoveries
 
 
-- Observation: TASK-006 is dependency-ready but not authorized to start. TASK-004 and TASK-017 are `Complete`, DG-006 is `Resolved`, and AUTH-001 is `Authorized`, but the canonical status is still `Pending` and plan revision does not supply the evidence-linked start required for `In progress`.
-  Evidence: `docs/IMPLEMENTATION_PLAN.md#task-status-and-dependency-index` and `docs/IMPLEMENTATION_PLAN.md#task-006---expose-graphql-reads-filters-and-request-logging-through-express`.
+- Observation: TASK-006 became owner-authorized and `In progress` through one coherent activation change, while its prerequisites and bounded authorization remain unchanged. Activation did not add a dependency, schema, route, test, or runtime claim.
+  Evidence: `docs/IMPLEMENTATION_PLAN.md#task-status-and-dependency-index`, `docs/IMPLEMENTATION_PLAN.md#task-006---expose-graphql-reads-filters-and-request-logging-through-express`, and the 2026-08-16 activation row in `docs/execution/decision-and-progress-log.md`.
+- Observation: The activation baseline has no separate TASK-005 branch or peer worktree, and the Docker engine is unavailable, so no running local Compose project is owned by TASK-005 or TASK-006. Milestone 2 infrastructure remains a future environment prerequisite and cannot reuse activation evidence.
+  Evidence: `git worktree list --porcelain`, `git branch --all --list '*task-005*' '*task-006*'`, and `npm run infra:ps` on 2026-08-17 01:29Z.
 - Observation: TASK-005 may run in parallel but is not a TASK-006 prerequisite. Real PostgreSQL tests can create deterministic characters and, if owner-assigned, comments directly in a run-owned migrated namespace, so this plan must neither wait for the importer nor call the live public Rick and Morty API.
   Evidence: the TASK-006 prerequisite text in `docs/IMPLEMENTATION_PLAN.md`, `vitest.config.ts`, and `apps/api/src/infrastructure/database/postgres-lifecycle.ts`.
 - Observation: the current liveness behavior is `EXISTING_AND_COVERED`; manufacturing a Red for it would violate ADR-0016. The product GraphQL boundary is absent, while the absence of image asset/proxy routes is existing but not directly covered.
@@ -100,12 +102,15 @@ This plan is planning intent, not implementation evidence. At registration, `GET
 - Decision: Do not change the root README merely to register this plan.
   Rationale: TASK-006 remains `Pending`, the repository still has no GraphQL product API, and `docs/plans/README.md` is the navigation owner for active plans. Root status changes when authoritative state or implementation evidence changes.
   Date/Author: 2026-08-16 / Codex primary coordinator.
+- Decision: Activate TASK-006 from the owner's 2026-08-16 directive and keep Milestone 4's comment-read conflict as the only owner-controlled behavior barrier.
+  Rationale: TASK-004 and TASK-017 remain `Complete`, DG-006 remains `Resolved`, AUTH-001 remains `Authorized` within its exact direct-URL scope, and the directive explicitly authorizes Milestones 1 through 3 while withholding the Milestone 4 allocation decision. Activation changes task/execution state only and does not create implementation evidence.
+  Date/Author: 2026-08-16 / Codex primary coordinator.
 
 
 ## Outcomes & Retrospective
 
 
-Execution has not started. Registration and the owner-directed proportional revision produced a dependency-ordered plan with a localized detail-scope checkpoint, server-side schema-type generation, Express-wide request logging, and reconciled adopted-optional traceability only. No GraphQL behavior, package, route, runtime evidence, task-scope change, or acceptance result exists yet. Update this section after every milestone with achieved behavior, remaining gaps, correction cost, false Reds, review results, and any lesson that changes later work.
+Execution is activated but no behavior milestone has started. The owner-authorized activation moved TASK-006 to `In progress` after confirming its authority and clean repository baseline; it preserved the localized detail-scope checkpoint, server-side schema-type generation, Express-wide request logging, and adopted-optional traceability. No GraphQL package, schema, route, runtime evidence, task-scope change, or acceptance result exists yet. The next action is the pre-Milestone-1 compatibility review and grouped DPL decision, followed by guarded preflight. Update this section after every milestone with achieved behavior, remaining gaps, correction cost, false Reds, review results, and any lesson that changes later work.
 
 
 ## Context and Orientation
@@ -341,7 +346,7 @@ Generated `node_modules/`, `dist/`, browser/test output, and lease records are i
 
 If TASK-005 changes `apps/api/package.json`, `package-lock.json`, shared runtime/configuration, or database read models in another worktree, merge at a named milestone barrier, re-run preflight for affected scenarios, update fingerprints, and repeat only invalidated checks. Do not overwrite or revert the other task. A still-unresolved comment allocation pauses only Milestone 4; if AUTH-001 reopens, pause only image-specific assertions and route its authoritative process while other work follows the current implementation-plan permissions.
 
-Local commit, push, pull request, hosted CI, or other external publication is not authorized by plan registration. Obtain the required owner authority before the first clean-checkout/hosted boundary. Preserve point-in-time commits, runs, failures, and reviews in chronology rather than rewriting them after a correction.
+The 2026-08-16 execution authorization permits primary-coordinator local commits and task-owned temporary clean-checkout worktrees for the explicitly required Milestone 1 and Milestone 2 exact-tree proofs. Push, pull request, hosted CI, deployment, and other external publication remain unauthorized. Preserve point-in-time commits, runs, failures, and reviews in chronology rather than rewriting them after a correction.
 
 
 ## Artifacts and Notes
@@ -359,6 +364,15 @@ Registration baseline:
 - Existing API behavior: exact `GET /healthz` only.
 - Existing database behavior: migrated character/comment schema and Sequelize model mappings; no business read repository.
 - Missing behavior: GraphQL runtime/schema/route, schema-derived resolver types, list/detail services, filters, stable product errors, Express-wide request records, runtime database composition, and product tests.
+
+Activation baseline:
+
+- Authorization date: 2026-08-16.
+- Branch: `agent/task-006-graphql-reads`.
+- HEAD before activation edits: `21f2b5c0dc0fb5f4b11e2bf80da8810c5cbbb8a2`.
+- Initial tree: clean; no peer worktree or TASK-005 branch was present.
+- Canonical TASK-006 state after the coherent activation change: `In progress`.
+- Infrastructure observation: `npm run infra:ps` could not reach a Docker engine, so no TASK-006 infrastructure ownership was claimed and Milestone 2 PostgreSQL evidence remains non-reusable until a run-owned identity exists.
 
 During execution, retain only the concise identities needed to resume or validate work: workflow/milestone and terminal lease IDs, exact decisive commands/results, isolated PostgreSQL identity when applicable, milestone validation and reviewer verdict, clean-environment identity, and documentation-impact result. Detailed packets, routine hashes/fingerprints, secrets, full logs, generated guard state, and duplicated authority prose remain in their owning evidence rather than this living plan.
 
@@ -422,3 +436,5 @@ No comment-read interface, bound, ordering rule, error contract, or downstream c
 2026-08-16 / Codex primary coordinator: Revised the registration candidate after independent review. The revision removed all authoritative TASK-006 assumptions about bounded-comment ownership, blocked every behavior Red on owner-controlled canonical reconciliation, required the post-decision plan rewrite to own valid and invalid pagination together when applicable, made Milestone 2 one executable aggregate `PARTIAL` route, moved clean-environment proof to the first setup boundary while retaining a later startup-boundary proof, and added exact local PostgreSQL prerequisites plus ownership-safe cleanup. Registration validation passed, and fresh independent final-state review returned `PASS` with no Blocker, Major, or Minor on substantive plan SHA-256 `6847F6668139E7E2764F9BBBA7780A9E62A5E894B8C09A6816AD45625E6F9E8E`.
 
 2026-08-16 / Project owner and Codex primary coordinator: Materially revised the living plan for portfolio proportionality without weakening ADR-0016 or the worker-first workflow. The revision supersedes the former global comment barrier and zero-yield dependency milestone, permits summary/filter/logging work after execution authorization, requires schema-derived server resolver types, restores FR-BE-006 to every Express request, combines detail with its query-error boundary, adds an affected-test audit to every milestone, and retains separate clean-environment proof for the distinct build and production-startup boundaries. TASK-006 remains `Pending`; no task scope, comment ownership, package, source, executable test, runtime evidence, gate/authorization status, acceptance result, or external state changed.
+
+2026-08-16 / Project owner and Codex primary coordinator: Activated the owner-authorized ExecPlan after re-inspecting the clean worktree, branch, HEAD, manifests, current Express liveness source and coverage, infrastructure visibility, and concurrent TASK-005 state. TASK-004 and TASK-017 remain `Complete`, DG-006 remains `Resolved`, and AUTH-001 remains `Authorized` only within its recorded portfolio/direct-URL boundary. The coherent activation change moves TASK-006 to `In progress`, synchronizes current status, navigation, chronology, and all living sections, and adds no GraphQL dependency, schema, route, test, production behavior, runtime evidence, acceptance result, or Milestone 4 allocation.
