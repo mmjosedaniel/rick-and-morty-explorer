@@ -4,20 +4,12 @@ import type {
   CharacterReadService,
   CharacterSummary,
 } from "./application/characters/character-read-service.js";
+import { createLazyCharacterReadServiceOwner } from "./runtime-composition.js";
 
 interface OwnedCharacterReadService {
   readonly characterReadService: CharacterReadService;
   close(): Promise<void>;
 }
-
-interface LazyCharacterReadServiceOwner {
-  readonly characterReadService: CharacterReadService;
-  close(): Promise<void>;
-}
-
-type CreateLazyCharacterReadServiceOwner = (options: {
-  readonly initialize: () => Promise<OwnedCharacterReadService>;
-}) => LazyCharacterReadServiceOwner;
 
 interface Deferred<T> {
   readonly promise: Promise<T>;
@@ -41,20 +33,6 @@ function createDeferred<T>(): Deferred<T> {
   };
 }
 
-async function loadOwnerFactory(): Promise<CreateLazyCharacterReadServiceOwner> {
-  const module = (await import("./runtime-composition.js")) as Record<
-    string,
-    unknown
-  >;
-
-  expect(
-    module.createLazyCharacterReadServiceOwner,
-    "TASK-006 demand-lazy character-read resource owner is missing",
-  ).toBeTypeOf("function");
-
-  return module.createLazyCharacterReadServiceOwner as CreateLazyCharacterReadServiceOwner;
-}
-
 describe("TASK-006 Milestone 2 demand-lazy resource ownership", () => {
   it("waits for in-flight initialization and closes the owned resource exactly once", async () => {
     const initialization = createDeferred<OwnedCharacterReadService>();
@@ -62,7 +40,6 @@ describe("TASK-006 Milestone 2 demand-lazy resource ownership", () => {
     const closeResource = vi.fn(async () => {});
     const abandonedResult = new Promise<readonly CharacterSummary[]>(() => {});
     const list = vi.fn(() => abandonedResult);
-    const createLazyCharacterReadServiceOwner = await loadOwnerFactory();
     const owner = createLazyCharacterReadServiceOwner({ initialize });
 
     void owner.characterReadService.list(undefined);
