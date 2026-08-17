@@ -338,14 +338,15 @@ The liveness route is operational process evidence only. It does not query Postg
 
 ### TASK-006 - Expose GraphQL reads, filters, and request logging through Express
 
-- **Outcome:** The Express HTTP boundary exposes project-owned character list/detail queries, all five filters, stable errors, and bounded request metadata logging.
-- **Mapped scope:** FR-BE-001, FR-BE-002, FR-BE-006, NFR-003, AC-007, AC-008, AC-011.
-- **Governing decisions:** ADR-0003, ADR-0006, ADR-0014, ADR-0016.
-- **Prerequisites and gates:** TASK-004 and TASK-017; DG-006 is resolved and AUTH-001 is Authorized under disposition A for the exact absolute image URL mapping. Use deterministic database fixtures so non-image work need not wait for TASK-005.
-- **Expected artifacts:** Version-controlled GraphQL schema, Express integration, thin resolvers, application services, repositories, exact stored absolute `imageUrl` projection with no image asset or proxy route, validation/error mapping, request middleware, and unit/integration tests.
-- **Validation:** Record TDD evidence for the Express-hosted boundary, list/detail projections, each filter and one combined filter, literal metacharacters, missing/invalid IDs, internal-error redaction, and one bounded structured log record.
+- **Outcome:** The Express HTTP boundary exposes project-owned character list/detail queries, all five filters, stable errors, and bounded metadata logging for every completed Express request.
+- **Execution plan:** The active [TASK-006 GraphQL reads, filters, and request-logging ExecPlan](./plans/TASK-006-graphql-reads-filters-and-request-logging.md) decomposes authorization, reversible choices, preflight-classified milestone slices, validation, review, and closure. Registration does not start implementation or change task, gate, authorization, or acceptance state.
+- **Mapped scope:** FR-BE-001, FR-BE-002, FR-BE-006, NFR-003, AC-007, AC-008, AC-011; OR-001, OR-007, and OR-008 (adopted optional).
+- **Governing decisions:** ADR-0002, ADR-0003, ADR-0006, ADR-0011, ADR-0014, ADR-0016.
+- **Prerequisites and gates:** TASK-004 and TASK-017; DG-006 is resolved and AUTH-001 is Authorized under disposition A for the exact absolute image URL mapping. Use deterministic database fixtures so non-image work need not wait for TASK-005. Before the detail/comment slice freezes its schema or begins Red, the owner must reconcile comment-read ownership with TASK-008; that unresolved allocation stops only the dependent detail/error slice and closure, while separately authorized summary work, including its necessary transport/schema/code-generation setup, plus filter and request-logging slices may advance.
+- **Expected artifacts:** Version-controlled GraphQL schema, deterministic schema-derived backend resolver-type generation and drift checking, Express integration, thin resolvers, application services, repositories, exact stored absolute `imageUrl` projection with no image asset or proxy route, validation/error mapping, Express-wide request middleware, and unit/integration tests.
+- **Validation:** Record TDD evidence for the Express-hosted boundary, generated backend resolver types and their repeatable drift check, list/detail projections, each filter and one combined filter, literal metacharacters, missing/invalid IDs, internal-error redaction, and exactly one bounded structured log record for representative completed Express requests including `GET /healthz` and successful and failing GraphQL requests.
 - **Documentation impact:** GraphQL contract and usage guidance, current status, implementation plan, specifications when behavior changes, and execution log.
-- **Done when:** The Express/query portions of SPEC-008, plus SPEC-009, SPEC-013 and the applicable HS-008, HS-010, and HS-014 scenarios, have executable passing evidence through authoritative commands; mutations remain owned by TASK-008.
+- **Done when:** The Express/query portions of SPEC-008, plus SPEC-009, SPEC-013 and the applicable HS-006, HS-007, HS-008, HS-010, and HS-014 scenarios, have executable passing evidence through authoritative commands; mutations remain owned by TASK-008.
 
 ### TASK-007 - Add bounded Redis cache-aside search behavior
 
