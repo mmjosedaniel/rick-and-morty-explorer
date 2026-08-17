@@ -2,3 +2,7 @@
 apps/api/src/transport/graphql/generated/resolver-types.ts text eol=lf whitespace=-blank-at-eof
 # Preserve the frozen Red contract's byte-exact identity across Windows clean checkouts.
 apps/api/src/transport/graphql/graphql-summary.application.test.ts text eol=lf
+# Preserve the TASK-006 Milestone 2 frozen Red identities across Windows clean checkouts.
+apps/api/src/application/characters/character-filter.unit.test.ts text eol=lf
+apps/api/src/runtime-composition.unit.test.ts text eol=lf
+apps/api/src/transport/graphql/graphql-filters.integration.test.ts text eol=lf
