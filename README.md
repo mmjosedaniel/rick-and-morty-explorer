@@ -2,9 +2,9 @@
 
 ## Repository status
 
-This repository has completed the owner-authorized TASK-003 and TASK-004 implementation tasks after establishing the initial requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including ADR-0011 for the TypeScript test harness, [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly, [ADR-0015](./docs/adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) as the current build-first migration lifecycle with a restricted lower-case ASCII, exact catalog-bound v2 identity for one fixed local/CI PostgreSQL profile, and [ADR-0016](./docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) for milestone-slice TDD with separate test and implementation ownership; a target system module diagram; a graph-oriented implementation plan; completed task-scoped ExecPlans including [TASK-004](./docs/plans/completed/TASK-004-relational-persistence-from-migrations.md) and [TASK-018](./docs/plans/completed/TASK-018-postgresql-migration-lock-identity-decision.md); seven project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. Fresh independent review returned `PASS` with no Blocker, Major, or Minor across all twenty hard gates and LOCK-INV-01 through LOCK-INV-21 on exact Proposed ADR-0015 SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`; the project owner explicitly approved those bytes on 2026-08-14. ADR-0015 and ADR-0016 are `Accepted`, ADR-0010 and ADR-0012 are preserved as `Superseded` history, DG-005 is `Resolved`, and TASK-018 is `Complete`. The project owner separately authorized TASK-004 execution on 2026-08-14. The historical [TASK-004 acceptance review](./docs/reviews/2026-08-16-task-004-acceptance-review.md) returned `REVISE` because the artifact omitted two inherited TypeScript configuration inputs. One bounded TDD correction authenticated all three compiler configurations, and a second bounded cycle made emitted bytes independent of LF/CRLF checkout materialization while preserving exact output hashing. The final 20-input/24-file artifact passes unit 55/55, PostgreSQL 18.6 integration 67/67, application 2/2, and root build locally. Independent clean-checkout controller run `af1a90f61c5b8f9d` at commit `646e8cd5e4c3b5bc6f2b6e4446f8cddd6be21d46` passes all 35 checks and reproduces the exact same build and manifest identity. Corrected hosted GitHub Actions run `31947144452`, job `95164854442`, passes every step on exact commit `c59618e54e6b5a96072dfcb2111b52253fb869fd`. The fresh [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) returns `PASS` with no Blocker, Major, or Minor, and the task-closure documentation gate passes. ADR-0014 remains `Accepted`; ADR-0001, ADR-0004, and ADR-0013 also remain preserved `Superseded` history. DG-001, DG-002, DG-004, DG-005, and DG-006 are resolved; TASK-001, TASK-002, TASK-003, TASK-004, TASK-016, TASK-017, and TASK-018 are `Complete`; and [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only for this personal, educational, non-commercial portfolio under ADR-0014's exact direct-URL boundary and ordinary browser/intermediary caching.
+This repository has completed the owner-authorized TASK-003, TASK-004, and TASK-006 implementation tasks after establishing the initial requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including ADR-0011 for the TypeScript test harness, [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly, [ADR-0015](./docs/adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) as the current build-first migration lifecycle with a restricted lower-case ASCII, exact catalog-bound v2 identity for one fixed local/CI PostgreSQL profile, and [ADR-0016](./docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) for milestone-slice TDD with separate test and implementation ownership; a target system module diagram; a graph-oriented implementation plan; completed task-scoped ExecPlans including [TASK-004](./docs/plans/completed/TASK-004-relational-persistence-from-migrations.md), [TASK-006](./docs/plans/completed/TASK-006-graphql-reads-filters-and-request-logging.md), and [TASK-018](./docs/plans/completed/TASK-018-postgresql-migration-lock-identity-decision.md); seven project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. Fresh independent review returned `PASS` with no Blocker, Major, or Minor across all twenty hard gates and LOCK-INV-01 through LOCK-INV-21 on exact Proposed ADR-0015 SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`; the project owner explicitly approved those bytes on 2026-08-14. ADR-0015 and ADR-0016 are `Accepted`, ADR-0010 and ADR-0012 are preserved as `Superseded` history, DG-005 is `Resolved`, and TASK-018 is `Complete`. The project owner separately authorized TASK-004 execution on 2026-08-14. The historical [TASK-004 acceptance review](./docs/reviews/2026-08-16-task-004-acceptance-review.md) returned `REVISE` because the artifact omitted two inherited TypeScript configuration inputs. One bounded TDD correction authenticated all three compiler configurations, and a second bounded cycle made emitted bytes independent of LF/CRLF checkout materialization while preserving exact output hashing. The final 20-input/24-file artifact passes unit 55/55, PostgreSQL 18.6 integration 67/67, application 2/2, and root build locally. Independent clean-checkout controller run `af1a90f61c5b8f9d` at commit `646e8cd5e4c3b5bc6f2b6e4446f8cddd6be21d46` passes all 35 checks and reproduces the exact same build and manifest identity. Corrected hosted GitHub Actions run `31947144452`, job `95164854442`, passes every step on exact commit `c59618e54e6b5a96072dfcb2111b52253fb869fd`. The fresh [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) returns `PASS` with no Blocker, Major, or Minor, and the task-closure documentation gate passes. ADR-0014 remains `Accepted`; ADR-0001, ADR-0004, and ADR-0013 also remain preserved `Superseded` history. DG-001, DG-002, DG-004, DG-005, and DG-006 are resolved; TASK-001, TASK-002, TASK-003, TASK-004, TASK-006, TASK-016, TASK-017, and TASK-018 are `Complete`; and [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only for this personal, educational, non-commercial portfolio under ADR-0014's exact direct-URL boundary and ordinary browser/intermediary caching.
 
-TASK-003 is `Complete` after passing its implementation, runtime, clean-checkout, CI, independent-review, and documentation-closure gates under the project owner's 2026-08-12 execution authorization. The repository contains a strict npm/TypeScript workspace, a React 18/BrowserRouter/Tailwind shell, an Express liveness process, unit, PostgreSQL integration, application, and Chromium smoke projects, root build/start/development and migration navigation, an isolated PostgreSQL/Redis Compose definition, and the owner-authorized GitHub Actions workflow. TASK-004 supplies its complete task-scoped relational-persistence and migration behavior, including the accepted schema foundation for a later ERD, but it does not supply the TASK-005 character import. TASK-006 is `In progress`; its first three accepted milestones now supply the typed Express GraphQL character-summary query, PostgreSQL-backed five-filter list path, and bounded metadata record for every completed Express request. The project owner assigned bounded newest-first comment reads to TASK-006 and retained favorite/comment mutations in TASK-008; character detail, comment pagination, stable query errors, and task closure remain pending. No imported 15-character baseline, Redis client/cache behavior, product UI, complete image-display behavior, final ERD, or complete product acceptance criterion is implemented, so acceptance remains 0/12.
+TASK-003, TASK-004, and TASK-006 are `Complete` after their task-specific implementation, verification, independent-review, and documentation-closure gates. The repository contains a strict npm/TypeScript workspace, a React 18/BrowserRouter/Tailwind shell, Express liveness and query-only GraphQL boundaries, unit, PostgreSQL integration, application, and Chromium smoke projects, root build/start/development and migration navigation, an isolated PostgreSQL/Redis Compose definition, and the owner-authorized GitHub Actions workflow. TASK-004 supplies relational persistence and migrations but not the TASK-005 character import. TASK-006 supplies character list/detail reads, all five filters, bounded newest-first comment pagination, stable redacted query errors with separate server diagnostics, exact stored image-URL projection, demand-lazy PostgreSQL composition, and one bounded metadata record for every completed Express request. Favorite/comment mutations remain owned by TASK-008. AC-007, AC-008, and AC-011 now pass; the imported 15-character baseline, Redis behavior, product UI, final ERD, complete delivery, and the other acceptance criteria remain pending, so minimum-assessment readiness is still `Fail` at 3/12.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
@@ -70,14 +70,14 @@ The current adopted and deferred optional scope is authoritative in the [optiona
 
 ## Readiness status
 
-The current evidence-based [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) records:
+The current evidence-based [TASK-006 acceptance review](./docs/reviews/2026-08-17-task-006-acceptance-review.md) records:
 
 | View | Current result |
 |---|---|
-| Minimum assessment | Fail: 0 of 12 acceptance criteria pass. TASK-006 now has accepted summary-query, filter, and request-log milestone evidence, but TASK-003, TASK-004, and those partial API slices still do not provide the imported data, complete product API, UI behavior, final ERD, or complete delivery required by the acceptance criteria. |
-| Repository baseline | Fail: strict TypeScript, automated-test, and relational-migration foundations now have evidence, but the minimum assessment and the remaining adopted product commitments are incomplete. |
+| Minimum assessment | Fail: 3 of 12 acceptance criteria pass. TASK-006 proves AC-007, AC-008, and AC-011; imported data, mutations, Redis, product UI, responsive behavior, final ERD, and complete delivery remain incomplete. |
+| Repository baseline | Fail: TASK-006's adopted OR-001, OR-007, and OR-008 contribution passes, but the minimum assessment and the remaining adopted product commitments are incomplete. |
 
-[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is the only pending architectural decision gate and applies to later frontend data-access work. TASK-004 is `Complete`: its earlier independent `REVISE` findings and the subsequently exposed LF/CRLF emission instability are corrected, and local, committed clean-checkout, hosted-CI, fresh independent re-review, and documentation-closure evidence pass. TASK-005 remains `Pending`. TASK-006 is `In progress` under its owner-authorized active ExecPlan; Milestones 1 through 3 have accepted committed evidence for the summary query, all five filters, and bounded Express request logging. The owner has resolved the prior detail/comment allocation in favor of TASK-006 read ownership and TASK-008 mutation ownership; Milestone 4, integrated closure, and the task documentation gate remain pending. This task-scoped evidence does not convert any incomplete product acceptance criterion into `Pass`.
+[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is the only pending architectural decision gate and applies to later frontend data-access work. TASK-004 and TASK-006 are `Complete`; TASK-006's four behavior milestones, integrated closure validation, fresh independent `PASS`, and documentation gate are recorded in its [completed ExecPlan](./docs/plans/completed/TASK-006-graphql-reads-filters-and-request-logging.md). TASK-005 remains `Pending`. The owner-approved allocation keeps bounded detail/comment reads in TASK-006 and mutations in TASK-008. This evidence changes exactly AC-007, AC-008, and AC-011 to `Pass`; it does not advance the other nine criteria or full NFR-003, which still depends on Redis and later backend work.
 
 ## Delivery status
 
@@ -85,7 +85,7 @@ The current evidence-based [TASK-004 acceptance re-review](./docs/reviews/2026-0
 |---|---|
 | [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Partially demonstrated: anonymous read access to the configured [GitHub repository](https://github.com/mmjosedaniel/rick-and-morty-explorer) and committed TASK-003 skeleton source on public `main` through [merged PR #8](https://github.com/mmjosedaniel/rick-and-morty-explorer/pull/8) were verified on 2026-08-14. Complete application delivery remains pending through TASK-014, so the deliverable and AC-012 do not pass. |
 | [DEL-002](./docs/REQUIREMENTS.md#del-002---entity-relationship-diagram) - Entity-relationship diagram | Not yet available. TASK-004 supplies an executable migration and exact migrated-schema inventory, but TASK-014 owns derivation and comparison of the delivered ERD; DEL-002 and AC-012 do not yet pass. |
-| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Partially demonstrated: operational and migration commands and an executable GraphQL schema now exist, but the character-import workflow, detail/comment-read and error contract, product API usage examples, and complete application guide remain pending. |
+| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Partially demonstrated: operational, migration, and GraphQL list/detail/filter/pagination/error/logging guidance now exists. The TASK-005 character-import workflow and the complete end-to-end application guide remain pending, so DEL-003 and AC-012 do not yet pass. |
 
 This status section must be updated and supplemented with links to reproducible prerequisites, configuration, installation, infrastructure, migration, character-import, development, test, build, and GraphQL usage instructions as the corresponding executable artifacts are added.
 
@@ -121,7 +121,7 @@ npm run infra:ps
 npm run infra:down
 ```
 
-For compiled application processes without infrastructure, run `npm run build` followed by `npm start`. This starts the built web server on `127.0.0.1:4173` and the API on `127.0.0.1:3000`; both remain foreground-owned. The current API exposes only `GET /healthz`. It is not a GraphQL or readiness endpoint and does not query PostgreSQL or Redis.
+For compiled application processes, run `npm run build` followed by `npm start`. This starts the built web server on `127.0.0.1:4173` and the API on `127.0.0.1:3000`; both remain foreground-owned. `GET /healthz` is liveness-only and remains independent of PostgreSQL and Redis. `POST /graphql` is the query API described below; its first character read initializes the PostgreSQL boundary on demand.
 
 The migration CLI accepts only the loopback PostgreSQL profile recorded in [`.env.example`](./.env.example). Export those `POSTGRES_*` values in the current shell, start the scoped infrastructure, and use the root commands below. Every lifecycle command builds and authenticates one immutable native-ESM artifact before operating; `down` is selector-free by default, one step is explicit, and larger rollbacks require acknowledgement.
 
@@ -138,21 +138,81 @@ npm run migrate:validate-emitted
 
 `npm run migrate:validate-emitted` owns a temporary namespace and proves empty status, first apply, applied status, no-op apply, default down, and reapply without deleting the authenticated publication. `npm run verify:task-004` is the destructive task-level verification controller: it performs an immutable install, owns isolated PostgreSQL/Redis ports and a scoped Compose project, runs the 34 leaf checks without re-running their aggregate `npm test` alias, and tears down its owned infrastructure. Historical clean-checkout evidence remains a 35/35 record for the controller version executed at that commit.
 
+### GraphQL read API
+
+Send JSON GraphQL requests to `POST http://127.0.0.1:3000/graphql`. The process and `/healthz` can start without database readiness, but the first character query requires valid `POSTGRES_*` configuration and a schema already applied through the migration workflow. TASK-005 has not yet supplied the deterministic 15-character import, so a newly migrated database has no product rows unless test fixtures or a later importer populate it. GraphiQL is available only when explicitly enabled by the development composition; it is disabled by default, in tests, and in production.
+
+Search characters with any subset of the five optional filters:
+
+```graphql
+query SearchCharacters($filter: CharacterFilter) {
+  characters(filter: $filter) {
+    id
+    name
+    imageUrl
+    species
+  }
+}
+```
+
+```json
+{
+  "filter": {
+    "status": "alive",
+    "species": "human",
+    "gender": "male",
+    "name": "rick",
+    "origin": "earth"
+  }
+}
+```
+
+Blank filter values are omitted and supplied filters combine with `AND`. `status` and `gender` use case-insensitive exact matching; `name`, `species`, and `origin` use case-insensitive literal substring matching, including literal `%` and `_`. The API promises no default list order.
+
+Read one character and a bounded comment page with:
+
+```graphql
+query CharacterDetail($id: ID!, $limit: Int, $offset: Int) {
+  character(id: $id) {
+    id
+    name
+    imageUrl
+    species
+    status
+    gender
+    type
+    origin {
+      name
+      url
+    }
+    isFavorite
+    comments(limit: $limit, offset: $offset) {
+      id
+      body
+    }
+  }
+}
+```
+
+Character IDs must be positive base-10 safe integers. Comment pagination defaults to `limit: 20` and `offset: 0`; limits must be 1 through 50 and offsets must be non-negative. Comments are returned newest first by stored creation time and then descending comment ID. The exact stored `image_url` is projected as `imageUrl`; the API does not fetch upstream character JSON, proxy image bytes, or transform the URL.
+
+Invalid input returns `BAD_USER_INPUT`, a valid missing character returns `NOT_FOUND`, and unexpected failures return redacted `INTERNAL_SERVER_ERROR`. Original unexpected failures are written only to the server diagnostic sink. Every completed Express response writes one bounded JSON record to standard output with `requestId`, `method`, query-free `path`, `status`, `durationMs`, `errorCount`, and a bounded `operationName` or `null`; request bodies, GraphQL variables/documents, credentials, comments, stacks, SQL, and diagnostics are excluded. The schema is query-only: TASK-008 owns future favorite/comment mutations.
+
 Authoritative verification commands are:
 
 ```text
 npm run typecheck
+npm run build
 npm run test:unit
 npm run test:integration
 npm run test:application
 npm run test:smoke
 npm test
-npm run build
 npm run validate:tailwind
 npm run test:smoke:lifecycle
 ```
 
-Root `npm test` runs unit, PostgreSQL integration, application, then Chromium smoke. Integration tests require the closed local PostgreSQL profile; the smoke owns only ports 4173/4174 and remains independent of PostgreSQL and Redis.
+Build before the aggregate test command: inherited TASK-004 CLI integration tests execute the compiled `apps/api/dist` migration artifact. Root `npm test` then runs unit, PostgreSQL integration, application, and Chromium smoke in canonical order. Integration tests require the closed local PostgreSQL profile; the smoke owns only ports 4173/4174 and remains independent of PostgreSQL and Redis.
 
 ## Codex quick start
 
