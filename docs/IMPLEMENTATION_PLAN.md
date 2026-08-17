@@ -484,7 +484,9 @@ The following conditions are outside the current delivery baseline and are not a
 
 ## Deferred post-MVP engineering follow-ups
 
-- DPL-DEC-041's API-local `skipLibCheck` exception is explicit, non-MVP-blocking compatibility debt for the TypeScript 6.0.3 and `graphql-yoga` 5.21.2 dependency graph. Reassess it after MVP, or earlier after a supported compiler or Yoga dependency update. Retire it only by deleting the flag and passing root typecheck, build, and affected TASK-006 tests; do not force a transitive package outside Yoga's declared version range.
+Deferred items use the project owner's requested severity scale. `Critical` identifies a high-consequence exposure that requires case-specific owner review and cannot be deferred when it blocks mandatory behavior, security, correctness, or task closure. `Medium` identifies material compatibility or maintainability risk with a safe bounded mitigation. `Low` identifies localized cost with no material correctness or future-implementation impact. Classification prioritizes follow-up; it is not implementation or acceptance evidence, and every deferred item must retain a rationale and falsifiable exit criterion.
+
+- **Medium — DPL-DEC-041:** the API-local `skipLibCheck` exception is explicit, non-MVP-blocking compatibility debt for the TypeScript 6.0.3 and `graphql-yoga` 5.21.2 dependency graph. Reassess it after MVP, or earlier after a supported compiler or Yoga dependency update. Retire it only by deleting the flag and passing root typecheck, build, and affected TASK-006 tests; do not force a transitive package outside Yoga's declared version range.
 
 ## References
 

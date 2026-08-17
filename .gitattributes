@@ -6,3 +6,5 @@ apps/api/src/transport/graphql/graphql-summary.application.test.ts text eol=lf
 apps/api/src/application/characters/character-filter.unit.test.ts text eol=lf
 apps/api/src/runtime-composition.unit.test.ts text eol=lf
 apps/api/src/transport/graphql/graphql-filters.integration.test.ts text eol=lf
+# Preserve the TASK-006 Milestone 3 frozen Red identity across Windows clean checkouts.
+apps/api/src/transport/http/request-log.application.test.ts text eol=lf

@@ -1,3 +1,6 @@
+import { randomUUID } from "node:crypto";
+import { performance } from "node:perf_hooks";
+
 import { createApp } from "./app.js";
 import { createCharacterReadService } from "./application/characters/character-read-service.js";
 import { parseApiHost, parseApiPort } from "./config.js";
@@ -72,6 +75,13 @@ const characterReadServiceOwner = createLazyCharacterReadServiceOwner({
 const app = createApp({
   characterReadService: characterReadServiceOwner.characterReadService,
   enableGraphiql: false,
+  requestLogging: {
+    write: (line) => {
+      process.stdout.write(line);
+    },
+    createRequestId: randomUUID,
+    now: () => performance.now(),
+  },
 });
 
 const server = app.listen(port, host, () => {
