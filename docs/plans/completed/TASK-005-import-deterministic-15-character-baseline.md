@@ -7,11 +7,11 @@ This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoverie
 ## Purpose / Big Picture
 
 
-This is ExecPlan 005 for TASK-005, Import the deterministic 15-character baseline. After separate project-owner execution authorization, a reviewer will be able to migrate an empty PostgreSQL database, run one explicit character-import command, and observe exactly the upstream character IDs 1 through 15 stored with their validated source-owned fields and exact avatar URLs. Repeating the command will retain the same 15 baseline rows without resetting favorites, modifying comments, or creating duplicates.
+This completed ExecPlan records TASK-005, Import the deterministic 15-character baseline. After separate project-owner execution authorization and verified task closure, a reviewer can migrate an empty PostgreSQL database, run one explicit character-import command, and observe exactly the upstream character IDs 1 through 15 stored with their validated source-owned fields and exact avatar URLs. Repeating the command retains the same 15 baseline rows without resetting favorites, modifying comments, or creating duplicates.
 
-The importer is the only planned route for upstream character JSON to enter the application database. It will fetch and validate the complete fixed batch before opening one publication transaction, then request best-effort search-cache invalidation only after the commit. Automated tests will use version-controlled payload fixtures and injected transport behavior; they must never contact the live public API.
+The importer is the only implemented route for upstream character JSON to enter the application database. It fetches and validates the complete fixed batch before opening one publication transaction, then requests best-effort search-cache invalidation only after the commit. Automated tests use version-controlled deterministic payload builders and injected transport behavior; they never contact the live public API.
 
-This plan is planning intent, not implementation evidence. At registration, TASK-004, TASK-006, and TASK-017 are Complete, but TASK-005 is Pending. The repository contains the migrated character/comment schema and read-only database composition, but no importer, import command, upstream client, 15-record fixture, write repository, or import-specific automated test. Registering this plan does not authorize implementation, change TASK-005 to In progress, or advance AC-009.
+This plan records intent and evidence identities but is not itself implementation evidence. At registration, TASK-004, TASK-006, and TASK-017 were Complete, but TASK-005 was Pending. The repository contained the migrated character/comment schema and read-only database composition, but no importer, import command, upstream client, deterministic payload builder, write repository, or import-specific automated test. Registering this plan did not authorize implementation, change TASK-005 to In progress, or advance AC-009. The current completed outcome and its repository/runtime evidence are summarized in `Outcomes & Retrospective` and the linked acceptance review.
 
 
 ## Progress
@@ -53,6 +53,7 @@ This plan is planning intent, not implementation evidence. At registration, TASK
 - [x] (2026-08-18 13:25Z) Passed the fresh complete closure candidate gate: root typecheck, root build, and ordered `npm test` all exited 0; unit passed 23 files/98 tests, real-PostgreSQL integration passed 9 files/71 tests, application passed 5 files/12 tests, and Chromium smoke passed 1/1 in 7.9 seconds. Final checks found no listener on ports 4173/4174, no `task_004_<16 hex>` database, an empty Git index, and a clean `git diff --check`. Integrated independent review and documentation closure remain before TASK-005 and AC-009 completion.
 - [x] (2026-08-18 13:44Z) Completed Milestone 4. Fresh independent integrated review reproduced exact 18-path fingerprint `B008819D8736BF92AF8870BB5A6CAB18BB55CAF3BE81C0D7F23E430DE0210780` and returned `PASS` with no Blocker, Major, or Minor. The primary marked TASK-005 and AC-009 complete, recorded SPEC-010 and HS-012 as passing plus the bounded SPEC-011 contribution, updated current readiness to 4/12, added and indexed the dated review, reconciled current architecture annotations, repaired completed-plan links, appended chronology, and moved this plan to completed history. Documentation validation passed for 57 Markdown files and 123 scenarios; ADR validation passed for 16 ADRs and 38 requirements with only the established NFR-006 warning; `git diff --check` passed. No product/test byte changed after review.
 - [x] (2026-08-18 13:48Z) Completed final external-state cleanup. A last catalog query returned no owned `task_004_<16 hex>` database; `docker compose -p rick-and-morty-task005 down --volumes` removed only the task's PostgreSQL/Redis containers, data volumes, and network. Post-teardown project status was empty, and ports 4173, 4174, 55432, and 56400 had no listeners.
+- [x] (2026-08-18 15:10Z) Completed a post-closure documentation review. Reclassified remaining registration-time and authorized-sequence wording as historical, corrected the completed-plan context and command state, and repaired execution-record navigation without changing product/test bytes, authoritative status, requirement or ADR semantics, acceptance evidence, or technical debt.
 
 
 ## Surprises & Discoveries
@@ -160,6 +161,10 @@ This plan is planning intent, not implementation evidence. At registration, TASK
   Rationale: Every reported lifecycle case derived from the same denied cleanup operation rather than an application assertion, and no repository-owned process remained afterward. The Windows exclusion made the old port impossible to bind, while the exact Compose project, image, service, and no-Redis-contact task boundary remain unchanged.
   Date/Author: 2026-08-18 / Codex primary coordinator.
 
+- Decision: Preserve registration and authorized-sequence facts while labeling them explicitly as historical in the completed ExecPlan.
+  Rationale: `PLANS.md` requires both durable execution history and a self-contained current reading. Present-tense claims that TASK-005 was Pending or that the import command did not exist contradicted the completed outcome even though the chronology itself remained valid.
+  Date/Author: 2026-08-18 / Codex primary coordinator.
+
 
 ## Outcomes & Retrospective
 
@@ -178,6 +183,8 @@ Milestone 4 outcome: accepted and closed. After the project-owner-requested safe
 
 Documentation impact: updated the requirement acceptance checklist, canonical task/dependency status, root current status and command example, SPEC execution notes, ADR/system-diagram current implementation annotations, plan/review indexes, dated acceptance review, and append-only execution chronology. The accepted ADR semantics, task dependencies, AUTH-001 scope, feature files, migrations, dependencies, lockfile, and product source/test candidate remain unchanged by closure.
 
+Post-closure documentation review: clarified historical versus current language in this completed plan and linked the execution-record index to completed ExecPlans and dated reviews. No implementation, acceptance, task, gate, requirement, ADR, authorization, or technical-debt state changed.
+
 
 ## Context and Orientation
 
@@ -187,8 +194,8 @@ The following authorities define this plan. Their stated behavior is intent unti
 | Authority | Relevance to TASK-005 |
 |---|---|
 | docs/FULL_STACK_TECHNICAL_ASSESSMENT.md | The assessment requires initializing the relational database with 15 characters from the public API. |
-| docs/REQUIREMENTS.md | FR-BE-004 and AC-009 are the mandatory task outcome. DEL-003 will later need the import command documented, but TASK-005 does not complete overall delivery. |
-| docs/IMPLEMENTATION_PLAN.md | Owns TASK-005 Pending status, dependencies on TASK-004 and TASK-017, resolved DG-006, and Authorized AUTH-001. |
+| docs/REQUIREMENTS.md | FR-BE-004 and AC-009 are the mandatory task outcome. DEL-003 now includes the import command documentation, but still awaits the complete end-to-end application guide and does not pass through TASK-005 alone. |
+| docs/IMPLEMENTATION_PLAN.md | Owns TASK-005 Complete status, its unchanged dependencies on TASK-004 and TASK-017, resolved DG-006, and Authorized AUTH-001. |
 | docs/adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md | Requires an explicit, idempotent, transactional import after migrations; it excludes migration network access and the optional scheduler. |
 | docs/adrs/0007-use-cache-aside-for-character-searches.md | Requires only a best-effort invalidation request after successful import commit. Redis caching and its SCAN/UNLINK implementation remain TASK-007 work. |
 | docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md | Requires exact Character.image validation for requested IDs 1 through 15 and prohibits an image byte, proxy, asset, or URL-normalization subsystem. |
@@ -211,13 +218,13 @@ The payload ID must equal the requested ID. The importer reads Character.image a
 
 In scope:
 
-- a compiled, zero-argument explicit import command, planned as npm run import:characters after it is implemented;
+- a compiled, zero-argument explicit import command exposed as npm run import:characters;
 - a small upstream adapter using native fetch with a finite timeout and finite retry count, injected in tests;
 - one fixed batch for IDs 1 through 15, complete-batch validation before publication, and deterministic version-controlled success and hostile-input fixtures;
 - a focused import service and transactional PostgreSQL repository that upserts only source-owned fields;
 - idempotency, source-field refresh, favorites/comments preservation, failure rollback, non-zero command failure, and post-commit invalidation-request evidence;
 - focused unit, application/CLI, and real isolated PostgreSQL integration tests; and
-- import setup and usage documentation when the command exists.
+- import setup and usage documentation for the implemented command.
 
 Out of scope:
 
@@ -228,15 +235,15 @@ Out of scope:
 - image bytes, decoder, proxy, asset route, storage, cache, lifecycle, or a generic URL-normalization framework; and
 - new dependencies unless preflight proves native Node and existing packages cannot meet an already accepted contract.
 
-No non-blocking scope addition found at registration qualifies as technical debt. If later execution discovers a genuine safe-to-defer item, record it only in docs/IMPLEMENTATION_PLAN.md under Technical debt and future implementations, with High/Mid/Low priority, this ExecPlan link, present impact, safe-deferral rationale, and falsifiable exit criterion. Mandatory behavior, security, correctness, or task-closure findings must not be deferred.
+No non-blocking scope addition found at registration or during execution qualified as technical debt. Any later genuine safe-to-defer discovery belongs only in docs/IMPLEMENTATION_PLAN.md under Technical debt and future implementations, with High/Mid/Low priority, this ExecPlan link, present impact, safe-deferral rationale, and falsifiable exit criterion. Mandatory behavior, security, correctness, or task-closure findings must not be deferred.
 
 
 ## Plan of Work
 
 
-Execution was authorized on 2026-08-18 and begins only after the primary validates the authoritative task-state, execution-record, plan-index, root-status, and Progress reconciliation before any test or production writer starts. The primary then keeps one persistent test_worker and one persistent code_worker for a milestone at a time. Every write turn receives a fresh Milestone Assignment Packet v2 and a fresh terminal write lease; the test and implementation writers never write concurrently.
+Execution was authorized on 2026-08-18 and began only after the primary validated the authoritative task-state, execution-record, plan-index, root-status, and Progress reconciliation before any test or production writer started. The primary then kept one persistent test_worker and one persistent code_worker for a milestone at a time. Every write turn received a fresh Milestone Assignment Packet v2 and a fresh terminal write lease; the test and implementation writers never wrote concurrently.
 
-Each milestone has a read-only preflight. The classification may be EXISTING_AND_COVERED, EXISTING_BUT_UNCOVERED, MISSING, REGRESSION, PARTIAL, CONFLICTING, or UNKNOWN. Current source absence is evidence to investigate, not permission to assume MISSING. CONFLICTING or UNKNOWN stops dependent writes for coordinator reconciliation. An accepted test boundary freezes before Green.
+Each milestone began with a read-only preflight using the `EXISTING_AND_COVERED`, `EXISTING_BUT_UNCOVERED`, `MISSING`, `REGRESSION`, `PARTIAL`, `CONFLICTING`, or `UNKNOWN` classifications. Source absence was evidence to investigate, not permission to assume `MISSING`; `CONFLICTING` or `UNKNOWN` would have stopped dependent writes for coordinator reconciliation. Every accepted test boundary froze before Green. The milestone sections below preserve the authorized contracts and execution instructions, while `Progress` and `Outcomes & Retrospective` record what actually occurred.
 
 ### Milestone 1 — Validate the deterministic upstream batch
 
@@ -294,18 +301,18 @@ The default budget for each behavior milestone is one preflight, one Red or char
 ## Concrete Steps
 
 
-The current registration checks are:
+The registration checks were:
 
 1. From the repository root, run python -B .agents/skills/verify-repository/scripts/validate_docs.py --repo .
 2. From the repository root, run python -B .agents/skills/govern-adrs/scripts/validate_adrs.py --repo .
 3. From the repository root, run git diff --check.
 
-After explicit TASK-005 authorization, execute the following order:
+The authorized execution order was:
 
 1. Reconfirm clean ownership boundaries and update the authoritative task state to In progress, this ExecPlan, the plan index, and the append-only execution log. Do not make source edits before that reconciliation.
 2. Issue the Milestone 1 preflight packet. Its Red route, if required, precedes any source implementation. Record the classification, test paths, focused command, intended decisive result, relevant-tree fingerprint, and injected-network boundary.
 3. Issue Milestone 2 only after Milestone 1 acceptance. Create a run-owned PostgreSQL namespace through the existing helper, apply the already accepted migration artifact, and record exact cleanup evidence. Do not run the import against a shared development database as test evidence.
-4. Issue Milestone 3 only after Milestone 2 acceptance. The user-facing future sequence will be migrate the database with the existing migration workflow, then run npm run import:characters. This command does not exist yet and becomes authoritative only with its implementation evidence.
+4. Issue Milestone 3 only after Milestone 2 acceptance. The user-facing sequence is to migrate the database with the existing migration workflow, then run npm run import:characters. This command was absent at registration and became authoritative only after its implementation and closure evidence passed.
 5. At closure, run the root typecheck, build, and complete authoritative test suite in an explicitly recorded isolated infrastructure environment; run documentation validation, the ADR validator if an ADR-sensitive owner changed, and git diff --check. Do not add a TASK-005 verification controller unless a current validation gap proves that the existing commands cannot establish the required outcome.
 
 Expected success is a deterministic import command with a non-zero safe failure path and no change to application behavior outside its task boundary. Expected failure at any stage is an unchanged committed dataset, preserved application-owned interactions, recorded cleanup, and a stopped workflow rather than an automatic broad recovery.
@@ -314,9 +321,9 @@ Expected success is a deterministic import command with a non-zero safe failure 
 ## Validation and Acceptance
 
 
-Registration validation proves only documentation integrity. It does not run a planned import command, contact the public API, start PostgreSQL, or establish implementation readiness.
+Registration validation proved only documentation integrity. It did not run the planned import command, contact the public API, start PostgreSQL, or establish implementation readiness. Task closure required the evidence contract below; the exact accepted results are recorded in `Progress`, `Outcomes & Retrospective`, and the linked acceptance review.
 
-| Scope | Required evidence after authorization |
+| Scope | Closure evidence contract |
 |---|---|
 | FR-BE-004 and SPEC-010 | An isolated migrated database receives exactly IDs 1 through 15 from deterministic valid fixtures through the explicit importer, with no migration network call. |
 | AC-009 | TASK-004 schema evidence joins TASK-005 initialization evidence only after this task passes its acceptance and documentation gates. |
@@ -325,9 +332,9 @@ Registration validation proves only documentation integrity. It does not run a p
 | ADR-0008 | Explicit command, bounded upstream failure, no startup/migration/scheduler import, one transaction, clear non-zero failure, and repeatability. |
 | Negative scope | Static/diff review confirms no new migration, Redis client, cache implementation, GraphQL/API route, scheduler, image byte/proxy/asset artifact, dependency, or live-network automated test. |
 
-For each milestone, the primary records the preflight classification; actual accepted Red failure or passing characterization evidence; Green command and result; post-Refactor result only if Refactor occurred; changed and frozen paths; terminal lease receipts; affected-suite/type/build evidence; reviewer verdict; and evidence reuse only when the exact command, working directory, relevant-tree fingerprint, environment identity, and external-state identity match.
+For each milestone, the primary recorded the preflight classification; actual accepted Red failure or passing characterization evidence; Green command and result; post-Refactor result only if Refactor occurred; changed and frozen paths; terminal lease receipts; affected-suite/type/build evidence; reviewer verdict; and evidence reuse only when the exact command, working directory, relevant-tree fingerprint, environment identity, and external-state identity matched.
 
-At task closure, use current repository commands rather than invented aliases: npm run typecheck, npm run build, and npm test, plus any still-required documented lifecycle or smoke command whose scope changed. PostgreSQL, Redis, browser, and external-network evidence are non-reusable unless the isolated namespace, container/project, port, fixture, and cleanup identities are recorded. The final independent reviewer must examine cross-milestone behavior, status, documentation, no-scope-expansion assertions, and unresolved findings before the primary may reconcile TASK-005.
+Task closure used the current repository commands rather than invented aliases: npm run typecheck, npm run build, and npm test, plus the documented lifecycle command whose scope changed. PostgreSQL, Redis, and browser evidence was treated as non-reusable unless the isolated namespace, container/project, port, fixture, and cleanup identities were recorded; no external-network test evidence was used. The final independent reviewer examined cross-milestone behavior, status, documentation, no-scope-expansion assertions, and unresolved findings before the primary reconciled TASK-005.
 
 
 ## Idempotence and Recovery
@@ -359,7 +366,7 @@ No assignment packet, lease receipt, test output, external request, database nam
 ## Interfaces and Dependencies
 
 
-The implementation must establish only the following focused contracts:
+The implementation established only the following focused contracts:
 
 | Boundary | Required contract | Excluded expansion |
 |---|---|---|
@@ -370,7 +377,7 @@ The implementation must establish only the following focused contracts:
 | CLI | A zero-argument compiled process that returns zero only for successful import and non-zero for safe failure. | HTTP server, REST/GraphQL endpoint, command framework, scheduler, or hidden startup import. |
 | Direct image mapping | Persist only the exact validated Character.image value as image_url. | Character.url substitution, bytes, proxying, decoding, asset routes, or image lifecycle. |
 
-The exact TypeScript names, test files, timeout/retry constants, and package-script implementation remain implementation details to be fixed by the authorized preflight and recorded as a reversible execution decision only if they affect dependent work. They must preserve the boundaries above and may not silently widen this task.
+The exact TypeScript names, test files, timeout/retry constants, and package-script implementation were fixed through the authorized preflights and milestone implementation. They preserve the boundaries above and remain execution details rather than new architectural authority.
 
 
 ## Revision Note
@@ -425,3 +432,5 @@ The exact TypeScript names, test files, timeout/retry constants, and package-scr
 2026-08-18 UTC / Codex primary coordinator: Fresh integrated review independently reproduced exact 18-path fingerprint `B008819D8736BF92AF8870BB5A6CAB18BB55CAF3BE81C0D7F23E430DE0210780` and returned `PASS` with no Blocker, Major, or Minor. Completed the task-closure documentation reconciliation: TASK-005 and AC-009 are Complete/Pass, current readiness is 4/12, SPEC-010 and HS-012 pass, the TASK-005 SPEC-011 contribution passes while full mutations remain pending, current architecture annotations are accurate, the dated review is indexed, all inbound links target completed history, and no product/test byte or technical-debt record changed. Documentation and ADR validators plus diff integrity pass on completed history.
 
 2026-08-18 UTC / Codex primary coordinator: After final empty owned-database readback, removed only Compose project `rick-and-morty-task005` and its PostgreSQL/Redis volumes and network. Post-teardown project status and listeners on 4173, 4174, 55432, and 56400 are empty.
+
+2026-08-18 UTC / Codex primary coordinator: Completed a post-closure documentation audit. Preserved the original registration and milestone chronology while changing stale present/future-tense registration claims into explicit historical context, corrected the completed task and command state, and linked the execution-record index to the completed-plan and review owners. No product/test byte, evidence conclusion, authoritative status, technical-debt entry, requirement, ADR, authorization, gate, or acceptance result changed.
