@@ -1,0 +1,13 @@
+# GraphQL Code Generator emits a canonical terminal blank line; keep every other whitespace check enabled.
+apps/api/src/transport/graphql/generated/resolver-types.ts text eol=lf whitespace=-blank-at-eof
+# Preserve the frozen Red contract's byte-exact identity across Windows clean checkouts.
+apps/api/src/transport/graphql/graphql-summary.application.test.ts text eol=lf
+# Preserve the TASK-006 Milestone 2 frozen Red identities across Windows clean checkouts.
+apps/api/src/application/characters/character-filter.unit.test.ts text eol=lf
+apps/api/src/runtime-composition.unit.test.ts text eol=lf
+apps/api/src/transport/graphql/graphql-filters.integration.test.ts text eol=lf
+# Preserve the TASK-006 Milestone 3 frozen Red identity across Windows clean checkouts.
+apps/api/src/transport/http/request-log.application.test.ts text eol=lf
+# Preserve the TASK-006 Milestone 4 frozen Red identities across Windows clean checkouts.
+apps/api/src/application/characters/character-detail.unit.test.ts text eol=lf
+apps/api/src/transport/graphql/graphql-character-detail.integration.test.ts text eol=lf

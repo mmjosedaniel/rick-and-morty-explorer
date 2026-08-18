@@ -13,6 +13,7 @@ These agents support repository work. They do not change product scope, approve 
 | Consequential decision work | [Decision work](#decision-work) | Owning ExecPlan and its Decision Review Contract |
 | Owner-authorized implementation ExecPlan | [Implementation workflow](./execplan-implementation-workflow.md) | [Write-lease guard](./write-lease-guard.md) and owning ExecPlan |
 | Custom role selection | [Agent registry](#agent-registry) | Exact role TOML and bounded instance assignment |
+| Operator-managed runtime concurrency | [Runtime concurrency capacity](#runtime-concurrency-capacity) | [Collaboration topology](#collaboration-topology), [implementation workflow](./execplan-implementation-workflow.md), and [write-lease guard](./write-lease-guard.md) |
 | Optional worker-flow telemetry | [Agent-flow metrics](./agent-flow-metrics.md) | [Hook activation and trust](./agent-flow-metrics.md#activate-the-lifecycle-hooks) only when a present measurement question justifies the overhead |
 
 Keep `AGENTS.md` concise and durable; put task-specific procedures in the linked ExecPlan, workflow, or repository skill. Codex discovers repository skills under `.agents/skills` using progressive disclosure: it first sees skill metadata, then loads a selected `SKILL.md` and only the supporting resources needed for the task. Project-scoped custom agents live under `.codex/agents`; their definitions do not execute merely because the files exist.
@@ -53,6 +54,19 @@ Each custom-agent file's explicit `model` and `model_reasoning_effort` values ta
 Role instructions remain necessary. More reasoning does not replace primary-source requirements, common criteria, explicit uncertainty, artifact-local completeness, read-only boundaries or write leases, or executable validation. If the configured model or effort becomes unavailable in a target Codex environment, update this policy and the affected agent files together rather than allowing silent drift. Compare policy changes on representative repository work instead of assuming that a higher effort alone improves the workflow.
 
 The model ID, supported reasoning levels, custom-agent precedence, and parallel-work guidance are documented in the [official GPT-5.6 Sol model reference](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model), and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+
+## Runtime Concurrency Capacity
+
+The spawned-agent ceiling belongs to each operator's untracked `~/.codex/config.toml`; this repository neither versions nor requires a numeric value. The current operator profile uses:
+
+```toml
+[agents]
+max_concurrent_threads_per_session = 6
+```
+
+The [official Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference) defines this key as the maximum number of spawned-agent threads and excludes the primary thread. This value therefore permits up to six spawned agents alongside the primary coordinator, or seven active threads in total. It is a ceiling, not a workload target or guaranteed allocation; the coordinator must use the capacity actually available in the current session, and another operator may select a lower value without creating repository drift. The [official subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents) owns the runtime feature semantics.
+
+Additional slots are useful for bounded, independent work, especially read-only research and review. They do not expand task scope, grant write authority, increase correction budgets, replace fresh review, or relax closure ownership. Write-capable implementation still follows the [serial milestone flow](./execplan-implementation-workflow.md) and permits only one active [write lease](./write-lease-guard.md) per worktree; Red and Green writers never run concurrently for the same slice. Truly independent concurrent writers require separate worktrees and separate baselines.
 
 ## Collaboration Topology
 

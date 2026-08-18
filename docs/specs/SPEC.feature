@@ -301,16 +301,29 @@ Feature: Rick and Morty character application behavior
   Rule: Request middleware emits useful operational metadata
 
     @minimum_assessment
-    Scenario: Log relevant information for one completed GraphQL request
-      Given the API receives a GraphQL request
+    Scenario Outline: Log relevant information for each completed Express request
+      Given the API receives <request>
       When the request completes
-      Then standard output contains a request record with its method, path, status, and duration
+      Then standard output contains exactly one request record with its method, path, status, and duration
 
-    Scenario: Log the accepted bounded structured metadata
-      Given the API receives a GraphQL request
+      Examples:
+        | request                      |
+        | a GET request to /healthz    |
+        | a successful GraphQL request |
+        | a failing GraphQL request    |
+
+    Scenario Outline: Log the accepted bounded structured metadata
+      Given the API receives <request>
       When the request completes
-      Then standard output contains one structured request record
-      And the record includes a request ID, method, path, safely available operation name, status, duration, and error count
+      Then standard output contains exactly one structured request record
+      And the record includes a request ID, method, path, status, duration, and error count
+      And an operation name is included only when it is safely available, and is otherwise null or absent under the documented contract
+
+      Examples:
+        | request                      |
+        | a GET request to /healthz    |
+        | a successful GraphQL request |
+        | a failing GraphQL request    |
 
   @SPEC-014 @repository_baseline @mandatory @NFR-001 @NFR-003 @ADR-0002 @ADR-0003 @ADR-0006 @ADR-0007 @ADR-0009 @ADR-0014
   Rule: The delivered applications use the prescribed technology baseline

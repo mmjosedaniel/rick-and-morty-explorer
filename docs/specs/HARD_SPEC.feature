@@ -105,8 +105,13 @@ Feature: Non-negotiable application and delivery constraints
       And DG-001 has been resolved with authoritative command boundaries
       When the documented strict type-check scope runs
       Then all application and test source passes strict TypeScript checks
-      And any generated GraphQL types present match the version-controlled schema
-      And any generated artifacts present have not been edited by hand
+
+    Scenario: Derive backend resolver types from the version-controlled GraphQL schema
+      Given a version-controlled GraphQL schema is implemented
+      When the documented generation and drift-check scopes run
+      Then backend resolver types are generated from that schema
+      And the generated output matches the schema
+      And generated artifacts have not been edited by hand
 
     Scenario: Keep language and asynchronous control flow within the accepted baseline
       When application and test source is inspected
@@ -438,8 +443,21 @@ Feature: Non-negotiable application and delivery constraints
   @HS-014 @repository_baseline @mandatory @FR-BE-006 @AC-011 @ADR-0006
   Rule: Request observability does not leak sensitive or unbounded content
 
+    Scenario Outline: Emit exactly one bounded record for every completed Express request
+      Given the API receives <request>
+      When the request completes
+      Then standard output contains exactly one bounded structured request record
+      And the record contains a request ID, method, path, status, duration, and error count
+      And GraphQL operation metadata is included only when it is safely available
+
+      Examples:
+        | request                      |
+        | a GET request to /healthz    |
+        | a successful GraphQL request |
+        | a failing GraphQL request    |
+
     Scenario: Exclude unsafe data from request logs
-      When request middleware records a GraphQL request
+      When request middleware records an Express request
       Then the record excludes the full request body
       And the record excludes comment text, secrets, authorization data, and stack traces
 

@@ -67,10 +67,10 @@ Read the authoritative requirement and ADR first, then locate only the stable ru
 | Decision guards and accepted test, migration, and image boundaries | HS-001 through HS-003 and HS-020 | TASK-001 and TASK-002 for accepted test and migration history; TASK-016 for historical image-decision evidence; TASK-017 for the accepted current image successor; completed TASK-018 and accepted PostgreSQL 18.6 ADR-0015 for DG-005; TASK-009 for DG-003 |
 | Character-image delivery | HS-020 and the DG-006/AUTH-001-tagged image paths in SPEC-001, SPEC-003, SPEC-007, SPEC-008, SPEC-010, and SPEC-016 | TASK-017 owns the accepted successor; AUTH-001 is Authorized within its recorded portfolio/direct-URL scope; TASK-004, TASK-005, TASK-006, TASK-007, TASK-010, TASK-011, TASK-012, and TASK-014 own affected artifacts after their remaining prerequisites |
 | Deferred-scope and deployment guards | HS-004, HS-005 | Applicable future scope decision; TASK-008 for current single-user semantics |
-| Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 and TASK-013 |
+| Repository language and module boundaries | HS-006, HS-007, HS-019 | TASK-003 establishes the foundation; TASK-006 contributes backend GraphQL type-generation and thin transport/service/persistence evidence; TASK-013 owns portfolio closure |
 | Character list, sorting, and interface filters | SPEC-001, SPEC-002, SPEC-006, HS-015, HS-016 | TASK-010 and TASK-012 |
-| Detail, favorites, and comments | SPEC-003 through SPEC-005, HS-009, HS-015, HS-016 | TASK-008 and TASK-011 |
-| Express/GraphQL queries, filters, mutations, and logs | SPEC-008, SPEC-009, SPEC-013, HS-008, HS-010, HS-014 | TASK-006 for the Express/query/logging boundary; TASK-008 for mutation behavior |
+| Detail, favorites, and comments | SPEC-003 through SPEC-005, HS-009, HS-015, HS-016 | TASK-006 for bounded detail/comment reads; TASK-008 for favorite/comment mutations and persistence; TASK-011 for the UI |
+| Express/GraphQL queries, filters, mutations, and all-Express request logs | SPEC-008, SPEC-009, SPEC-013, HS-008, HS-010, HS-014 | TASK-006 for Express-hosted queries, filters, bounded comment reads, and all-Express request logging; TASK-008 for mutation behavior |
 | Migrations and relational model | SPEC-010, HS-002, HS-011 | Completed TASK-018 owns the accepted ADR-0015/DG-005 decision evidence; owner-authorized TASK-004 now owns implementation |
 | Deterministic import and database authority | SPEC-010, SPEC-011, HS-012 | TASK-005 for import behavior; TASK-006 and TASK-008 for PostgreSQL-backed runtime reads and writes |
 | Redis cache-aside | SPEC-012, HS-013 | TASK-007 |
