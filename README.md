@@ -8,6 +8,8 @@ TASK-003, TASK-004, TASK-005, and TASK-006 are `Complete` after their task-speci
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
+TASK-009 is `In progress` under a decision-only authorization and its active [ExecPlan](./docs/plans/TASK-009-frontend-graphql-client-decision.md). DG-003 remains `Pending`, no frontend client strategy is approved, and no frontend data-access implementation is authorized.
+
 ## Documentation map
 
 This README is the single documentation entry point and current-state summary for both maintainers and Codex. It routes readers to the authoritative owner of each kind of information; it does not replace those documents.

@@ -4,6 +4,8 @@
 
 The repository has completed TASK-003, TASK-004, TASK-005, and TASK-006 after establishing the initial requirements and architecture foundation. TASK-006 supplies the typed Express GraphQL list/detail boundary, PostgreSQL-backed five-filter path, bounded newest-first comment reads, stable redacted errors with separate diagnostics, demand-lazy resource ownership, and bounded all-Express request records; DPL-DEC-043 keeps mutations in TASK-008. TASK-005 now supplies deterministic validated retrieval for IDs 1 through 15, transactional repeatable source-field publication with application-state preservation, and the explicit compiled import command with post-commit invalidation. Its exact 18-path candidate `B008819D8736BF92AF8870BB5A6CAB18BB55CAF3BE81C0D7F23E430DE0210780` passed root typecheck, build, unit 98/98, PostgreSQL integration 71/71, application 12/12, Chromium 1/1, lifecycle 6/6, zero-residue checks, and fresh independent review with no Blocker, Major, or Minor. AC-007, AC-008, AC-009, and AC-011 pass; minimum-assessment readiness remains `Fail` at 4/12 because Redis, mutations, frontend behavior, responsive UI, final ERD, and complete delivery remain pending. This plan records architectural decision gates and the remaining dependency graph.
 
+TASK-009 is now `In progress` under explicit decision-only authorization to research DG-003 and prepare an owner-review-ready Proposed ADR. DG-003 remains `Pending`, and no client-controlled implementation artifact is authorized.
+
 Mandatory requirements and deliverables remain defined in the [requirements specification](./REQUIREMENTS.md). Optional requirements retain the source assessment's classification, and their repository dispositions remain authoritative in the [ADR index](./adrs/README.md#optional-scope-decisions).
 
 Use the repository [documentation map](../README.md#documentation-map) for authority and task routing. This plan owns sequencing, task IDs, gates, and implementation-enabling task outcomes; it cannot expand product or assessment scope, approve an unresolved architectural choice, or prove implementation.
@@ -221,13 +223,15 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-006 | Complete | TASK-004, TASK-017 | Owner-authorized on 2026-08-16; four behavior milestones, build-first closure packet, fresh independent `PASS`, and documentation gate passed on 2026-08-17 |
 | TASK-007 | Pending | TASK-005, TASK-006 | Prerequisites satisfied; separate execution authorization required; AUTH-001 Authorized for cached image URLs |
 | TASK-008 | Pending | TASK-006 | None |
-| TASK-009 | Pending | TASK-006 | Project-owner approval of the gate-resolution ADR |
+| TASK-009 | In progress | TASK-006 | Decision-only authorization recorded; project-owner approval of the gate-resolution ADR still required |
 | TASK-010 | Pending | TASK-005, TASK-009 | AUTH-001 Authorized for browser image work |
 | TASK-011 | Pending | TASK-008, TASK-010 | AUTH-001 Authorized for detail image work |
 | TASK-012 | Pending | TASK-011 | AUTH-001 Authorized for image fallback and display work |
 | TASK-013 | Pending | TASK-007, TASK-012 | Test-relevance audit and all authoritative quality gates |
 | TASK-014 | Pending | TASK-013 | Clean-clone delivery verification |
 | TASK-015 | Pending | TASK-014 | No unresolved release-blocking gate or ADR follow-up |
+
+TASK-009 has started only its owner-authorized decision path through the [active ExecPlan](./plans/TASK-009-frontend-graphql-client-decision.md). DG-003 remains `Pending`, the task still requires explicit owner approval before gate resolution or completion, and TASK-010 remains pending.
 
 TASK-003 is `Complete` after TASK-001 completion, DG-001 resolution, separate project-owner execution authorization, successful implementation/runtime verification, and its documentation gate. TASK-002, TASK-004, TASK-005, TASK-006, TASK-016, TASK-017, and TASK-018 are also `Complete`; ADR-0015 and ADR-0016 are accepted; DG-005 is resolved; and AUTH-001 is `Authorized` under disposition A. TASK-004 completed under the then-current ADR-0010 after the project owner's separate 2026-08-14 execution directive without adding TASK-018 as a dependency. TASK-005 completed under the project owner's separate 2026-08-18 execution authorization after deterministic unit and real-PostgreSQL milestone-slice TDD, accepted S2/S3 milestone reviews, the compiled explicit command and post-commit invalidation seam, complete root type/build/unit/integration/application/Chromium/lifecycle validation, zero-residue checks, fresh integrated `PASS`, and documentation closure. AC-009 now passes. TASK-006 completed list/detail queries, all five filters, bounded request logging, bounded newest-first comment reads, stable errors, lazy lifecycle ownership, and its integrated closure. The project owner's option A in DPL-DEC-043 keeps read pagination/order in TASK-006 and mutations in TASK-008 without changing the dependency graph. TASK-007 and TASK-008 may now start only when separately authorized; TASK-009 still resolves the frontend client before TASK-010 joins imported data, GraphQL, client, and the walking skeleton. TASK-008 and TASK-010 then join directly before TASK-011; TASK-009 remains a transitive predecessor through TASK-010, and every implementation branch joins before TASK-013 through TASK-015. Pending and future production tasks use preflight-classified milestone-slice Red-Green-Refactor under ADR-0016 while preserving independent test and implementation ownership.
 
@@ -375,9 +379,10 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-009 - Resolve the frontend GraphQL client gate
 
 - **Outcome:** DG-003 has an owner-approved accepted ADR for the client, query cache, generated operations, error behavior, refetching, and test boundary.
+- **Execution plan:** The active [TASK-009 frontend GraphQL client decision ExecPlan](./plans/TASK-009-frontend-graphql-client-decision.md) owns the R2 Decision Review Contract, research, proposal, review, and approval-stop chronology. It authorizes no frontend implementation.
 - **Mapped scope:** FR-FE-001 through FR-FE-005, NFR-001, AC-001 through AC-005; OR-003 (adopted optional).
 - **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0016.
-- **Prerequisites and gates:** Stable operations from TASK-006; this task resolves DG-003, while DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
+- **Prerequisites and gates:** Stable query operations from TASK-006. The project owner authorized DG-003 research and Proposed-ADR preparation on 2026-08-18, so TASK-009 is `In progress`; DG-003 remains `Pending`, and this task may resolve it only after explicit approval. DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
 - **Expected artifacts:** The next unused ADR, updated ADR index, this gate record, and affected frontend specification guidance.
 - **Validation:** Run the ADR validator and verify that generated types, request mocking, error mapping, explicit detail refetching, and cache ownership are measurable.
 - **Documentation impact:** ADR index, implementation plan, system module diagram, specifications, and execution log.
