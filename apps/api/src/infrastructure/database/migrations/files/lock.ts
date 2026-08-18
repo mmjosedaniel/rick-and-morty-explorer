@@ -46,7 +46,10 @@ export async function acquireMigrationLock(
         query_timeout: Math.ceil(remainingMs),
       });
     } catch (error) {
-      if (performance.now() >= deadline) {
+      if (
+        performance.now() >= deadline ||
+        (error instanceof Error && error.message === "Query read timeout")
+      ) {
         throw new MigrationLifecycleError("MIGRATION_LOCK_TIMEOUT", 2);
       }
       throw error;
