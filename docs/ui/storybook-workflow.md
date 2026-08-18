@@ -4,7 +4,7 @@
 - Date: 2026-08-09
 - Decision owner: [DPL-DEC-013](../execution/decision-and-progress-log.md#decision-log); DPL-DEC-007 is Superseded history
 - Related UI scope: NFR-001, NFR-002, NFR-005, AC-001 through AC-006, DPL-DEC-005, DPL-DEC-006, SPEC-001 through SPEC-007, TASK-010 through TASK-012
-- Planning guardrails: ADR-0001 (Superseded history), ADR-0002, ADR-0004 (Superseded history), ADR-0006, ADR-0009, ADR-0010, ADR-0013 (Superseded history), ADR-0014, DG-001, DG-003, DG-006
+- Planning guardrails: ADR-0001 (Superseded history), ADR-0002, ADR-0004 (Superseded history), ADR-0006, ADR-0009, ADR-0010, ADR-0013 (Superseded history), ADR-0014, ADR-0017, DG-001, DG-003, DG-006
 - UI documentation index: [UI design documentation](./README.md)
 
 ## Document role
@@ -24,7 +24,7 @@ The candidate boundary includes component development, responsive inspection, st
 - TASK-003 provides the prerequisite React and workspace foundation; it does not own Storybook installation under this pilot.
 - TASK-010 is the only initial pilot owner. If activated, it may add base configuration plus list-card, list-state, sorting, and filter stories within that task's existing behavior scope.
 - If the pilot is retained, TASK-011 may add detail, favorite, and comment stories, and TASK-012 may add responsive and resilient-state variants within their existing scopes.
-- TASK-009 remains the owner of DG-003 resolution and is not a Storybook implementation task.
+- TASK-009 owns the accepted ADR-0017/DG-003 decision history and is not a Storybook implementation task.
 - TASK-016 and DG-004 preserve the Superseded ADR-0013 decision history. TASK-017 resolved DG-006 through accepted ADR-0014, and AUTH-001 is separately Authorized under disposition A within the recorded personal, educational, non-commercial portfolio and direct-URL scope. Local story fixtures neither prove the direct runtime character-image boundary nor constitute authorization evidence.
 - TASK-013 remains the owner of adopted automated-test closure. Stories do not contribute to OR-004 or automated-test evidence unless the accepted DG-001 decision and implementation plan explicitly make them part of the test boundary.
 - Storybook is not an expected artifact or completion gate in the current implementation plan. Choosing not to activate the pilot, or removing it after evaluation, does not block TASK-010 through TASK-012.
@@ -91,8 +91,8 @@ Do not add stories merely to increase their count. Each story must protect a nam
 - Display only the fields accepted by the [UI field-visibility decision](./README.md#ui-field-visibility-decision). Do not invent comment authors, timestamps, counts, or upstream-only fields to make a story appear more complete.
 - Include normal baseline values such as empty `type` and literal `unknown` where the state is relevant.
 - Prefer component inputs and small local adapters for stories that can remain independent of GraphQL client behavior.
-- When TASK-010 creates generated frontend operation types under the client boundary selected by TASK-009, align story fixtures with those types rather than maintaining a competing handwritten client contract.
-- A story that depends on GraphQL client providers, request mocking, cache behavior, mutation refetching, or error mapping must wait for DG-003 to be resolved and use the selected client boundary.
+- When TASK-010 creates generated frontend operation types under the accepted ADR-0017 boundary, align story fixtures with those types rather than maintaining a competing handwritten client contract.
+- A story that depends on GraphQL client providers, request mocking, cache behavior, mutation refetching, or error mapping must use accepted ADR-0017 and the owning task's authorized implementation boundary.
 
 ## Relationship to mockups
 
@@ -117,11 +117,11 @@ The pilot boundary prohibits the following unless that accepted decision and the
 
 If future decision work proposes Storybook stories as part of the component-test boundary, it must define the runner, browser or DOM environment, commands, CI behavior, failure semantics, and relationship to other frontend tests before the integration is added, and it must supersede or amend the current accepted boundary through the governed ADR workflow.
 
-### DG-003 - Frontend GraphQL client and query cache
+### DG-003 - Resolved frontend GraphQL client and query cache
 
-TASK-009 must resolve DG-003 before TASK-010 can begin. Presentational pilot stories may remain driven by component inputs, but any story that exercises queries, mutations, cache ownership, generated operations, request mocking, or explicit detail refetching must use the client boundary selected by the accepted DG-003 decision.
+TASK-009 resolved DG-003 through accepted ADR-0017, selecting TanStack Query plus a project-owned typed GraphQL executor. Presentational pilot stories may remain driven by component inputs, but any story that exercises queries, mutations, cache ownership, generated operations, request mocking, or explicit detail refetching must use that accepted boundary after the owning implementation task receives separate authorization.
 
-Neither this document nor DPL-DEC-013 resolves pending DG-003 or changes the resolved ADR-0011 test boundary.
+Neither this document nor DPL-DEC-013 implements accepted ADR-0017 or changes the resolved ADR-0011 test boundary.
 
 ### DG-006 - Accepted character-image URL successor boundary
 
@@ -140,7 +140,7 @@ If TASK-010 activates the pilot, record its retain-or-remove result in the decis
 - the visual foundation and Tailwind styles load consistently with the application;
 - the stories added by the active task represent only that task's documented fields and states;
 - Storybook testing or CI claims are absent unless DG-001 has explicitly selected and defined that boundary;
-- GraphQL-client-dependent stories are absent unless DG-003 has been resolved and the stories use the selected client boundary.
+- GraphQL-client-dependent stories use accepted ADR-0017 and appear only within an authorized owning task.
 
 These checks determine whether the pilot is useful enough to retain. They do not change the existing definitions of done, satisfy OR-004, or establish acceptance evidence. Any retained dependency and configuration must still pass the ordinary build, type, documentation, and task-specific verification selected by the authoritative repository manifests and exact active `TASK-*`. This document does not invent commands before those manifests exist.
 
