@@ -1,6 +1,6 @@
 # Project-Scoped Codex Agents
 
-This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, milestone or option, artifact, criteria, write lease when applicable, output contract, budget, and stopping condition for each instance. Write-capable implementation workers receive the canonical [Milestone Assignment Packet v2](./execplan-implementation-workflow.md#milestone-assignment-packet-v2), whose compact capsule supplies exact authority anchors and accepted evidence for one coherent milestone slice.
+This directory contains reusable Codex agent definitions that are versioned with the repository as portfolio artifacts. They define stable working roles; a coordinating prompt still supplies the concrete `TASK-*`, research tier, question or milestone, target artifact, criteria, write lease when applicable, output contract, budget, and stopping condition for each instance. Read-only research roles receive the [Research Assignment Capsule v1](#research-assignment-capsule-v1). Write-capable implementation workers receive the separate canonical [Milestone Assignment Packet v2](./execplan-implementation-workflow.md#milestone-assignment-packet-v2), whose compact capsule supplies exact authority anchors and accepted evidence for one coherent milestone slice.
 
 These agents support repository work. They do not change product scope, approve architecture, resolve a decision gate, replace an ExecPlan, or count as implementation or acceptance evidence. All agents remain subject to the root [repository guidelines](../AGENTS.md) and must begin repository work from the [documentation map](../README.md#documentation-map).
 
@@ -10,7 +10,8 @@ These agents support repository work. They do not change product scope, approve 
 |---|---|---|
 | Persistent repository rules and authority | [Repository guidelines](../AGENTS.md) | [Documentation map](../README.md#documentation-map) and its task-specific reading order |
 | Repeatable ADR, planning, acceptance, or verification procedure | [Codex task routing](../README.md#codex-task-routing) | The selected `SKILL.md` and only the references or scripts it routes to |
-| Consequential decision work | [Decision work](#decision-work) | Owning ExecPlan and its Decision Review Contract |
+| Any bounded repository research | [Research work](#research-work) | Objective `R0` through `R3` classification and a Research Assignment Capsule when an agent is needed |
+| Consequential decision work | [Decision work](#decision-work) | Owning ExecPlan, its Decision Review Contract, and the applicable research tier |
 | Owner-authorized implementation ExecPlan | [Implementation workflow](./execplan-implementation-workflow.md) | [Write-lease guard](./write-lease-guard.md) and owning ExecPlan |
 | Custom role selection | [Agent registry](#agent-registry) | Exact role TOML and bounded instance assignment |
 | Operator-managed runtime concurrency | [Runtime concurrency capacity](#runtime-concurrency-capacity) | [Collaboration topology](#collaboration-topology), [implementation workflow](./execplan-implementation-workflow.md), and [write-lease guard](./write-lease-guard.md) |
@@ -24,8 +25,11 @@ Project-scoped `.codex` configuration and hooks load only for a trusted project.
 
 | Agent | Permission boundary | Stable responsibility | Not responsible for |
 |---|---|---|---|
-| [`technology_researcher`](./agents/technology-researcher.toml) | Read only | Investigate one assigned technical option against common criteria and return primary-source evidence in a fixed structure | Repository edits, final synthesis, architecture approval, or task and gate status changes |
-| [`decision_analyst`](./agents/decision-analyst.toml) | Read only | Audit research comparability and Decision Review Contract coverage, rank options, and return a traceable recommendation, ADR outline, and synthesis-readiness verdict | Repository edits, ADR numbering or approval, owner-controlled choices, or task and gate status changes |
+| [`technology_researcher`](./agents/technology-researcher.toml) | Read only | Investigate one ordinary R1/R2 question or one non-critical dimension inside R3 and return source-traceable evidence plus optional artifact-ready fragments | Complete target-artifact drafting, repository edits, final synthesis, architecture approval, or task and gate status changes |
+| [`critical_researcher`](./agents/critical-researcher.toml) | Read only | Investigate one R3 critical evidence dimension with the explicit Sol-high quality route and failure-path coverage | Ordinary research, complete target-artifact drafting, repository edits, final synthesis, approval, or closure |
+| [`decision_analyst`](./agents/decision-analyst.toml) | Read only | When routing triggers it, audit research completeness and synthesis readiness; for decisions, also audit the Decision Review Contract, compare options, and return a traceable recommendation | Routine single-report synthesis, repository edits, artifact numbering or approval, owner-controlled choices, or task and gate status changes |
+| [`research_drafter`](./agents/research-drafter.toml) | Read only | After synthesis and any required pre-draft checkpoint, transform one frozen conclusion into one non-authoritative target-artifact draft with provenance | New research, competing drafts, recommendation changes, repository edits, artifact lifecycle, approval, or closure |
+| [`critical_research_reviewer`](./agents/critical-research-reviewer.toml) | Read only | Perform maximum-effort fresh review of an R3 contract checkpoint, final answer, or final decision artifact | Ordinary R0-R2 review, implementation review, editing, approval, or closure |
 | [`independent_reviewer`](./agents/independent-reviewer.toml) | Read only | Try to falsify an ordinary higher-risk decision contract, milestone, or integrated final artifact against repository authorities and reproducible evidence | Editing the reviewed work, approving owner-controlled decisions, or taking closure ownership |
 | [`milestone_reviewer`](./agents/milestone-reviewer.toml) | Read only | Review one ordinary completed implementation milestone proportionally and reuse fresh evidence | Critical-risk review, editing, or closure ownership |
 | [`critical_reviewer`](./agents/critical-reviewer.toml) | Read only | Perform maximum-effort adversarial review when a named critical trigger applies | Routine milestone review, editing, or closure ownership |
@@ -40,9 +44,12 @@ The workflow routes model and reasoning effort by responsibility and risk:
 
 | Execution role | Model and effort | Rationale |
 |---|---|---|
-| Primary coordinating thread | `gpt-5.6-sol`, `medium` by default; `high` for S2 or equivalent cross-boundary synthesis; `max` only for S3/critical triggers or explicit owner direction | Owns synthesis, write-lease routing, integration, state reconciliation, approval handling, and final closure. It is the sole writer for decision work and normally delegates implementation writes. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
-| `technology_researcher` | `gpt-5.6-sol`, `high` | Each instance has a bounded, parallel, evidence-gathering assignment. |
-| `decision_analyst` | `gpt-5.6-sol`, `xhigh` | Must reconcile multiple reports, contract coverage, ranking, and decide-now versus prove-later boundaries. |
+| Primary coordinating thread | `gpt-5.6-sol`, `medium` by default; `high` for R2, S2, or equivalent cross-boundary synthesis; `max` only for R3, S3, another critical trigger, or explicit owner direction | Owns research routing, synthesis, write-lease routing, integration, state reconciliation, approval handling, and final closure. It is the sole authoritative writer for research-derived repository artifacts and normally delegates implementation writes. The parent-session setting is selected by the operator and cannot be enforced by these project-scoped agent files. |
+| `technology_researcher` | `gpt-5.6-terra`, `medium` | Each ordinary R1/R2 assignment, or non-critical R3 dimension, uses the cost-balanced baseline. Escalate the critical dimension rather than assuming that higher effort improves every question. |
+| `critical_researcher` | `gpt-5.6-sol`, `high` | Covers one R3 critical dimension whose security, integrity, identity, concurrency, recovery, irreversible-data, serialization, or cross-platform risk justifies the stronger route. |
+| `decision_analyst` | `gpt-5.6-sol`, `xhigh` | Reconciles difficult multi-report synthesis; for decisions, also audits contract coverage, ranking, and decide-now versus prove-later boundaries. |
+| `research_drafter` | `gpt-5.6-terra`, `medium` | Performs bounded transformation after the decision or conclusion is frozen; it does not research or decide. |
+| `critical_research_reviewer` | `gpt-5.6-sol`, `max` | Preserves the strict quality-first review route for R3 without changing the separate implementation-critical reviewer. |
 | `milestone_reviewer` | `gpt-5.6-terra`, `high` | Reviews an ordinary completed milestone proportionally without paying maximum-effort cost. |
 | `independent_reviewer` | `gpt-5.6-sol`, `high` | Reviews ordinary higher-risk milestones, decision checkpoints, and integrated final states. |
 | `critical_reviewer` | `gpt-5.6-sol`, `max` | Performs quality-first adversarial review only for named critical triggers. |
@@ -53,7 +60,7 @@ Each custom-agent file's explicit `model` and `model_reasoning_effort` values ta
 
 Role instructions remain necessary. More reasoning does not replace primary-source requirements, common criteria, explicit uncertainty, artifact-local completeness, read-only boundaries or write leases, or executable validation. If the configured model or effort becomes unavailable in a target Codex environment, update this policy and the affected agent files together rather than allowing silent drift. Compare policy changes on representative repository work instead of assuming that a higher effort alone improves the workflow.
 
-The model ID, supported reasoning levels, custom-agent precedence, and parallel-work guidance are documented in the [official GPT-5.6 Sol model reference](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model), and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+The model IDs, supported reasoning levels, custom-agent precedence, and parallel-work guidance are documented in the [official GPT-5.6 Sol model reference](https://developers.openai.com/api/docs/models/gpt-5.6-sol), [official GPT-5.6 Terra model reference](https://developers.openai.com/api/docs/models/gpt-5.6-terra), [GPT-5.6 model guidance](https://developers.openai.com/api/docs/guides/latest-model), and [Codex subagent documentation](https://learn.chatgpt.com/docs/agent-configuration/subagents).
 
 ## Runtime Concurrency Capacity
 
@@ -70,43 +77,90 @@ Additional slots are useful for bounded, independent work, especially read-only 
 
 ## Collaboration Topology
 
+### Research work
+
+Every bounded repository research request receives one objective research tier before agents are assigned. The tiers are routing classifications, not a menu to choose opportunistically. The primary records the highest triggered tier and its evidence; uncertainty selects the higher tier, an owner may escalate, and a tier may be lowered only after evidence disproves the triggering condition. Research tiers do not replace the separate `S0` through `S3` implementation review tiers.
+
+| Tier | Trigger | Default route |
+|---|---|---|
+| `R0` | Repository-local fact gathering, deterministic inspection, or no unresolved external evidence | Primary only; no researcher, analyst, drafter, or LLM reviewer by default |
+| `R1` | One bounded, reversible question with one material evidence dimension and no owner-controlled or critical semantics | At most one `technology_researcher`; primary synthesis; optional single `research_drafter` only for a substantial target artifact; review only when the target's authority requires it |
+| `R2` | Cross-boundary or consequential choice, multiple material evidence dimensions, three or more viable candidates, conflicting current sources, or an owner-approval artifact | Up to two `technology_researcher` instances when unresolved evidence requires them, assigned by evidence gap rather than automatically by candidate; conditional `decision_analyst`; optional single drafter after synthesis; fresh final semantic review for an ADR or other owner-controlled decision artifact |
+| `R3` | Custom serialization, integrity, identity, concurrency, recovery, cross-platform equivalence, irreversible data, security, closely ranked contradictory candidates, or decision-critical mechanics outside the frozen contract | Enough ordinary or `critical_researcher` reports to cover every critical dimension under an explicit capsule budget; every dimension carrying the named R3 trigger uses `critical_researcher`. Decision-oriented R3 requires `decision_analyst` and a fresh `critical_research_reviewer` pre-draft checkpoint. Answer-only R3 uses primary synthesis unless an analyst trigger remains and always receives complete fresh `critical_research_reviewer` final review. Drafting and repository writing apply only when a target artifact exists. |
+
+Research cost grows with unresolved evidence and consequence, not with the raw number of candidates. A requirement to compare three strategies does not require three agents. Prefer one researcher per independent evidence dimension when that produces a symmetric comparison, and assign by candidate only when candidate-specific evidence cannot be compared credibly in one dimension report. A hard-gate failure ends candidate-local expansion after the failure and reversal condition are evidenced.
+
+For R2 or R3, the primary may run one bounded discovery pass before comparative research. Discovery may identify credible candidates, primary sources, hard disqualifiers, evidence dimensions, and triggered invariants; it must not rank candidates or recommend an option. Freeze the comparison contract after discovery. Later evidence may reopen it only through the recorded material-change and stopping rules.
+
+Independent assignments may run concurrently. The primary waits at one research synchronization barrier, reuses still-fresh evidence IDs instead of paying for duplicate source collection, and sends only the compact capsule plus directly linked authority fragments. A researcher or analyst may remain alive for one bounded follow-up in the same research run; freshness is reserved for independent review.
+
+### Research Assignment Capsule v1
+
+Every spawned researcher, analyst, drafter, or research reviewer receives a compact capsule containing:
+
+- stable research identity, `R0` through `R3` tier, trigger rationale, and budget;
+- exact question or evidence dimension, candidate set when applicable, and target artifact or answer;
+- authority anchors, known repository facts, shared evidence IDs, and freshness conditions;
+- common criteria, hard gates, forbidden scope, and owner-controlled boundaries;
+- required output structure, maximum useful detail, success result, and stopping conditions; and
+- permission boundary, peer synchronization rule, follow-up allowance, review stage and fresh-instance requirement when applicable, and next barrier.
+
+The capsule is an assignment projection, not a new authority document. For a decision-oriented ExecPlan, it projects the living Decision Review Contract. For research without an ExecPlan, it may live only in the coordinating prompt or final research record. Do not create a tracked plan, report, or ledger solely to administer R0 or R1 work.
+
+### Research budgets and stops
+
+| Tier | Default execution budget |
+|---|---|
+| `R0` | No spawned research role |
+| `R1` | One researcher and at most one targeted follow-up; zero analysts; at most one drafter when a substantial artifact is already selected |
+| `R2` | At most one discovery pass, two concurrent research reports, one bounded follow-up round, one triggered analyst pass plus one bounded correction, at most one drafter, and the authority-required final review |
+| `R3` | The Research Assignment Capsule states the justified report count, critical evidence dimensions, analyst and review budget; a Decision Review Contract additionally owns these fields for decision-oriented work. The existing two-cycle correction ceiling applies when a final artifact exists. |
+
+Stop and reconcile instead of spawning more work when the same decisive evidence gap appears twice, two synthesis attempts return `RETURN FOR RESEARCH` without materially new evidence, the capsule budget is exhausted, or a new finding changes scope or triggers a higher tier. Reuse the same non-review agent for its one bounded follow-up when available. If the runtime exposes exact input, cached-input, output, or reasoning counters, record them by role in the research outcome; never invent estimates or treat lower agent count alone as proof of lower cost.
+
+Role results route explicitly. `RESEARCH COMPLETE` enters the synchronization barrier. `FOLLOW-UP REQUIRED` permits only the capsule's one bounded follow-up; when its budget is absent or exhausted, the primary reconciles or escalates instead of respawning. `BLOCKED` stops dependent synthesis until the primary supplies the missing authority, evidence, scope, or owner direction. `SYNTHESIS READY` ends answer-only analysis; `DRAFT READY` freezes an artifact conclusion without approving it. `RETURN FOR RESEARCH` uses only the remaining recorded evidence budget, and `OWNER DIRECTION` stops at the owner boundary. `DRAFT BLOCKED` never authorizes a partial repository write: the primary returns to the missing evidence or decision boundary, while `DRAFT COMPLETE` supplies one provenance-mapped input for primary reconciliation.
+
+Research routing ends at an evidence-backed answer, recommendation, or primary-written authoritative artifact. It never opens a write lease or authorizes production behavior. If an approved research result leads to implementation, start from the exact `TASK-*`, gates, and preflight boundary and enter the separate worker-first implementation workflow without carrying an `R` tier, research capsule, or drafter permission forward.
+
 ### Decision work
 
-Decision-oriented ExecPlans use a risk-tiered, contract-first graph with explicit ownership:
+Decision-oriented ExecPlans use the generic research tiers with a contract-first, sole-writer graph:
 
 ```text
 Primary Codex thread (coordinator, sole decision-artifact writer, final closure owner)
   |
-  +-- living Decision Review Contract in the owning ExecPlan
+  +-- objective R tier + living Decision Review Contract in the owning ExecPlan
   |
-  +-- technology_researcher A (option A, parallel)
-  +-- technology_researcher B (option B, parallel)
-  +-- technology_researcher C (option C, parallel)
+  +-- optional bounded discovery for R2/R3; then freeze comparative contract
   |
-  +-- research synchronization barrier
+  +-- zero, one, two, or strict-path ordinary/critical researchers by unresolved evidence dimension
+  +-- research synchronization barrier and shared-evidence reconciliation
   |
-  +-- decision_analyst
+  +-- primary synthesis, or decision_analyst when the tier/trigger requires it
   |      +-- DRAFT READY
   |      +-- RETURN FOR RESEARCH
   |      +-- OWNER DIRECTION
   |
-  +-- if a risk trigger applies: independent_reviewer instance A
+  +-- if R3: fresh critical_research_reviewer instance A
+  +-- if an R1/R2 contract trigger applies: fresh independent_reviewer instance A
   |      +-- contract checkpoint before drafting
   |
-  +-- primary thread drafts the decision artifact
+  +-- optional one read-only research_drafter creates one non-authoritative draft
+  +-- primary reconciles and writes the only authoritative decision artifact
   |
-  +-- fresh independent_reviewer instance B
+  +-- fresh final reviewer when the tier or artifact authority requires it
+  |      +-- critical_research_reviewer for R3; independent_reviewer otherwise
   |      +-- evidence checkpoint on the complete artifact and exact diff
-  |      +-- findings -> bounded correction -> complete re-review
+  |      +-- findings -> risk-proportional correction and re-review
   |
   +-- primary post-verdict reconciliation barrier
   |
   +-- project-owner approval checkpoint
 ```
 
-The contract and evidence checkpoints are agent-workflow controls, not `DG-*` architecture decision gates and not the task-closure documentation gate. The option and reviewer labels belong to instances, not permanent definitions. The pre-draft and final reviewers are separate fresh instances of the same `independent_reviewer` role; no permanent panel or second reviewer role is required.
+The contract and evidence checkpoints are agent-workflow controls, not `DG-*` architecture decision gates and not the task-closure documentation gate. The reviewer labels belong to instances, not permanent definitions. When both pre-draft and final review are required, use separate fresh instances: `critical_research_reviewer` for R3 and `independent_reviewer` for an ordinary triggered R1/R2 decision. No permanent panel is required.
 
-For decision work, the primary thread is deliberately not duplicated as a custom `coordinator` agent. It owns orchestration, decision-artifact writes, approval handling, integration, and final closure. Parallel work is limited to independent, read-heavy assignments. The final reviewer receives the authoritative inputs, living contract, cumulative invariant packet, exact artifact, and diff, and independently reproduces evidence instead of treating the prior review or the primary summary as proof.
+For decision work, the primary thread is deliberately not duplicated as a custom `coordinator` agent. It owns tier classification, orchestration, synthesis when no analyst is triggered, every authoritative repository write, approval handling, integration, and final closure. The `research_drafter` writes no file and makes no decision; `DRAFT COMPLETE` only gives the primary a provenance-mapped input to reconcile. The final reviewer receives the authoritative inputs, living contract, cumulative invariant packet, exact artifact, and diff, and independently reproduces material evidence instead of treating the prior review or primary summary as proof.
 
 ### Implementation work
 
@@ -133,75 +187,84 @@ An unresolved Blocker or Major from an ordinary reviewer, or explicit project-ow
 
 The [agent-flow metrics policy](./agent-flow-metrics.md) is an optional, non-blocking observation sidecar. Use it only when corrections, false Reds, regressions, time, or exact token coverage are worth measuring. Metrics never replace the lease guard, ExecPlan evidence, Red-Green-Refactor barriers, reviewer verdict, or task-closure gate.
 
-The decision topology above remains unchanged: write-capable implementation workers do not research options, draft ADRs, resolve gates, or replace the primary decision writer.
+The implementation topology above remains unchanged by research-tier routing: write-capable implementation workers do not perform research assignments, draft ADRs, resolve gates, or replace the primary decision writer. Research roles never receive implementation write leases, and Research Assignment Capsules never authorize repository edits.
 
 ## Decision Review Contract and Risk Tier
 
-For an ExecPlan that compares consequential options or prepares an ADR, the primary coordinator creates a living Decision Review Contract inside that ExecPlan before option research. Do not create a separate contract document. Link to authority owners and record:
+For an ExecPlan that compares consequential options or prepares an ADR, the primary coordinator creates a living Decision Review Contract inside that ExecPlan before comparative option research. Do not create a separate contract document. Before any bounded discovery pass, record the stable scope, authority, approval boundary, basic criteria, and forbidden changes; discovery cannot rank or recommend. After discovery, freeze the candidate set, evidence dimensions, hard gates, triggered invariants, and routing tier before comparative research. Link to authority owners and record:
 
-- exact task, decision gate, target artifact, approval boundary, and forbidden scope;
+- exact task, decision gate, `R1` through `R3` classification and triggers, target artifact, approval boundary, and forbidden scope;
 - common criteria, evidence classes, and required artifact-local sections or outputs;
 - hard gates and score, recommendation, artifact-status, task-state, and gate-state invariants;
 - a decide-now versus prove-later disposition so downstream implementation proves defined semantics rather than inventing them;
 - a cumulative invariant packet with a plan-local ID, trigger or fixture, expected result, evidence or actual result, and responsible reviewer; and
-- correction, escalation, re-entry, and stopping conditions.
+- researcher assignment basis, analyst and drafter triggers, correction, escalation, re-entry, budget, and stopping conditions.
 
 Every invariant packet covers artifact completeness, evidence honesty, and authority-state consistency. Add triggered invariants when the decision defines state transitions or concurrency, integrity or identity, deterministic or canonical bytes, cross-platform equivalence, recovery, or ownership. Re-run every applicable invariant after a material revision, not only the invariant that previously failed.
 
-The decision analyst audits the complete contract and returns one synthesis-readiness result:
+The synthesis barrier returns one readiness result. The primary may own this result for R1 and straightforward R2 work. A `decision_analyst` is mandatory for R3 and is triggered for R2 when three or more viable candidates remain materially close, reports contradict each other, decide-now versus prove-later semantics remain unresolved, or an owner-controlled choice prevents evidence-only synthesis. The analyst is not added merely because three candidates were listed. The result is:
 
 - `DRAFT READY`: research is comparable, every required contract item is covered, decision semantics are complete enough to draft, and remaining unknowns are explicitly assigned to downstream proof. This does not approve the decision.
 - `RETURN FOR RESEARCH`: evidence is missing, asymmetric, stale, or contradictory, or decision semantics remain unresolved.
 - `OWNER DIRECTION`: an owner-controlled value choice, scope boundary, or exhausted stopping condition prevents an evidence-only recommendation.
 
-An independent contract checkpoint is required before drafting when any of these risk triggers applies:
+A fresh contract checkpoint is required before drafting for R3 and whenever any of these risk triggers applies. Use `critical_research_reviewer` for R3 and `independent_reviewer` for a triggered R1/R2 decision:
 
 - the decision defines a custom serialization, integrity, identity, concurrency, recovery, or cross-platform contract;
 - a decision-semantic uncertainty is proposed for deferral as downstream runtime proof;
 - candidates remain closely ranked or materially contradictory; or
 - a correction introduces decision-critical mechanics outside the reviewed contract.
 
-For ordinary decisions without a trigger, the analyst's `DRAFT READY` result is the contract checkpoint. A triggered independent checkpoint permits one supported outline correction; if it still does not pass, return to research, analysis, or project-owner direction instead of drafting.
+For R1 or R2 decisions without a trigger, the recorded `DRAFT READY` synthesis result is the contract checkpoint, whether issued by the primary or analyst. A triggered independent checkpoint permits one supported outline correction; if it still does not pass, return to research, analysis, tier escalation, or project-owner direction instead of drafting. Only after `DRAFT READY` and every required checkpoint may one `research_drafter` transform the frozen synthesis into one non-authoritative draft. The primary may instead draft directly and remains the sole authoritative writer in either case.
 
 ## How to Invoke the Workflow
 
 Custom agents do not run automatically merely because their files exist. The coordinating request must name the roles, barriers, and stopping conditions. For example:
 
-### Decision workflow prompt
+### Research and decision workflow prompt
 
 ```text
-Act as the primary coordinator for the exact TASK-* and its owning ExecPlan.
-Use gpt-5.6-sol with medium reasoning for ordinary primary coordination. Escalate
-the primary to high only for S2 or equivalent cross-boundary synthesis, and to max
-only for an S3/critical trigger or explicit project-owner direction.
+Act as the primary coordinator for the exact bounded research question. Classify
+it R0, R1, R2, or R3 from objective triggers and record the highest trigger. Do not
+spawn agents for R0. For R1 through R3, issue Research Assignment Capsule v1 with
+exact authority anchors, evidence dimensions, budget, permissions, and stops.
 
-Before research, create or verify the living Decision Review Contract in the
-ExecPlan. Have one read-only technology_researcher instance evaluate each option
-against the identical contract criteria. Wait for every durable report.
+For consequential decision work, create or verify the living Decision Review
+Contract in the owning ExecPlan. R2 or R3 may use one non-ranking discovery pass;
+freeze the comparative contract afterward. Assign researchers by unresolved
+evidence dimension unless candidate-specific research is necessary. Wait at one
+barrier and reconcile shared evidence without duplicate collection.
 
-Give the complete report set and contract to decision_analyst. Require the
-criteria matrix, contract coverage, decide-now/prove-later disposition, ranked
-recommendation, mapped ADR outline, and one synthesis-readiness result.
+Use technology_researcher for ordinary R1/R2 evidence and non-critical R3
+dimensions, and critical_researcher for every dimension carrying an R3 trigger.
+For answer-only research, use primary synthesis unless
+an R2/R3 contradiction or complexity trigger requires decision_analyst; accept
+SYNTHESIS READY, RETURN FOR RESEARCH, or OWNER DIRECTION, and give every R3 final
+answer a complete fresh critical_research_reviewer evidence review.
 
-If a risk trigger applies, have a fresh independent_reviewer perform the contract
-checkpoint. Draft only after DRAFT READY and the applicable checkpoint pass.
+For decision-oriented research, use primary synthesis for R1 and straightforward
+R2, invoke decision_analyst for an R2 trigger and always for R3, and require DRAFT
+READY, RETURN FOR RESEARCH, or OWNER DIRECTION. For R3 use a fresh pre-draft
+critical_research_reviewer; for a triggered R1/R2 decision use a fresh
+independent_reviewer. Draft only after the applicable checkpoint passes.
 
-Have the primary thread draft the artifact. Then spawn a different fresh
-independent_reviewer to inspect the exact artifact and diff, reproduce the full
-invariant packet, and return a verdict. Apply the bounded correction protocol,
-perform the post-verdict reconciliation barrier, and stop for project-owner
-approval when the exact proposal is ready.
+After the conclusion is frozen, either have the primary draft directly or invoke
+one read-only research_drafter for one non-authoritative, provenance-mapped draft.
+The primary reconciles it and performs the only repository write. Use fresh final
+semantic review when the tier or target authority requires it, apply the bounded
+risk-proportional correction protocol, reconcile authority state, and stop at every
+project-owner approval boundary.
 ```
 
 A good instance assignment states:
 
-- the exact task, gate, artifact, option, and review stage;
-- the authoritative repository inputs and Decision Review Contract to read;
-- common comparison criteria or invariant IDs;
+- the research identity, exact task or policy owner, `R` tier and trigger, target artifact, question or evidence dimension, and review stage;
+- the authoritative repository inputs, Research Assignment Capsule, and Decision Review Contract when one applies;
+- common comparison criteria, evidence IDs, freshness conditions, hard gates, or invariant IDs;
 - whether repository writes are allowed;
 - the required output structure and evidence;
 - whether the coordinator must wait for peer results or use a fresh instance; and
-- the success, escalation, re-entry, and stopping conditions.
+- the success, budget, follow-up, escalation, re-entry, and stopping conditions.
 
 ### Implementation workflow prompt
 
@@ -209,18 +272,20 @@ Use the concise copy-paste prompt, canonical assignment packet, and lease contra
 
 ## Review, Correction, and Approval Protocol
 
-The fresh final reviewer always performs the evidence checkpoint and returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. A `PASS WITH FOLLOW-UPS` may advance only after the primary dispositions every item and confirms that none conflicts with a definition of done, hard gate, required validation result, or documentation gate; any such conflict requires a fix and complete fresh re-review. The bounded decision-artifact review loop below remains specific to decision work. Implementation exceptions return to coordinator triage under the implementation guide.
+When a tier or target authority requires a final evidence checkpoint, the fresh reviewer returns `PASS`, `PASS WITH FOLLOW-UPS`, `REVISE`, or `BLOCKED` with evidence. Every R3 final answer, every Proposed ADR, and every other owner-controlled R2 or R3 decision artifact receives this checkpoint; an R0 or ordinary R1 research answer with no authoritative repository mutation does not receive an LLM reviewer by default. A `PASS WITH FOLLOW-UPS` may advance only after the primary dispositions every item and confirms that none conflicts with a definition of done, hard gate, required validation result, or documentation gate. The bounded decision-artifact review loop below remains specific to research-derived decision artifacts. Implementation exceptions continue to return to coordinator triage under the unchanged implementation guide.
+
+For an answer-only R3 result, `REVISE` permits one supported, in-scope primary correction followed by complete fresh `critical_research_reviewer` review within the capsule's recorded correction budget. `BLOCKED` returns to the exact missing evidence, unavailable prerequisite, or owner-direction boundary. A material scope or conclusion change invalidates the prior review and returns to tier classification and research; exhausting the correction or evidence budget stops for owner direction. This answer-only loop authorizes no repository write and does not reset a researcher follow-up allowance.
 
 1. The primary coordinator applies only supported, in-scope corrections.
-2. The reviewer inspects the complete revised artifact and exact diff and re-runs the full applicable invariant packet.
-3. A correction that introduces a new normative subsystem or other decision-critical mechanics invalidates the prior contract checkpoint. Update the living contract and repeat the applicable fresh checkpoint without silently resetting the final correction count.
-4. After two unsuccessful final-artifact correction cycles, freeze the proposal and ask the project owner for direction.
+2. For R1 or R2, a trace-only, formatting, link, or explicitly non-normative documentation correction may use deterministic validation plus focused review of the exact diff. A normative correction, any Blocker or Major, or any uncertain classification requires complete revised-artifact review and the full applicable invariant packet. R3 always receives complete revised-artifact review and the full packet.
+3. A correction that introduces a new normative subsystem or other decision-critical mechanics invalidates the prior contract checkpoint and may escalate the R tier. Update the living contract and repeat the applicable research, synthesis, and fresh checkpoint without silently resetting the final correction count.
+4. After two unsuccessful final-artifact correction cycles, or after the same decisive research gap appears twice without new evidence, freeze the proposal and ask the project owner for direction.
 
 After cycle exhaustion, the project owner may reject the proposal, authorize named fixes plus one fresh review, or authorize a new two-cycle budget. A newly discovered Blocker or Major outside the authorized remediation returns to the owner. Do not infer a new budget from permission to make one named correction.
 
 Before presenting any proposal for approval, the primary coordinator performs a post-verdict reconciliation barrier. It verifies the exact reviewed artifact against the Decision Review Contract and aligns the reviewer verdict, open findings, hard gates, score, recommendation, artifact status, task and gate states, documentation impact, and next action. `REVISE` or `BLOCKED` permits correction or owner direction, never an acceptance-ready presentation.
 
-Human-controlled milestones remain human controlled. An agent report cannot accept an ADR, resolve a `DG-*` gate, or close the owning task. Decisions already at an explicit owner-approval checkpoint when this policy is adopted retain their completed review evidence; do not fabricate a retrospective contract checkpoint. Any later material change to such a proposal activates the material-change invalidation rule before a new approval request.
+Human-controlled milestones remain human controlled. A researcher report, analyst verdict, or `DRAFT COMPLETE` result cannot accept an ADR, resolve a `DG-*` gate, or close the owning task. Decisions already at an explicit owner-approval checkpoint when this policy is adopted retain their completed review evidence; do not fabricate a retrospective tier, contract checkpoint, or drafting pass. Any later material change to such a proposal activates the current material-change invalidation rule before a new approval request.
 
 ## Validation
 
@@ -230,6 +295,7 @@ Run the smallest checks that cover the changed Codex surface; do not run optiona
 |---|---|
 | Any local documentation or navigation | `python -B .agents/skills/verify-repository/scripts/validate_docs.py --repo .` |
 | Agent definitions | `python -c "import pathlib,tomllib; files=sorted(pathlib.Path('.codex/agents').glob('*.toml')); [tomllib.loads(path.read_text(encoding='utf-8')) for path in files]; print(f'Parsed {len(files)} agent TOML files.')"` |
+| New or changed agent role | In a fresh trusted project session, confirm that the exact TOML `name` is discoverable before relying on the role. A successful parse or an already-open session does not prove that a newly added definition is active. |
 | Hook definition | `python -m json.tool .codex/hooks.json` |
 | Write-lease guard | `python -B .codex/leases/lease_guard.py self-test` |
 | Agent-flow metrics | `python -B .codex/metrics/agent_flow_metrics.py self-test` and, when runtime events exist, `python -B .codex/metrics/agent_flow_metrics.py validate` |
@@ -241,13 +307,13 @@ Apply the root [task-closure documentation gate](../README.md#task-closure-docum
 
 ## TASK-001 Historical Example
 
-The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-decision.md) preserves the workflow that existed when it ran: three independent option researchers, a synchronization barrier, one decision analyst, a primary-authored proposal, and bounded final review. Under the current risk-tiered policy, a similarly bounded decision would use the analyst's readiness result as its contract checkpoint unless its current Decision Review Contract identifies a risk trigger. Historical plans are not rewritten to simulate a checkpoint that did not exist.
+The completed [TASK-001 ExecPlan](../docs/plans/completed/TASK-001-test-harness-decision.md) preserves the workflow that existed when it ran: three independent option researchers, a synchronization barrier, one decision analyst, a primary-authored proposal, and bounded final review. Under the current policy, a new decision is first classified R0 through R3; the number of researchers follows unresolved evidence dimensions, the analyst is conditional below R3, and at most one non-authoritative draft is created after synthesis. Historical plans are not rewritten to simulate current tiering, checkpoints, or drafting that did not exist.
 
 ## Permission and Evidence Boundaries
 
-The custom definitions route model and effort by role: research and analysis remain Sol high/xhigh; ordinary independent review is Sol high; milestone review is Terra high; critical review is Sol max; and test and code workers remain Sol medium. Review roles are read-only. Test and code workers use `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Test-worker preflight is read-only by workflow contract and has no lease; the configured sandbox does not itself enforce that narrower phase, so any write is a violation. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
+The custom definitions route model and effort by role: ordinary R1/R2 research and non-critical R3 dimensions use Terra medium; R3 critical dimensions use the separate Sol-high `critical_researcher`; analysis remains Sol xhigh; non-authoritative drafting uses Terra medium; ordinary independent review remains Sol high; R3 research review and implementation-critical review use separate Sol-max roles; milestone review is Terra high; and test and code workers remain Sol medium. Research, drafting, and review roles are read-only. Test and code workers use `workspace-write`, but only an explicit coordinator-issued path lease with a pinned automatic-guard contract authorizes a particular edit. Test-worker preflight is read-only by workflow contract and has no lease; the configured sandbox does not itself enforce that narrower phase, so any write is a violation. Current-session permission overrides may still be applied by the Codex client, so the primary thread must inspect permissions and the working tree before relying on isolation.
 
-Decision-artifact writes remain centralized in the primary thread. During write-authorized implementation, repository edits are normally delegated to persistent milestone-local test and code workers in the serial order defined by the implementation guide. Persistence retains role context, not leases or authority. The coordinator records accepted evidence identities and any exceptional primary-thread implementation edit with its reason, paths, and validation.
+All authoritative repository writes derived from research remain centralized in the primary thread. A research drafter returns text only and never receives a write lease. During write-authorized implementation, repository edits are normally delegated to persistent milestone-local test and code workers in the serial order defined by the implementation guide. Persistence retains role context, not leases or authority. The coordinator records accepted evidence identities and any exceptional primary-thread implementation edit with its reason, paths, and validation.
 
 Agent output and flow metrics are supporting observations, not self-validating proof. A terminal compliant lease receipt proves only that net non-ignored repository changes stayed within the pinned path contract and Git control state; it does not prove semantic correctness. The primary agent must inspect the final repository state, run the task's authoritative validators, perform the documentation-impact review, and own the handoff. A telemetry failure is reported as missing coverage, while a lease-guard failure freezes the write branch.
 
