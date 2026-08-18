@@ -20,6 +20,7 @@ Active task-scoped plans live directly in `docs/plans/`. After the authoritative
 | TASK-002 | DG-002 | [Resolve the Sequelize migration-lifecycle decision](./completed/TASK-002-sequelize-migration-lifecycle-decision.md) | Complete | Complete |
 | TASK-003 | None; DG-001 is resolved | [Establish the operational walking skeleton](./completed/TASK-003-operational-walking-skeleton.md) | Complete | Complete |
 | TASK-004 | None; DG-005 is Resolved | [Create relational persistence from migrations](./completed/TASK-004-relational-persistence-from-migrations.md) | Complete | Complete |
+| TASK-005 | None; DG-006 is Resolved and AUTH-001 is Authorized | [Import the deterministic 15-character baseline](./TASK-005-import-deterministic-15-character-baseline.md) | Active; registration only, awaiting execution authorization | Pending |
 | TASK-006 | None; DG-006 is Resolved and AUTH-001 is Authorized | [Expose GraphQL reads, filters, and request logging](./completed/TASK-006-graphql-reads-filters-and-request-logging.md) | Complete; Milestones 1-4 and integrated closure accepted | Complete |
 | TASK-016 | DG-004 | [Resolve the character-image delivery decision](./completed/TASK-016-character-image-delivery-decision.md) | Complete | Complete |
 | TASK-017 | DG-006 | [Replace character-image materialization with a proportional URL boundary](./completed/TASK-017-character-image-url-successor-decision.md) | Complete | Complete |
