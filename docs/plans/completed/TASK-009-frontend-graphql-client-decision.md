@@ -24,6 +24,7 @@ This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoverie
 - [x] (2026-08-18 23:14Z) Completed post-verdict reconciliation and validation: ADR validation passed 17 records and 38 requirements with only the established NFR-006 warning; documentation validation passed 59 Markdown files, 41 requirement IDs, 1 authorization, 18 tasks, 17 SPEC rules, 20 HS rules, and 123 scenarios; `git diff --check`, exact seven-document scope, forbidden-path inspection, and byte-identical ADR hash passed.
 - [x] (2026-08-18 23:27Z) The project owner explicitly approved ADR-0017. The primary authenticated approved proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`, marked the ADR `Accepted`, and resolved DG-003 without authorizing frontend implementation.
 - [x] (2026-08-18 23:34Z) The task-closure documentation gate and post-move revalidation passed; TASK-009 is `Complete`, this plan is retired under `docs/plans/completed/`, and the final candidate remains documentation-only.
+- [x] (2026-08-18 23:46Z) A post-completion re-audit returned `PASS WITH FOLLOW-UPS` with no Blocker or Major; corrected the one stale pre-closure validation paragraph, synchronized the durable chronology, and preserved every accepted authority and no-implementation boundary.
 
 
 ## Surprises & Discoveries
@@ -111,6 +112,9 @@ This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoverie
 - Decision: Record the project owner's approval of exact ADR-0017 proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158` and resolve DG-003.
   Rationale: The approval satisfies the only owner-controlled decision boundary. Acceptance establishes implementation direction but does not install TanStack Query, generate frontend operations, prove behavior, or authorize TASK-010. TASK-009 remains `In progress` only until its documentation-closure gate passes.
   Date/Author: 2026-08-18 / Project owner approval; primary coordinator reconciliation.
+- Decision: Preserve TASK-009 as `Complete` while correcting the completed plan's stale pre-closure validation wording retrospectively.
+  Rationale: The post-completion audit found no Blocker or Major and reconfirmed the ADR acceptance, gate resolution, definition of done, documentation-only scope, and plan retirement. The follow-up changes tense and records completed evidence; it does not alter architecture, task scope, authority state, or implementation authorization.
+  Date/Author: 2026-08-18 / Primary coordinator after post-completion documentation review.
 
 
 ## Outcomes & Retrospective
@@ -347,21 +351,19 @@ All commands run from `C:\Users\mmjos\Desktop\workbeanch\rick-and-morty-test`.
 ## Validation and Acceptance
 
 
-Verification mode is now task `closure`. Exact owner approval made ADR-0017 `Accepted` and DG-003 `Resolved`; TASK-009 may become `Complete` only after the documentation-impact review, validators, final scope checks, and plan retirement pass.
+Verification used task `closure` mode. Exact owner approval made ADR-0017 `Accepted` and DG-003 `Resolved`; the documentation-impact review, validators, final scope checks, authority readback, and plan retirement then passed, so TASK-009 became `Complete`.
 
 This decision-only change introduces no production behavior, so ADR-0016 does not require an artificial preflight classification or Red-Green cycle. Structural and semantic evidence replaces TDD here: complete primary-source comparison, hard-gate and invariant reconciliation, required ADR section/order checks, deterministic documentation validators, exact diff inspection, negative forbidden-path checks, and fresh independent semantic review.
 
-The authorized scope is ready for owner review only when:
+Closure passed with the following evidence:
 
-- the recommended option is supported by the five-driver score and all hard gates;
-- at least three credible strategies remain fully compared;
-- the ADR-quality evaluation reaches a recommendation permitted by the portfolio rubric;
-- decide-now semantics are complete and prove-later items cannot change correctness;
-- the exact Proposed ADR and complete diff receive a fresh independent `PASS` after no more than one correction;
-- both documentation validators and `git diff --check` pass;
-- `git diff --name-only` contains only authorized documentation artifacts;
-- negative inspection confirms zero application, test, manifest, lockfile, generated, client-operation, or `.codex` implementation-workflow change; and
-- the final handoff asks only for explicit approval of the reviewed Proposed ADR.
+- the 93-point TanStack Query plus project-owned typed-executor recommendation passed every hard gate after symmetric comparison with three other credible strategies;
+- the ADR-quality evaluation supported `Accept`, while its decide-now semantics and prove-later boundary remained explicit and falsifiable;
+- exact Proposed ADR SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158` and the complete proposal diff received a fresh independent `PASS` after the bounded correction workflow;
+- the owner handoff requested only approval or rejection of those reviewed proposal bytes, and the project owner explicitly approved them before any authority state changed;
+- ADR and documentation validation and `git diff --check` passed at closure, and the post-move readback confirmed the accepted ADR, resolved gate, completed task, and repaired plan navigation;
+- final scope inspection contained only authorized documentation artifacts and confirmed zero application, test, manifest, lockfile, generated, client-operation, dependency, or `.codex` implementation-workflow change; and
+- plan retirement preserved the stable filename and full decision chronology under `docs/plans/completed/` without implying TASK-010 authorization or frontend implementation.
 
 
 ## Idempotence and Recovery
@@ -584,3 +586,4 @@ The chosen strategy may imply future npm dependencies and provider/configuration
 - 2026-08-18: Completed byte-preserving post-verdict reconciliation and proposal-preparation validation. Both documentation validators, `git diff --check`, exact seven-document scope, forbidden implementation-path inspection, and the frozen ADR hash pass; the sole established NFR-006 metadata warning remains unrelated. ADR-0017 stays `Proposed`, DG-003 stays `Pending`, TASK-009 stays `In progress`, and no implementation is authorized.
 - 2026-08-18: Recorded explicit project-owner approval of exact independently reviewed ADR-0017 proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`, marked the ADR `Accepted`, and resolved DG-003. TASK-009 remains `In progress` only for documentation closure; TASK-010 remains pending separate execution authorization, and no implementation artifact changed.
 - 2026-08-18: Passed the task-closure documentation gate, marked TASK-009 `Complete`, retired this plan to `docs/plans/completed/`, synchronized every affected authority and navigation owner, and preserved the no-implementation boundary. TASK-010 remains pending separate execution authorization.
+- 2026-08-18: A post-completion documentation review returned `PASS WITH FOLLOW-UPS` with no Blocker or Major and identified one stale pre-closure validation paragraph. Rewrote that section retrospectively and recorded why TASK-009 remains closed; no architectural, authority, scope, dependency, implementation, or navigation semantics changed.
