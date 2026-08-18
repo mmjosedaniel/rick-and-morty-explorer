@@ -26,6 +26,7 @@
     "infra:up": "docker compose -p rick-and-morty-dev up -d --wait",
     "infra:ps": "docker compose -p rick-and-morty-dev ps",
     "infra:down": "docker compose -p rick-and-morty-dev down --volumes",
+    "import:characters": "npm run build --workspace @rick-and-morty/api && npm run import:characters --workspace @rick-and-morty/api",
     "dev:apps": "concurrently --kill-others-on-fail --names web,api \"npm run dev --workspace @rick-and-morty/web\" \"npm run dev --workspace @rick-and-morty/api\"",
     "dev": "npm run infra:up && npm run dev:apps",
     "typecheck": "tsc --noEmit --project tsconfig.tools.json && tsc --noEmit --project apps/web/tsconfig.json && tsc --noEmit --project apps/api/tsconfig.json && tsc --noEmit --project packages/shared/tsconfig.json",

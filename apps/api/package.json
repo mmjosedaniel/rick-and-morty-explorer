@@ -8,6 +8,7 @@
     "dev": "tsx watch --clear-screen=false src/server.ts",
     "graphql:check": "graphql-codegen --config src/transport/graphql/codegen.ts --check",
     "graphql:generate": "graphql-codegen --config src/transport/graphql/codegen.ts",
+    "import:characters": "node dist/infrastructure/characters/character-import-cli.js",
     "migration:build": "node dist/infrastructure/database/migration-cli.js build",
     "migration:down": "node dist/infrastructure/database/migration-cli.js down",
     "migration:up": "node dist/infrastructure/database/migration-cli.js up",

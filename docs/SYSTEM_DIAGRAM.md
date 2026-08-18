@@ -1,6 +1,6 @@
 # Target System Module Diagram
 
-- Status: Target product architecture; TASK-003 foundation and TASK-004 relational-migration lifecycle realized; product data path incomplete
+- Status: Target product architecture; TASK-003 foundation, TASK-004 migrations, TASK-005 import, and TASK-006 GraphQL read path realized; cache, mutations, and browser product path incomplete
 - Detail level: System modules and principal data flows
 - Documentation entry point: [repository documentation map](../README.md#documentation-map)
 - Architecture authority: [ADR index](./adrs/README.md)
@@ -33,9 +33,9 @@ flowchart LR
     subgraph API["apps/api — Express modular monolith"]
         HTTP["HTTP boundary<br/>GraphQL · Liveness · Request logging"]
         SERVICES["Application services<br/>Search: status · species · gender · name · origin<br/>Detail · Favorites · Comments"]
-        PERSISTENCE["Sequelize persistence adapter<br/>TASK-004 model mappings implemented<br/>Business repositories pending"]
+        PERSISTENCE["Sequelize persistence adapters<br/>Read and import repositories implemented<br/>Mutation repositories pending"]
         CACHE["Redis search cache-aside adapter"]
-        IMPORTER["Deterministic import service"]
+        IMPORTER["Deterministic import service<br/>TASK-005 implemented"]
 
         HTTP -->|"GraphQL operations only"| SERVICES
         SERVICES -->|"queries and mutations"| PERSISTENCE
@@ -51,7 +51,7 @@ flowchart LR
 
     subgraph SETUP["Initialization and ingestion"]
         MIGRATIONS["Version-controlled migrations<br/>Build-first programmatic Umzug<br/>Immutable emitted ESM (ADR-0015)<br/>Restricted ASCII catalog-bound v2<br/>TASK-004 lifecycle and commands implemented"]
-        IMPORT_COMMAND["Explicit import command"]
+        IMPORT_COMMAND["Explicit import command<br/>TASK-005 implemented"]
         PUBLIC_API["Public Rick and Morty character JSON API<br/>Explicit ingestion source only"]
     end
 
@@ -84,7 +84,7 @@ flowchart LR
 - Imported character attributes are source-owned. Favorites and comments are application-owned, and a repeated import must not overwrite or delete them.
 - The [`TASK-003` `GET /healthz` contract](./IMPLEMENTATION_PLAN.md#task-003---establish-the-operational-walking-skeleton) proves only that the Express process is alive; it does not claim GraphQL, PostgreSQL, or Redis readiness.
 - Now-Superseded [ADR-0012](./adrs/superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md) historically resolved [DG-002](./IMPLEMENTATION_PLAN.md#dg-002---sequelize-migration-lifecycle). Accepted [ADR-0015](./adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md), prepared by completed [TASK-018](./IMPLEMENTATION_PLAN.md#task-018---resolve-the-postgresql-migration-lock-namespace-identity), is the current whole-record build-first migration authority and replaces ADR-0012's NFC identity with a restricted-ASCII catalog-bound v2 identity. Fresh independent review returned `PASS` on exact proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1`, and the project owner explicitly approved those bytes on 2026-08-14. [DG-005](./IMPLEMENTATION_PLAN.md#dg-005---postgresql-migration-lock-namespace-identity) is Resolved. Separately authorized TASK-004 is `Complete`; its task-scoped artifact, migration, Sequelize mapping, status/rollback, failure, lock, concurrency, command, verification-controller, PostgreSQL 18.6, clean-checkout, hosted-CI, fresh-review, and documentation-closure boundaries pass. [DG-003](./IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) remains generic until an owner-approved ADR selects the frontend GraphQL client.
-- Accepted [ADR-0014](./adrs/0014-persist-and-deliver-character-image-urls-directly.md) resolves [DG-006](./IMPLEMENTATION_PLAN.md#dg-006---character-image-url-successor-boundary): the importer persists only the exact validated absolute `Character.image` URL, GraphQL and finite Redis projections return that URL, and the browser requests the avatar directly. The application owns no image bytes, decoder, proxy, asset route, or image lifecycle. ADR-0001, ADR-0004, and ADR-0013 are Superseded history. [AUTH-001](./IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only within the recorded non-commercial portfolio/direct-URL scope; the implementation plan owns scope-bound continuity and reopen conditions, while ADR-0014 owns the direct-URL technical boundary. No image-delivery implementation exists.
+- Accepted [ADR-0014](./adrs/0014-persist-and-deliver-character-image-urls-directly.md) resolves [DG-006](./IMPLEMENTATION_PLAN.md#dg-006---character-image-url-successor-boundary): the importer persists only the exact validated absolute `Character.image` URL, GraphQL and finite Redis projections return that URL, and the browser requests the avatar directly. The application owns no image bytes, decoder, proxy, asset route, or image lifecycle. ADR-0001, ADR-0004, and ADR-0013 are Superseded history. [AUTH-001](./IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only within the recorded non-commercial portfolio/direct-URL scope; the implementation plan owns scope-bound continuity and reopen conditions, while ADR-0014 owns the direct-URL technical boundary. TASK-005 exact URL ingestion and TASK-006 exact stored-URL GraphQL projection are implemented; Redis projection and native browser delivery/fallback remain pending.
 - Favorites and comments use the global single-user demonstration semantics accepted by ADR-0005. Public anonymous writes or user accounts require its security and ownership follow-up before deployment.
 - [ADR-0016](./adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) and [DG-001](./IMPLEMENTATION_PLAN.md#dg-001---typescript-test-harness) govern current verification. TASK-003 implemented the unit, application, and Chromium process-smoke scopes; TASK-004 implemented the real-PostgreSQL integration scope under now-Superseded ADR-0010; later owners activate their task-specific scopes through preflight-classified milestone slices. Test tooling is intentionally not represented as a runtime module.
 - The [AI-assistant task DAG](./IMPLEMENTATION_PLAN.md#canonical-task-graph) coordinates development work; it is not a runtime application module or data flow.
