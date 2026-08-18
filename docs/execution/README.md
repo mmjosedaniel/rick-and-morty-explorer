@@ -18,7 +18,7 @@ Execution records may summarize and link those owners. They must not duplicate t
 
 - [Decision and progress log](./decision-and-progress-log.md) — stable chronological record of reversible execution decisions and evidence-linked progress.
 
-No per-task or milestone execution record has been completed yet.
+This directory does not contain separate per-task or per-milestone record files. Task-specific execution history is preserved in the [completed ExecPlans](../plans/README.md), point-in-time acceptance results are indexed under [review records](../reviews/README.md), and the decision/progress log remains the chronological execution owner.
 
 ## Recording Rules
 

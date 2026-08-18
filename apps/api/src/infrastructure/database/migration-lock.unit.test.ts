@@ -262,6 +262,70 @@ describe("migration advisory lock identity", () => {
     }
   });
 
+  it("classifies the pg query-timeout callback at the lock deadline", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "performance"] });
+    try {
+      const lockKey = "6803611370155578726";
+      const startedAt = performance.now();
+      const requests: Parameters<RawPgClient["query"]>[0][] = [];
+      let settledAt: number | undefined;
+      const client: RawPgClient = {
+        query: (request) => {
+          requests.push(request);
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              settledAt = performance.now() - startedAt;
+              reject(new Error("Query read timeout"));
+            }, 249);
+          });
+        },
+      };
+
+      let rejection: unknown;
+      const acquisition = acquireMigrationLock(client, lockKey, 250).catch(
+        (error: unknown) => {
+          rejection = error;
+        },
+      );
+      await vi.advanceTimersByTimeAsync(249);
+      await acquisition;
+
+      const unrelatedError = new Error("connection failed before deadline");
+      const unrelatedClient: RawPgClient = {
+        query: async () => {
+          throw unrelatedError;
+        },
+      };
+      await expect(
+        acquireMigrationLock(unrelatedClient, lockKey, 250),
+      ).rejects.toBe(unrelatedError);
+
+      expect(settledAt).toBe(249);
+      expect(performance.now() - startedAt).toBe(249);
+      expect(requests).toEqual([
+        {
+          text: `SELECT pg_catalog.pg_try_advisory_xact_lock(
+  CAST($1 AS pg_catalog.int8)
+) AS acquired`,
+          values: [lockKey],
+          rowMode: "array",
+          query_timeout: 250,
+        },
+      ]);
+      expect(rejection).toBeInstanceOf(Error);
+      expect(rejection).toMatchObject({
+        name: "MigrationLifecycleError",
+        message: "MIGRATION_LOCK_TIMEOUT",
+        result: 2,
+      });
+      expect((rejection as Error & { readonly cause?: unknown }).cause).toBe(
+        undefined,
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("rejects a true lock result delivered at the monotonic deadline", async () => {
     vi.useFakeTimers({ toFake: ["setTimeout", "performance"] });
     try {
