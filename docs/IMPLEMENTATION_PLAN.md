@@ -358,6 +358,7 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-007 - Add bounded Redis cache-aside search behavior
 
 - **Outcome:** Equivalent character searches reuse a validated finite-lived Redis projection and safely fall back to PostgreSQL.
+- **Execution plan:** The active [TASK-007 bounded Redis cache-aside ExecPlan](./plans/TASK-007-bounded-redis-cache-aside.md) defines three KISS/YAGNI-bounded implementation milestones and routes non-blocking follow-ups to the canonical debt register. Creating the plan does not authorize execution or change this task from `Pending`.
 - **Mapped scope:** FR-BE-005, NFR-003, AC-010; OR-008 (adopted optional).
 - **Governing decisions:** ADR-0006, ADR-0007, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-005 and TASK-006; DG-006 is resolved and AUTH-001 is Authorized under disposition A for caching the exact absolute image URL.
@@ -501,6 +502,12 @@ Every entry must state its priority, source ExecPlan, present impact and safe-de
   - **Found in:** [TASK-006 ExecPlan](./plans/completed/TASK-006-graphql-reads-filters-and-request-logging.md)
   - **Present impact and safe-deferral rationale:** The API-local `skipLibCheck` exception isolates a TypeScript 6.0.3 and `graphql-yoga` 5.21.2 declaration compatibility issue while strict checking remains active for local application source, tests, and generated types. It is non-MVP-blocking and does not change runtime behavior.
   - **Exit criterion:** After MVP, or earlier when a supported compiler or Yoga dependency update is available, delete the flag and pass root typecheck, build, and affected TASK-006 tests without forcing a transitive package outside Yoga's declared version range.
+
+- **DPL-DEC-046 — Redis outage warning deduplication**
+  - **Priority:** Low
+  - **Found in:** [TASK-007 ExecPlan](./plans/TASK-007-bounded-redis-cache-aside.md)
+  - **Present impact and safe-deferral rationale:** TASK-007 must emit fixed safe warnings and fail open when Redis fails. A sustained outage could repeat those warnings once per affected operation, but the current portfolio has no observed log-volume incident or warning-rate requirement. Adding a stateful limiter now would introduce clocks, counters, reset rules, and additional failure behavior without changing cache correctness, bounded latency, PostgreSQL authority, or MVP acceptance.
+  - **Exit criterion:** After MVP, reproduce or observe a sustained Redis outage at a recorded request rate and compare the warning volume with an owner-recorded operational threshold. Close this item without code if the volume is acceptable; otherwise add one bounded in-process deduplication window with an injected clock and deterministic tests proving the first and summary warnings remain safe while all TASK-007 timeout, fail-open, and recovery checks still pass.
 
 ## References
 
