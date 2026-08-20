@@ -4,7 +4,12 @@ import { pathToFileURL } from "node:url";
 import type { Transaction } from "sequelize";
 
 import { createCharacterImportService } from "../../application/characters/character-import-service.js";
+import { loadRedisRuntimeConfig } from "../../config.js";
 import { createPostgresSequelize } from "../database/postgres-runtime.js";
+import {
+  createRedisCharacterSearchInvalidationOwner,
+  type RedisCharacterSearchInvalidationOwner,
+} from "../redis/redis-character-search-cache.js";
 import { createSequelizeCharacterImportRepository } from "../database/sequelize-character-import-repository.js";
 import { createRickAndMortyCharacterClient } from "../upstream/rick-and-morty-character-client.js";
 
@@ -28,6 +33,11 @@ interface CharacterImportCompositionOptions {
   readonly requestInvalidation: () => Promise<void>;
   readonly writeError: (diagnostic: string) => void;
   readonly writeWarning: (diagnostic: string) => void;
+}
+
+interface CharacterImportProductionCommandOptions
+  extends Omit<CharacterImportCommandOptions, "requestInvalidation"> {
+  readonly createInvalidationOwner: () => RedisCharacterSearchInvalidationOwner;
 }
 
 const commandInvalid = "CHARACTER_IMPORT_COMMAND_INVALID\n";
@@ -80,57 +90,100 @@ export async function runCharacterImportCommand(
   return result;
 }
 
+export async function runCharacterImportProductionCommand(
+  options: CharacterImportProductionCommandOptions,
+): Promise<number> {
+  const invalidationOwner = options.createInvalidationOwner();
+  let result = 1;
+
+  try {
+    result = await runCharacterImportCommand({
+      argv: options.argv,
+      initialize: options.initialize,
+      requestInvalidation: invalidationOwner.invalidate,
+      writeError: options.writeError,
+      writeWarning: options.writeWarning,
+    });
+  } finally {
+    try {
+      await invalidationOwner.close();
+    } catch {
+      options.writeError(closeFailed);
+      result = 1;
+    }
+  }
+
+  return result;
+}
+
+async function initializeCharacterImportRuntime(options: {
+  readonly environment: NodeJS.ProcessEnv;
+  readonly fetch: typeof fetch;
+}): Promise<CharacterImportRuntime> {
+  const { sequelize, schema } = await createPostgresSequelize(
+    options.environment,
+  );
+  const repository = createSequelizeCharacterImportRepository({
+    sequelize: {
+      query: (sql, queryOptions) =>
+        sequelize.query(sql, {
+          bind: [...queryOptions.bind],
+          transaction: queryOptions.transaction as Transaction,
+        }),
+      transaction: (body) =>
+        sequelize.transaction((transaction) => body(transaction)),
+    },
+    schema,
+  });
+  const client = createRickAndMortyCharacterClient({
+    fetch: options.fetch,
+    timeoutMs: 5_000,
+    maxAttempts: 3,
+  });
+  const service = createCharacterImportService({ client, repository });
+
+  return {
+    importBaseline: () => service.importBaseline(),
+    close: () => sequelize.close(),
+  };
+}
+
 export function runCharacterImportComposition(
   options: CharacterImportCompositionOptions,
 ): Promise<number> {
   return runCharacterImportCommand({
     argv: options.argv,
-    initialize: async () => {
-      const { sequelize, schema } = await createPostgresSequelize(
-        options.environment,
-      );
-      const repository = createSequelizeCharacterImportRepository({
-        sequelize: {
-          query: (sql, queryOptions) =>
-            sequelize.query(sql, {
-              bind: [...queryOptions.bind],
-              transaction: queryOptions.transaction as Transaction,
-            }),
-          transaction: (body) =>
-            sequelize.transaction((transaction) => body(transaction)),
-        },
-        schema,
-      });
-      const client = createRickAndMortyCharacterClient({
-        fetch: options.fetch,
-        timeoutMs: 5_000,
-        maxAttempts: 3,
-      });
-      const service = createCharacterImportService({ client, repository });
-
-      return {
-        importBaseline: () => service.importBaseline(),
-        close: () => sequelize.close(),
-      };
-    },
+    initialize: () => initializeCharacterImportRuntime(options),
     requestInvalidation: options.requestInvalidation,
     writeError: options.writeError,
     writeWarning: options.writeWarning,
   });
 }
 
-async function requestDeferredInvalidation(): Promise<void> {
-  // TASK-007 owns cache invalidation; this adapter preserves the post-commit seam.
-}
-
 async function main(): Promise<void> {
-  process.exitCode = await runCharacterImportComposition({
+  const writeDiagnostic = (diagnostic: string) =>
+    process.stderr.write(diagnostic);
+  const redisConfig = loadRedisRuntimeConfig(process.env, writeDiagnostic);
+
+  process.exitCode = await runCharacterImportProductionCommand({
     argv: process.argv.slice(2),
-    environment: process.env,
-    fetch: globalThis.fetch,
-    requestInvalidation: requestDeferredInvalidation,
-    writeError: (diagnostic) => process.stderr.write(diagnostic),
-    writeWarning: (diagnostic) => process.stderr.write(diagnostic),
+    initialize: () =>
+      initializeCharacterImportRuntime({
+        environment: process.env,
+        fetch: globalThis.fetch,
+      }),
+    createInvalidationOwner: () =>
+      redisConfig === null
+        ? {
+            invalidate: async () => {},
+            close: async () => {},
+          }
+        : createRedisCharacterSearchInvalidationOwner({
+            config: redisConfig,
+            writeWarning: writeDiagnostic,
+          }),
+    writeError: writeDiagnostic,
+    writeWarning: writeDiagnostic,
   });
 }
 

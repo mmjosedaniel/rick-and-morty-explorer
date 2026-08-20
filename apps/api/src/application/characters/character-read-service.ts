@@ -66,6 +66,16 @@ export interface CharacterReadRepository {
   ): Promise<readonly CharacterComment[]>;
 }
 
+import {
+  decodeCharacterSummaries,
+  encodeCharacterSummaries,
+  type CharacterSearchCache,
+} from "./character-search-cache.js";
+
+const CACHE_READ_FAILED = "CHARACTER_SEARCH_CACHE_READ_FAILED\n";
+const CACHE_VALUE_INVALID = "CHARACTER_SEARCH_CACHE_VALUE_INVALID\n";
+const CACHE_WRITE_FAILED = "CHARACTER_SEARCH_CACHE_WRITE_FAILED\n";
+
 function normalizeFilter(
   filter: CharacterFilterInput | undefined,
 ): NormalizedCharacterFilter | undefined {
@@ -90,7 +100,7 @@ function normalizeFilter(
   ] as const) {
     const value = filter[key]?.trim();
     if (value !== undefined && value.length > 0) {
-      normalized[key] = value;
+      normalized[key] = value.toLowerCase();
     }
   }
 
@@ -99,12 +109,58 @@ function normalizeFilter(
 
 export function createCharacterReadService(options: {
   readonly repository: CharacterReadRepository;
+  readonly cache?: CharacterSearchCache;
+  readonly writeWarning?: (diagnostic: string) => void;
 }): CharacterReadService {
   const findDetail = options.repository.findDetail;
   const listComments = options.repository.listComments;
 
+  const list = async (
+    filter: CharacterFilterInput | undefined,
+  ): Promise<readonly CharacterSummary[]> => {
+    const normalizedFilter = normalizeFilter(filter);
+    if (options.cache === undefined) {
+      return options.repository.search(normalizedFilter);
+    }
+
+    const cacheFilter = normalizedFilter ?? {};
+    const writeWarning =
+      options.writeWarning ??
+      ((diagnostic: string) => process.stderr.write(diagnostic));
+    let raw: string | null = null;
+
+    try {
+      raw = await options.cache.read(cacheFilter);
+    } catch {
+      writeWarning(CACHE_READ_FAILED);
+    }
+
+    if (raw !== null) {
+      const cachedSummaries = decodeCharacterSummaries(raw);
+      if (cachedSummaries !== null) {
+        return cachedSummaries;
+      }
+
+      writeWarning(CACHE_VALUE_INVALID);
+      try {
+        await options.cache.unlink(cacheFilter);
+      } catch {
+        writeWarning(CACHE_WRITE_FAILED);
+      }
+    }
+
+    const summaries = await options.repository.search(cacheFilter);
+    try {
+      encodeCharacterSummaries(summaries);
+      await options.cache.write(cacheFilter, summaries);
+    } catch {
+      writeWarning(CACHE_WRITE_FAILED);
+    }
+    return summaries;
+  };
+
   return {
-    list: async (filter) => options.repository.search(normalizeFilter(filter)),
+    list,
     detail: async (id) => {
       if (findDetail === undefined) {
         throw new Error("CHARACTER_DETAIL_REPOSITORY_UNAVAILABLE");

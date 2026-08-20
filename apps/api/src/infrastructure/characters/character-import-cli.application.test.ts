@@ -17,6 +17,15 @@ interface CommandOptions {
 
 interface CharacterImportCliModule {
   runCharacterImportCommand(options: CommandOptions): Promise<number>;
+  runCharacterImportProductionCommand(options: ProductionCommandOptions): Promise<number>;
+}
+
+interface ProductionCommandOptions
+  extends Omit<CommandOptions, "requestInvalidation"> {
+  readonly createInvalidationOwner: () => {
+    readonly invalidate: () => Promise<void>;
+    readonly close: () => Promise<void>;
+  };
 }
 
 const commandInvalid = "CHARACTER_IMPORT_COMMAND_INVALID\n";
@@ -238,5 +247,51 @@ describe("TASK-005 Milestone 3 explicit character import command", () => {
     expect(rootManifest.scripts?.["import:characters"]).toBe(
       "npm run build --workspace @rick-and-morty/api && npm run import:characters --workspace @rick-and-morty/api",
     );
+  });
+
+  it("runs the production invalidation owner after import and closes both owners", async () => {
+    const events: string[] = [];
+    const initialize = vi.fn(async () => ({
+      importBaseline: async () => {
+        events.push("commit-completed");
+      },
+      close: async () => {
+        events.push("import-owner-closed");
+      },
+    }));
+    const invalidate = vi.fn(async () => {
+      events.push("invalidation-requested");
+    });
+    const closeInvalidation = vi.fn(async () => {
+      events.push("invalidation-owner-closed");
+    });
+    const createInvalidationOwner = vi.fn(() => ({
+      invalidate,
+      close: closeInvalidation,
+    }));
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    await expect(
+      cli.runCharacterImportProductionCommand({
+        argv: [],
+        initialize,
+        createInvalidationOwner,
+        writeError: (diagnostic) => errors.push(diagnostic),
+        writeWarning: (diagnostic) => warnings.push(diagnostic),
+      }),
+    ).resolves.toBe(0);
+
+    expect(createInvalidationOwner).toHaveBeenCalledOnce();
+    expect(invalidate).toHaveBeenCalledOnce();
+    expect(closeInvalidation).toHaveBeenCalledOnce();
+    expect(events).toEqual([
+      "commit-completed",
+      "invalidation-requested",
+      "import-owner-closed",
+      "invalidation-owner-closed",
+    ]);
+    expect(errors).toEqual([]);
+    expect(warnings).toEqual([]);
   });
 });
