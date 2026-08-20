@@ -394,8 +394,9 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-010 - Deliver the character list, sorting, and adopted interface filters
 
 - **Outcome:** The React list route renders character cards, deterministic A-Z/Z-A sorting, and URL-owned status/species/gender filters.
+- **Execution plan:** The active [TASK-010 ExecPlan](./plans/TASK-010-character-list-sorting-and-interface-filters.md) records the bounded component inventory, accepted reuse audit, reversible URL/control choices, standard nonvisual milestones, one conditional frontend-visual milestone, validation, and stop budgets. Its creation is planning only: TASK-010 remains `Pending` until separate project-owner execution authorization.
 - **Mapped scope:** FR-FE-001, FR-FE-002, NFR-001, AC-001, AC-002; OR-003 and OR-004 (adopted optional).
-- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0014, ADR-0016.
+- **Governing decisions:** ADR-0002, ADR-0006, ADR-0009, ADR-0014, ADR-0016, ADR-0017; DPL-DEC-049 records the reversible TASK-010 execution choices.
 - **Design inputs:** [UI field visibility](./ui/README.md#ui-field-visibility-decision) and [visual foundations](./ui/visual-foundations.md); use the [Storybook pilot guidance](./ui/storybook-workflow.md) only if that reversible pilot is activated.
 - **Prerequisites and gates:** TASK-005 and TASK-009; DG-001 through DG-004 and DG-006 are resolved through completed decision paths, and AUTH-001 is Authorized under disposition A for browser image work.
 - **Expected artifacts:** List route, generated operations, query integration, card and controls, URL normalization, loading/empty/error states, and focused component/route tests.
