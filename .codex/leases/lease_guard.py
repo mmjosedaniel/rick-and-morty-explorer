@@ -31,6 +31,7 @@ WINDOWS_DEVICE = re.compile(r"^(con|prn|aux|nul|com[1-9]|lpt[1-9]|conin\$|conout
 WORKER_PHASES = {
     "test_worker": frozenset(("red", "evidence")),
     "code_worker": frozenset(("setup", "green", "refactor", "evidence")),
+    "frontend_code_worker": frozenset(("green",)),
 }
 
 
@@ -1233,6 +1234,10 @@ def _self_test() -> tuple[int, dict[str, Any]]:
             ("attempt-three", "green", 3, "code_worker", "attempt must be 1 or 2"),
             ("test-green", "green", 1, "test_worker", "does not permit phase"),
             ("code-red", "red", 1, "code_worker", "does not permit phase"),
+            ("frontend-red", "red", 1, "frontend_code_worker", "does not permit phase"),
+            ("frontend-evidence", "evidence", 1, "frontend_code_worker", "does not permit phase"),
+            ("frontend-setup", "setup", 1, "frontend_code_worker", "does not permit phase"),
+            ("frontend-refactor", "refactor", 1, "frontend_code_worker", "does not permit phase"),
             ("uppercase-phase", "GREEN", 1, "code_worker", "does not permit phase"),
             ("unknown-role", "green", 1, "reviewer", "unsupported write-capable agent type"),
         )
@@ -1256,6 +1261,7 @@ def _self_test() -> tuple[int, dict[str, Any]]:
             ("code-green", "green", 2, "code_worker"),
             ("code-refactor", "refactor", 1, "code_worker"),
             ("code-evidence", "evidence", 2, "code_worker"),
+            ("frontend-green", "green", 1, "frontend_code_worker"),
         )
         for lease, phase, attempt, agent_type in valid_assignments:
             code, payload = invoke(

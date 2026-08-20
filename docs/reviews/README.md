@@ -22,6 +22,7 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Workflow Audits
 
+- [2026-08-20 frontend execution profile review](./2026-08-20-frontend-execution-profile-review.md) — returns `PASS WITH OPERATOR FOLLOW-UP` after correcting unintended standard-packet bookkeeping and ambiguous Refactor wording, then passing the specialized agent, skill, lease, hook, metrics, standard-flow-isolation, and documentation checks. Fresh trusted-session discovery of `frontend_code_worker` and project-hook trust remain required before TASK-010 uses the profile.
 - [2026-08-16 agentic workflow efficiency audit](./2026-08-16-agentic-workflow-efficiency-audit.md) — reconstructs TASK-004 scope, 209 serial assignments across 109 cycles, validation and documentation amplification, root causes, a risk-tiered target workflow, model routing, stop budgets, and a measurement plan. Its appended owner disposition preserves independent test and implementation roles while adopting milestone-slice TDD, preflight, proportional validation, and an ADR-0015 extension-cost watch through ADR-0016; the original audit findings remain advisory historical evidence.
 
 ## Review Rules

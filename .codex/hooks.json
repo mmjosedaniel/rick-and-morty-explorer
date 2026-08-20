@@ -3,7 +3,7 @@
   "hooks": {
     "SubagentStart": [
       {
-        "matcher": "^(test_worker|code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
+        "matcher": "^(test_worker|code_worker|frontend_code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
         "hooks": [
           {
             "type": "command",
@@ -17,7 +17,7 @@
     ],
     "SubagentStop": [
       {
-        "matcher": "^(test_worker|code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
+        "matcher": "^(test_worker|code_worker|frontend_code_worker|milestone_reviewer|independent_reviewer|critical_reviewer)$",
         "hooks": [
           {
             "type": "command",
