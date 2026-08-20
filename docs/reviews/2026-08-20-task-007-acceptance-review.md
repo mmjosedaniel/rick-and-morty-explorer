@@ -3,7 +3,7 @@
 - Review status: Complete — `PASS`
 - Review scope: Exact TASK-007 implementation, three milestone-slice TDD cycles, reviewer-directed corrections, cross-milestone behavior, closure validation, and pre-closure documentation impact
 - Reviewed candidate: branch `codex/execplan-007-bounded-redis-cache-aside`, baseline HEAD `35a051e088bc4738f6142e8c6c819cf25c56e59e`, empty index, and 19-path working-tree fingerprint `85383E794DCC80E2A6AA358D2891D1A196D26A5052C43CD74178A768D3C0A7C1`
-- Owning evidence: [TASK-007 ExecPlan](../plans/TASK-007-bounded-redis-cache-aside.md), which was completed for this review, later reopened after separate reproducibility evidence, completed again after correction, and is now active for a separate hosted-CI correction
+- Owning evidence: completed [TASK-007 ExecPlan](../plans/completed/TASK-007-bounded-redis-cache-aside.md), which was completed for this review, reopened for two later reproducibility corrections, and completed again after merged hosted verification
 
 ## Verdict
 

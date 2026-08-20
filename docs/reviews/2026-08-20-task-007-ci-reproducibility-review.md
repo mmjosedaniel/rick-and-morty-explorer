@@ -5,7 +5,7 @@
 - Reviewed candidate: pushed commit `0e56e1f0a372b168082824f2e136b19f1a802dc7` on branch `codex/execplan-007-bounded-redis-cache-aside`
 - Hosted evidence: pull-request CI run `32391250007`, completed `failure`
 - Prior record: [TASK-007 acceptance re-review](./2026-08-20-task-007-acceptance-re-review.md), preserved as point-in-time local closure evidence
-- Owning evidence: active [TASK-007 ExecPlan](../plans/TASK-007-bounded-redis-cache-aside.md), Milestone 6
+- Owning evidence: completed [TASK-007 ExecPlan](../plans/completed/TASK-007-bounded-redis-cache-aside.md), Milestone 6
 
 ## Verdict
 
@@ -43,3 +43,7 @@ Minimum-assessment product readiness remains 5/12 because AC-010 behavior is imp
 ## Documentation impact
 
 TASK-007 returns to `In progress`, the ExecPlan returns to the active directory with Milestone 6, and this review becomes the current review. The original acceptance review, unit reproducibility review, and acceptance re-review remain historical evidence. Current-status owners must distinguish passing Redis behavior from failed hosted closure. No product requirement, ADR, dependency edge, or readiness count changes.
+
+## Supersession
+
+The later [hosted-CI acceptance re-review](./2026-08-20-task-007-hosted-ci-acceptance-re-review.md) records the corrected merged `main` pass and supersedes this review's current closure conclusion. This `REVISE` verdict remains preserved for failed commit `0e56e1f` and run `32391250007`.
