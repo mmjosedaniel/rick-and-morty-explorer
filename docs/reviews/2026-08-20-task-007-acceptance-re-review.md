@@ -4,7 +4,7 @@
 - Review scope: Milestone 5 deterministic unit loading, preserved Redis behavior, complete post-correction closure, runtime ownership, and documentation readiness
 - Reviewed candidate: HEAD `62ddf56f87f38b8f61ba88ee6d713593e27f55c8` plus the two-test correction under workflow `TASK-007-20260820-02`
 - Prior records: historical [TASK-007 acceptance review](./2026-08-20-task-007-acceptance-review.md) and superseding [acceptance reproducibility review](./2026-08-20-task-007-acceptance-reproducibility-review.md)
-- Owning evidence: [TASK-007 ExecPlan](../plans/TASK-007-bounded-redis-cache-aside.md), completed for this review and now active for a separate hosted-CI correction
+- Owning evidence: completed [TASK-007 ExecPlan](../plans/completed/TASK-007-bounded-redis-cache-aside.md), completed for this review, later reopened for a separate hosted-CI correction, and completed again after merged hosted verification
 
 ## Verdict
 
