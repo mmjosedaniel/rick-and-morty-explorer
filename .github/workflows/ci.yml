@@ -22,6 +22,7 @@ jobs:
       CI: true
       POSTGRES_PORT: "55432"
       REDIS_PORT: "56379"
+      REDIS_NAMESPACE: "character-app:test:ci-${{ github.run_id }}-${{ github.run_attempt }}"
     steps:
       - name: Check out repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

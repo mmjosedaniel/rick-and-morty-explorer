@@ -34,6 +34,9 @@ const workflowSteps = [
   },
 ] as const;
 
+const redisNamespaceEntry =
+  '      REDIS_NAMESPACE: "character-app:test:ci-${{ github.run_id }}-${{ github.run_attempt }}"';
+
 it(
   "starts healthy TASK-004 infrastructure before the CI test suite and always tears it down",
   async () => {
@@ -96,3 +99,37 @@ it(
     expect(positions.size).toBe(workflowSteps.length);
   },
 );
+
+it("provides one run-isolated TASK-007 Redis namespace to the validate job", async () => {
+  const workflow = (await readFile(workflowUrl, "utf8")).replaceAll(
+    "\r\n",
+    "\n",
+  );
+  const validateJobStart = workflow.indexOf("  validate:\n");
+  const validateEnvironmentStart = workflow.indexOf(
+    "    env:\n",
+    validateJobStart,
+  );
+  const validateStepsStart = workflow.indexOf(
+    "    steps:\n",
+    validateEnvironmentStart,
+  );
+  const namespaceFirst = workflow.indexOf(redisNamespaceEntry);
+  const namespaceLast = workflow.lastIndexOf(redisNamespaceEntry);
+
+  const namespaceIsJobScoped =
+    validateJobStart !== -1 &&
+    validateEnvironmentStart > validateJobStart &&
+    validateStepsStart > validateEnvironmentStart &&
+    namespaceFirst > validateEnvironmentStart &&
+    namespaceFirst < validateStepsStart &&
+    namespaceFirst === namespaceLast;
+
+  if (!namespaceIsJobScoped) {
+    throw new Error(
+      "TASK_007_CI_REDIS_NAMESPACE_INVALID cases=redis-namespace-job-scope",
+    );
+  }
+
+  expect(namespaceFirst).toBeGreaterThan(validateEnvironmentStart);
+});

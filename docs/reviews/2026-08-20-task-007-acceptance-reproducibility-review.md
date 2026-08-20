@@ -4,7 +4,7 @@
 - Review scope: Post-closure reproducibility of TASK-007's authoritative unit gate, current runtime-ownership wording, and availability of fresh real-infrastructure verification
 - Reviewed candidate: clean commit `62ddf56` on branch `codex/execplan-007-bounded-redis-cache-aside`; product source corresponds to the previously reviewed 19-path candidate
 - Prior record: [TASK-007 acceptance review](./2026-08-20-task-007-acceptance-review.md), preserved as point-in-time historical evidence
-- Owning evidence: [TASK-007 ExecPlan](../plans/completed/TASK-007-bounded-redis-cache-aside.md), later completed after the correction required by this review
+- Owning evidence: [TASK-007 ExecPlan](../plans/TASK-007-bounded-redis-cache-aside.md), later completed after the correction required by this review and now active for a separate hosted-CI correction
 
 ## Verdict
 
