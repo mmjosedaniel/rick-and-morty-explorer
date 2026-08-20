@@ -190,7 +190,7 @@ These observable criteria summarize the minimum assessment outcomes. They do not
 - [x] AC-007: The backend exposes a GraphQL API through Express.
 - [x] AC-008: The API filters characters by status, species, gender, name, and origin.
 - [x] AC-009: A MySQL or PostgreSQL application schema is created through Sequelize migrations and initialized with 15 characters obtained from the public Rick and Morty API.
-- [ ] AC-010: Search results use Redis caching.
+- [x] AC-010: Search results use Redis caching.
 - [x] AC-011: Middleware writes relevant information about each request to the console.
 - [ ] AC-012: DEL-001, DEL-002, and DEL-003 are delivered: the source code is available in a public GitHub repository together with an entity-relationship diagram and documentation explaining how to run the application and use the API.
 

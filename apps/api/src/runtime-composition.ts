@@ -1,8 +1,14 @@
 import { createApp } from "./app.js";
 import {
   createCharacterReadService,
+  type CharacterReadRepository,
   type CharacterReadService,
 } from "./application/characters/character-read-service.js";
+import type { CharacterSearchCache } from "./application/characters/character-search-cache.js";
+import {
+  loadRedisRuntimeConfig,
+  type RedisRuntimeConfig,
+} from "./config.js";
 import { createSequelizeCharacterReadRepository } from "./infrastructure/database/sequelize-character-read-repository.js";
 
 interface SequelizeBoundary {
@@ -17,8 +23,18 @@ interface OwnedCharacterReadService {
   close(): Promise<void>;
 }
 
-interface LazyCharacterReadServiceOwner {
+export interface LazyCharacterReadServiceOwner {
   readonly characterReadService: CharacterReadService;
+  close(): Promise<void>;
+}
+
+interface OwnedCharacterSearchCache {
+  readonly cache: CharacterSearchCache;
+  close(): Promise<void>;
+}
+
+interface OwnedCharacterReadRepository {
+  readonly repository: CharacterReadRepository;
   close(): Promise<void>;
 }
 
@@ -90,6 +106,64 @@ export function createLazyCharacterReadServiceOwner(options: {
       return closePromise;
     },
   };
+}
+
+export function createProductionCharacterReadServiceOwner(options: {
+  readonly environment: Readonly<Record<string, string | undefined>>;
+  readonly initializePostgres: () => Promise<OwnedCharacterReadRepository>;
+  readonly createCacheOwner: (
+    config: RedisRuntimeConfig,
+  ) => OwnedCharacterSearchCache;
+  readonly writeWarning?: (diagnostic: string) => void;
+}): LazyCharacterReadServiceOwner {
+  const redisConfig = loadRedisRuntimeConfig(
+    options.environment,
+    options.writeWarning,
+  );
+
+  return createLazyCharacterReadServiceOwner({
+    initialize: async () => {
+      const postgres = await options.initializePostgres();
+      if (redisConfig === null) {
+        return {
+          characterReadService: createCharacterReadService({
+            repository: postgres.repository,
+          }),
+          close: postgres.close,
+        };
+      }
+
+      let cacheOwner: OwnedCharacterSearchCache;
+      try {
+        cacheOwner = options.createCacheOwner(redisConfig);
+      } catch (error) {
+        await postgres.close();
+        throw error;
+      }
+
+      return {
+        characterReadService: createCharacterReadService({
+          repository: postgres.repository,
+          cache: cacheOwner.cache,
+          ...(options.writeWarning === undefined
+            ? {}
+            : { writeWarning: options.writeWarning }),
+        }),
+        close: async () => {
+          const results = await Promise.allSettled([
+            cacheOwner.close(),
+            postgres.close(),
+          ]);
+          const failures = results.flatMap((result) =>
+            result.status === "rejected" ? [result.reason] : [],
+          );
+          if (failures.length > 0) {
+            throw new AggregateError(failures, "Failed to close API resources");
+          }
+        },
+      };
+    },
+  });
 }
 
 export function createRuntimeApplication(options: {

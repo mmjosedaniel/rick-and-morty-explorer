@@ -55,11 +55,11 @@ describe("TASK-006 Milestone 2 character filter service", () => {
 
     expect(search).toHaveBeenCalledOnce();
     expect(search).toHaveBeenCalledWith({
-      status: "Alive",
-      species: "Human",
-      gender: "Male",
-      name: "Morty",
-      origin: "Earth",
+      status: "alive",
+      species: "human",
+      gender: "male",
+      name: "morty",
+      origin: "earth",
     });
     expect(result).toBe(expectedResult);
   });

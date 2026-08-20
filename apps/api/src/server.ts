@@ -2,17 +2,18 @@ import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 
 import { createApp } from "./app.js";
-import { createCharacterReadService } from "./application/characters/character-read-service.js";
 import { parseApiHost, parseApiPort } from "./config.js";
 import { createPostgresSequelize } from "./infrastructure/database/postgres-runtime.js";
 import { createSequelizeCharacterReadRepository } from "./infrastructure/database/sequelize-character-read-repository.js";
-import { createLazyCharacterReadServiceOwner } from "./runtime-composition.js";
+import { createRedisCharacterSearchCacheOwner } from "./infrastructure/redis/redis-character-search-cache.js";
+import { createProductionCharacterReadServiceOwner } from "./runtime-composition.js";
 
 const host = parseApiHost(process.env.API_HOST);
 const port = parseApiPort(process.env.API_PORT);
 
-const characterReadServiceOwner = createLazyCharacterReadServiceOwner({
-  initialize: async () => {
+const characterReadServiceOwner = createProductionCharacterReadServiceOwner({
+  environment: process.env,
+  initializePostgres: async () => {
     const { sequelize, schema } = await createPostgresSequelize(process.env);
     const repository = createSequelizeCharacterReadRepository({
       sequelize,
@@ -20,10 +21,12 @@ const characterReadServiceOwner = createLazyCharacterReadServiceOwner({
     });
 
     return {
-      characterReadService: createCharacterReadService({ repository }),
+      repository,
       close: async () => sequelize.close(),
     };
   },
+  createCacheOwner: (config) =>
+    createRedisCharacterSearchCacheOwner({ config }),
 });
 const app = createApp({
   characterReadService: characterReadServiceOwner.characterReadService,
@@ -75,7 +78,7 @@ function shutdown(): Promise<void> {
     }
     if (resourceCloseError !== undefined) {
       console.error(
-        "Failed to close the PostgreSQL connection pool",
+        "Failed to close API resources",
         resourceCloseError,
       );
     }

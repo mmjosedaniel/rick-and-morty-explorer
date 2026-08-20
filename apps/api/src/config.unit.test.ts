@@ -2,6 +2,26 @@ import { describe, expect, it } from "vitest";
 
 import { parseApiHost, parseApiPort } from "./config.js";
 
+interface RedisRuntimeConfig {
+  readonly host: "127.0.0.1";
+  readonly port: number;
+  readonly namespace: string;
+  readonly searchTtlSeconds: number;
+  readonly operationTimeoutMs: number;
+}
+
+type LoadRedisRuntimeConfig = (
+  environment: Readonly<Record<string, string | undefined>>,
+  writeWarning?: (diagnostic: string) => void,
+) => RedisRuntimeConfig | null;
+
+async function loadRedisRuntimeConfigFactory(): Promise<LoadRedisRuntimeConfig> {
+  const module = (await import("./config.js")) as Record<string, unknown>;
+
+  expect(module.loadRedisRuntimeConfig).toBeTypeOf("function");
+  return module.loadRedisRuntimeConfig as LoadRedisRuntimeConfig;
+}
+
 describe("parseApiPort", () => {
   it("uses the DPL-DEC-021 default API port", () => {
     expect(parseApiPort(undefined)).toBe(3000);
@@ -38,5 +58,59 @@ describe("parseApiHost", () => {
     expect(() => parseApiHost("0.0.0.0")).toThrowError(
       new Error("API_HOST must be 127.0.0.1."),
     );
+  });
+});
+
+describe("TASK-007 Milestone 2 Redis runtime configuration", () => {
+  it("loads the fixed loopback defaults and accepted overrides", async () => {
+    const loadRedisRuntimeConfig = await loadRedisRuntimeConfigFactory();
+
+    expect(loadRedisRuntimeConfig({})).toEqual({
+      host: "127.0.0.1",
+      port: 6379,
+      namespace: "character-app:local",
+      searchTtlSeconds: 300,
+      operationTimeoutMs: 250,
+    });
+    expect(
+      loadRedisRuntimeConfig({
+        REDIS_PORT: "56400",
+        REDIS_NAMESPACE: "character-app:test:t007-m2_1",
+        REDIS_SEARCH_TTL_SECONDS: "86400",
+        REDIS_OPERATION_TIMEOUT_MS: "5000",
+      }),
+    ).toEqual({
+      host: "127.0.0.1",
+      port: 56400,
+      namespace: "character-app:test:t007-m2_1",
+      searchTtlSeconds: 86400,
+      operationTimeoutMs: 5000,
+    });
+  });
+
+  it.each([
+    ["port", { REDIS_PORT: "0" }],
+    ["port", { REDIS_PORT: "65536" }],
+    ["port", { REDIS_PORT: "6379.5" }],
+    ["namespace", { REDIS_NAMESPACE: "Character-App:local" }],
+    ["namespace", { REDIS_NAMESPACE: "character-app::local" }],
+    ["namespace", { REDIS_NAMESPACE: "character-app:test:*" }],
+    ["namespace", { REDIS_NAMESPACE: `a${"b".repeat(128)}` }],
+    ["TTL", { REDIS_SEARCH_TTL_SECONDS: "0" }],
+    ["TTL", { REDIS_SEARCH_TTL_SECONDS: "86401" }],
+    ["TTL", { REDIS_SEARCH_TTL_SECONDS: "300.5" }],
+    ["operation timeout", { REDIS_OPERATION_TIMEOUT_MS: "0" }],
+    ["operation timeout", { REDIS_OPERATION_TIMEOUT_MS: "5001" }],
+    ["operation timeout", { REDIS_OPERATION_TIMEOUT_MS: "250.5" }],
+  ] as const)("rejects an invalid Redis %s override safely", async (_name, environment) => {
+    const loadRedisRuntimeConfig = await loadRedisRuntimeConfigFactory();
+    const warnings: string[] = [];
+
+    expect(
+      loadRedisRuntimeConfig(environment, (diagnostic) => {
+        warnings.push(diagnostic);
+      }),
+    ).toBeNull();
+    expect(warnings).toEqual(["CHARACTER_SEARCH_CACHE_CONFIG_INVALID\n"]);
   });
 });
