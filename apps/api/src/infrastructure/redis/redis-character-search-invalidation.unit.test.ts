@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { createRedisCharacterSearchInvalidationOwner as redisInvalidationOwnerFactory } from "./redis-character-search-cache.js";
+
 interface RedisRuntimeConfig {
   readonly host: "127.0.0.1";
   readonly port: number;
@@ -59,15 +61,8 @@ const nestedSearchKey =
   `:characters:search:v1:${nestedDigest}`;
 
 async function loadOwnerFactory(): Promise<CreateRedisCharacterSearchInvalidationOwner> {
-  const module = (await import("./redis-character-search-cache.js")) as Record<
-    string,
-    unknown
-  >;
-
-  expect(module.createRedisCharacterSearchInvalidationOwner).toBeTypeOf(
-    "function",
-  );
-  return module.createRedisCharacterSearchInvalidationOwner as CreateRedisCharacterSearchInvalidationOwner;
+  expect(redisInvalidationOwnerFactory).toBeTypeOf("function");
+  return redisInvalidationOwnerFactory as CreateRedisCharacterSearchInvalidationOwner;
 }
 
 function createClient(options: {

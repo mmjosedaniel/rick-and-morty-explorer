@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CharacterSearchCache } from "../../application/characters/character-search-cache.js";
+import { createRedisCharacterSearchCacheOwner as redisOwnerFactory } from "./redis-character-search-cache.js";
 
 interface RedisRuntimeConfig {
   readonly host: "127.0.0.1";
@@ -64,13 +65,8 @@ const expectedKey =
   "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a";
 
 async function loadOwnerFactory(): Promise<CreateRedisCharacterSearchCacheOwner> {
-  const module = (await import("./redis-character-search-cache.js")) as Record<
-    string,
-    unknown
-  >;
-
-  expect(module.createRedisCharacterSearchCacheOwner).toBeTypeOf("function");
-  return module.createRedisCharacterSearchCacheOwner as CreateRedisCharacterSearchCacheOwner;
+  expect(redisOwnerFactory).toBeTypeOf("function");
+  return redisOwnerFactory as CreateRedisCharacterSearchCacheOwner;
 }
 
 function createClient(overrides: Partial<RedisBaseClient> = {}): {
