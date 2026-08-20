@@ -7,17 +7,17 @@ description: Plan, implement, or review visible frontend UI in this repository w
 
 Apply a narrow frontend-visual overlay without changing the repository's standard worker-first workflow. Product requirements, accepted ADRs, the exact `TASK-*`, routed `SPEC-*` and `HS-*` rules, and repository UI documents always override general design preferences.
 
-## Select the implementation profile
+## Decide whether the frontend-visual overlay applies
 
 Use `frontend-visual` only when the coherent milestone contract materially changes rendered components, CSS, layout, visual hierarchy, responsive presentation, or visible interaction states. Use `standard` for backend work and for frontend setup, generated types, data-access code, cache behavior, or routing logic that has no material presentation contract.
 
 When a proposed milestone mixes separable visual and nonvisual outcomes, split it into coherent milestones. When they cannot be separated without making the observable contract artificial, use `frontend-visual` and state why. A file's location under `apps/web` does not select the profile by itself.
 
-The profile changes only the Green implementation worker and the additional evidence below. It does not change test ownership, Red-Green-Refactor order, write leases, correction budgets, risk routing, review authority, task scope, or closure gates.
+The standard route is implicit and keeps the existing packet unchanged. Do not add a profile marker, reuse audit, visual capsule, or browser-evidence obligation to a standard milestone. The frontend-visual overlay changes only the Green implementation worker and adds the evidence below. It does not change test ownership, Red-Green-Refactor order, write leases, correction budgets, risk routing, review authority, task scope, or closure gates.
 
 ## Prepare the frontend-visual capsule
 
-Before test preflight, the primary coordinator accepts a read-only capsule containing:
+Before test preflight, the primary coordinator either performs or accepts a bounded read-only reuse audit and accepts a capsule containing:
 
 - exact UI/design authority anchors and explicit non-goals;
 - a reuse-audit evidence ID and one disposition for every required component or style;
@@ -27,6 +27,8 @@ Before test preflight, the primary coordinator accepts a read-only capsule conta
 - prohibited scope, dependencies, fields, copy, themes, effects, or animations.
 
 Missing capsule fields stop a `frontend-visual` Green. They do not authorize the implementation worker to design the contract.
+
+Before writing, the frontend worker confirms that every cited reuse path and evidence identity still matches the assigned tree. Drift stops the assignment for coordinator reconciliation; it does not let the worker change a disposition.
 
 ## Audit reuse before implementation
 

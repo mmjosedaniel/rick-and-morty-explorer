@@ -126,4 +126,4 @@ The guard is intentionally separate from [agent-flow metrics](./agent-flow-metri
 - [ExecPlan convention](../PLANS.md)
 - [Repository guidelines](../AGENTS.md)
 - [DPL-DEC-016](../docs/execution/decision-and-progress-log.md)
-- [DPL-DEC-047](../docs/execution/decision-and-progress-log.md)
+- [DPL-DEC-048](../docs/execution/decision-and-progress-log.md)

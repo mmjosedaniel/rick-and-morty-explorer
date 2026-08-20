@@ -22,7 +22,7 @@ The flow supports:
 - `green` plus optional behavior-preserving Refactor by `code_worker` for the standard profile or `frontend_code_worker` for the frontend-visual profile in one implementation turn; and
 - proportional milestone review followed by risk-routed integrated review.
 
-Only one write-capable worker lease may be active in one worktree. Test and implementation workers remain separate and their write phases are always sequential. The coordinator selects exactly one implementation profile before preflight and keeps one test-worker instance plus only the selected implementation-worker instance alive for the current milestone so bounded follow-ups retain role-local context. Persistence never carries a lease across turns: every write follow-up receives a fresh packet, baseline, digest, and terminally closed lease. Retire both workers at the milestone barrier; if the runtime cannot preserve an instance, respawn from the capsule.
+Only one write-capable worker lease may be active in one worktree. Test and implementation workers remain separate and their write phases are always sequential. The unchanged standard route is implicit. Before preflight, the coordinator determines whether the milestone instead triggers the conditional frontend-visual overlay and keeps one test-worker instance plus only the applicable implementation-worker instance alive for the current milestone so bounded follow-ups retain role-local context. Persistence never carries a lease across turns: every write follow-up receives a fresh packet, baseline, digest, and terminally closed lease. Retire both workers at the milestone barrier; if the runtime cannot preserve an instance, respawn from the capsule.
 
 ## Roles
 
@@ -58,7 +58,6 @@ Identity
 - Assignment ID:
 - Lease ID: None for preflight
 - Phase: preflight | evidence | setup | red | green
-- Implementation profile: standard | frontend-visual
 - Attempt: 1 | 2
 - Worker role: test_worker | code_worker | frontend_code_worker
 - Lease owner:
@@ -110,6 +109,7 @@ For `frontend-visual`, append this conditional block after the milestone capsule
 
 ```text
 Frontend-visual capsule
+- Implementation profile: frontend-visual
 - Frontend-quality skill: .agents/skills/frontend-quality/SKILL.md
 - Exact UI/design authority anchors:
 - Reuse-audit evidence ID:
@@ -128,7 +128,7 @@ Preflight is a read-only `test_worker` turn with no lease. Active standard write
 
 The coordinator may add a concise log excerpt, diagram, or exact repository reference when it resolves a named uncertainty. A worker may discover and read an additional relevant file, but must report why the capsule was insufficient. These additions are safe only while they improve understanding without silently widening context or scope.
 
-Stop the worker if new information changes a binding field: task or milestone identity, phase, implementation profile, worker role, objective, governing authority, expected outcome, risk tier, validation command, dependency, side effect, budget, write scope, or any accepted frontend-visual capsule field. The coordinator must close any current lease and decide whether a new packet or milestone contract is authorized.
+Stop the worker if new information changes a binding field: task or milestone identity, phase, worker role, objective, governing authority, expected outcome, risk tier, validation command, dependency, side effect, budget, write scope, or, when present, the implementation profile or any accepted frontend-visual capsule field. The coordinator must close any current lease and decide whether a new packet or milestone contract is authorized.
 
 Accepted command evidence may be reused only when all of these still match: exact command, working directory, relevant-tree fingerprint, environment fingerprint, and guard-backed no-drift state. Evidence against a mutable PostgreSQL, Redis, browser, network, clock, or other external boundary is `Non-reusable` unless the packet pins an isolated run identity and state. Reuse avoids duplicate execution; it never converts a worker report into proof. Any mismatch invalidates the evidence and requires the proportional command to run again.
 
@@ -157,7 +157,7 @@ For a write turn, the coordinator drafts the packet, starts the guard, inserts t
 
 ```mermaid
 flowchart TD
-    A["Coordinator confirms TASK In progress and defines milestone capsule, profile, budget, and risk"] --> B["Persistent test_worker performs read-only preflight"]
+    A["Coordinator confirms TASK In progress and defines milestone capsule, budget, and risk"] --> B["Persistent test_worker performs read-only preflight"]
     B --> C{"Classification"}
     C -- "EXISTING_AND_COVERED" --> H["Accept fresh existing evidence"]
     C -- "EXISTING_BUT_UNCOVERED" --> D["Guarded evidence lease: characterize existing behavior"]
@@ -274,8 +274,9 @@ The [agent-flow metrics](./agent-flow-metrics.md) are an optional, best-effort s
 ```text
 Act as the primary coordinator for the authorized TASK-* and its living ExecPlan.
 Confirm that the canonical task is In progress. Define the next coherent, independently
-verifiable milestone slice and select exactly one implementation profile: standard unless
-the contract materially changes rendered UI, otherwise frontend-visual. Define its
+verifiable milestone slice. Keep the existing standard packet unchanged by default. Only
+when the contract materially changes rendered UI, apply the frontend-visual overlay and
+record its marker in the conditional capsule. Define the milestone's
 acceptance contract, exact authority anchors,
 non-goals, risk tier, validation cadence, and worker, correction, no-diff, and repeated-
 failure budgets. Put only that information and accepted evidence identities in Milestone
