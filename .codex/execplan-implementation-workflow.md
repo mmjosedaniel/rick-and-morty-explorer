@@ -2,11 +2,12 @@
 
 This guide defines the normal implementation path for an authorized ExecPlan. Work advances by coherent, independently verifiable milestone slices rather than one agent turn per assertion or microbehavior. It deliberately keeps exception handling outside the main graph: when a classification, lease, handoff, command, requirement, budget, or review result is not acceptable, writing stops and the primary coordinator decides what the new assignment must be.
 
-The workflow adds three controls without replacing the ExecPlan:
+The workflow adds three controls without replacing the ExecPlan, plus one conditional frontend-visual profile:
 
 - a compact milestone capsule and assignment packet so each role starts with only the authority and evidence it needs;
 - a machine-verified write lease so the worker can change only the assigned paths; and
-- separate test and code contexts, serial Red-Green-Refactor handoffs when behavior is missing or regressed, milestone review, and risk-scaled final review.
+- separate test and code contexts, serial Red-Green-Refactor handoffs when behavior is missing or regressed, milestone review, and risk-scaled final review; and
+- a reuse-first, browser-evidenced overlay only for milestones that materially change rendered UI; the standard profile remains unchanged for every other milestone.
 
 ## When to use this flow
 
@@ -18,10 +19,10 @@ The flow supports:
 - `evidence` by `test_worker` for a passing characterization of existing uncovered behavior;
 - `setup` by `code_worker` for separately planned declarative or infrastructure work;
 - `red` by `test_worker` for one coherent observable milestone-slice contract;
-- `green` plus optional behavior-preserving Refactor by `code_worker` in one implementation turn; and
+- `green` plus optional behavior-preserving Refactor by `code_worker` for the standard profile or `frontend_code_worker` for the frontend-visual profile in one implementation turn; and
 - proportional milestone review followed by risk-routed integrated review.
 
-Only one write-capable worker lease may be active in one worktree. Test and code workers remain separate and their write phases are always sequential. The coordinator should keep one test-worker instance and one code-worker instance alive only for the current milestone so bounded follow-ups retain role-local context. Persistence never carries a lease across turns: every write follow-up receives a fresh packet, baseline, digest, and terminally closed lease. Retire both workers at the milestone barrier; if the runtime cannot preserve an instance, respawn from the capsule.
+Only one write-capable worker lease may be active in one worktree. Test and implementation workers remain separate and their write phases are always sequential. The coordinator selects exactly one implementation profile before preflight and keeps one test-worker instance plus only the selected implementation-worker instance alive for the current milestone so bounded follow-ups retain role-local context. Persistence never carries a lease across turns: every write follow-up receives a fresh packet, baseline, digest, and terminally closed lease. Retire both workers at the milestone barrier; if the runtime cannot preserve an instance, respawn from the capsule.
 
 ## Roles
 
@@ -30,6 +31,7 @@ Only one write-capable worker lease may be active in one worktree. Test and code
 | Primary coordinator | Defines milestone contracts and budgets, creates capsules, packets, and leases, accepts or rejects handoffs, integrates evidence, routes risk, handles approvals and exceptions, and owns final closure. |
 | `test_worker` | Performs read-only preflight, then owns a coherent test-side Red or passing characterization under a lease. It never writes production behavior. |
 | `code_worker` | Performs bounded setup or reaches minimum milestone Green and optionally Refactors in the same turn. It never changes an accepted test. |
+| `frontend_code_worker` | Reaches minimum Green and optionally Refactors only for a `frontend-visual` milestone with an accepted reuse audit and visual contract. It never performs standard-profile work or changes an accepted test. |
 | `milestone_reviewer` | Reviews one ordinary completed milestone and its reusable evidence proportionally. It does not repair findings or close the task. |
 | `independent_reviewer` | Reviews ordinary higher-risk milestones or the integrated final state at Sol high. It does not repair findings or close the task. |
 | `critical_reviewer` | Performs maximum-effort review only for a named critical-risk trigger. It does not repair findings or close the task. |
@@ -56,8 +58,9 @@ Identity
 - Assignment ID:
 - Lease ID: None for preflight
 - Phase: preflight | evidence | setup | red | green
+- Implementation profile: standard | frontend-visual
 - Attempt: 1 | 2
-- Worker role: test_worker | code_worker
+- Worker role: test_worker | code_worker | frontend_code_worker
 - Lease owner:
 - Guard contract digest: None for preflight; inserted after guard start for writes
 
@@ -103,13 +106,29 @@ Handoff
 
 Use `None` when a field is intentionally empty. Do not omit the field. Secrets, full transcripts, whole authority documents, and unrelated conversation history do not belong in the packet.
 
-Preflight is a read-only `test_worker` turn with no lease. Active write pairs are `evidence` or `red` with `test_worker`, and `setup` or `green` with `code_worker`; a same-contract correction uses attempt 2 with the original role/phase pair rather than inventing a `correction` phase. Refactor, when useful, occurs after Green in that same Green assignment.
+For `frontend-visual`, append this conditional block after the milestone capsule. Omit the entire block for `standard`; standard packets gain no visual-audit or browser-evidence obligation.
+
+```text
+Frontend-visual capsule
+- Frontend-quality skill: .agents/skills/frontend-quality/SKILL.md
+- Exact UI/design authority anchors:
+- Reuse-audit evidence ID:
+- Reuse dispositions: REUSE_AS_IS | EXTEND | EXTRACT_LOCAL | CREATE, with exact paths
+- Required state matrix:
+- Required viewport and interaction matrix:
+- Browser or visual-evidence target and reproducibility identity:
+- Prohibited visual scope, dependencies, fields, copy, effects, and motion:
+```
+
+The primary accepts the read-only reuse audit and frontend-visual capsule before test preflight. A missing or contradictory field stops the visual branch; the implementation worker cannot invent or silently revise it. Use the [frontend-quality skill](../.agents/skills/frontend-quality/SKILL.md) to classify the profile and prepare or review this block.
+
+Preflight is a read-only `test_worker` turn with no lease. Active standard write pairs are `evidence` or `red` with `test_worker`, and `setup` or `green` with `code_worker`. An active frontend-visual write pair uses the same `test_worker` route followed by `green` with `frontend_code_worker`; frontend setup and nonvisual frontend work remain standard-profile `code_worker` assignments. A same-contract correction uses attempt 2 with the original role/phase/profile combination rather than inventing a `correction` phase. Refactor, when useful, occurs after Green in that same Green assignment.
 
 ### Binding fields, capsule expansion, and evidence identity
 
 The coordinator may add a concise log excerpt, diagram, or exact repository reference when it resolves a named uncertainty. A worker may discover and read an additional relevant file, but must report why the capsule was insufficient. These additions are safe only while they improve understanding without silently widening context or scope.
 
-Stop the worker if new information changes a binding field: task or milestone identity, phase, worker role, objective, governing authority, expected outcome, risk tier, validation command, dependency, side effect, budget, or write scope. The coordinator must close any current lease and decide whether a new packet or milestone contract is authorized.
+Stop the worker if new information changes a binding field: task or milestone identity, phase, implementation profile, worker role, objective, governing authority, expected outcome, risk tier, validation command, dependency, side effect, budget, write scope, or any accepted frontend-visual capsule field. The coordinator must close any current lease and decide whether a new packet or milestone contract is authorized.
 
 Accepted command evidence may be reused only when all of these still match: exact command, working directory, relevant-tree fingerprint, environment fingerprint, and guard-backed no-drift state. Evidence against a mutable PostgreSQL, Redis, browser, network, clock, or other external boundary is `Non-reusable` unless the packet pins an isolated run identity and state. Reuse avoids duplicate execution; it never converts a worker report into proof. Any mismatch invalidates the evidence and requires the proportional command to run again.
 
@@ -138,7 +157,7 @@ For a write turn, the coordinator drafts the packet, starts the guard, inserts t
 
 ```mermaid
 flowchart TD
-    A["Coordinator confirms TASK In progress and defines milestone capsule, budget, and risk"] --> B["Persistent test_worker performs read-only preflight"]
+    A["Coordinator confirms TASK In progress and defines milestone capsule, profile, budget, and risk"] --> B["Persistent test_worker performs read-only preflight"]
     B --> C{"Classification"}
     C -- "EXISTING_AND_COVERED" --> H["Accept fresh existing evidence"]
     C -- "EXISTING_BUT_UNCOVERED" --> D["Guarded evidence lease: characterize existing behavior"]
@@ -151,7 +170,7 @@ flowchart TD
     F -- "No" --> X
     G -- "No" --> X
     F -- "Yes" --> H
-    G -- "Yes" --> I["Freeze tests; persistent code_worker reaches Green and may Refactor"]
+    G -- "Yes" --> I["Freeze tests; selected code_worker or frontend_code_worker reaches Green and may Refactor"]
     I --> J{"Lease and Green accepted?"}
     J -- "No" --> X
     J -- "Yes" --> H
@@ -197,8 +216,8 @@ For each milestone slice whose preflight result is `MISSING` or `REGRESSION`:
 1. The coordinator uses the milestone ID and assigns `red` to the persistent `test_worker` under a fresh lease.
 2. The test worker adds the smallest coherent test-side change sufficient to prove one indivisible milestone outcome. Related assertions may travel together when splitting them would create artificial handoffs; future milestone behavior may not.
 3. The coordinator closes the lease, inspects the actual test diff and focused result, and either accepts the Red or stops for triage. Once accepted, test-owned paths are frozen for the rest of the milestone.
-4. The coordinator assigns `green` to the persistent `code_worker` under a new packet and lease. The worker may reuse the accepted Red without rerunning it only when its full evidence identity remains fresh. Otherwise it reproduces Red before editing.
-5. The code worker writes only the production behavior required by the accepted milestone contract and may perform a small behavior-preserving Refactor while frozen tests stay unchanged. It reruns the focused check after an actual Refactor, not when no Refactor occurred.
+4. The coordinator assigns `green` under a new packet and lease to the persistent `code_worker` for `standard` or `frontend_code_worker` for `frontend-visual`. The worker may reuse the accepted Red without rerunning it only when its full evidence identity remains fresh. Otherwise it reproduces Red before editing.
+5. The selected implementation worker writes only the production behavior required by the accepted milestone contract and may perform a small behavior-preserving Refactor while frozen tests stay unchanged. It reruns the focused check after an actual Refactor, not when no Refactor occurred. The frontend worker additionally follows the accepted reuse dispositions and visual capsule; it receives no design or scope authority from the stronger model route.
 6. The coordinator closes the implementation lease, inspects the complete production diff and unchanged frozen tests, and accepts Green and any Refactor evidence together.
 7. The coordinator runs the milestone validation cadence, records concise evidence identities in the living ExecPlan, routes review by risk, and retires both milestone workers after acceptance.
 
@@ -234,6 +253,8 @@ After each milestone's worker handoffs are accepted, the coordinator runs the mi
 - `S2`: a fresh `independent_reviewer` reviews the milestone at Sol high.
 - `S3`: a fresh `critical_reviewer` reviews at Sol max.
 
+For a `frontend-visual` milestone, the same risk route also reviews the accepted reuse dispositions and the assigned real-browser evidence. This does not promote the risk tier, add a second reviewer, make Storybook an acceptance boundary, or claim responsive behavior owned by a later task.
+
 Critical triggers override the nominal tier: security; irreversible migration or data-loss risk; concurrency, locking, or recovery; custom serialization, integrity, or identity contracts; cross-platform byte equivalence; an unresolved Blocker or Major from an ordinary reviewer; or explicit project-owner direction. Reviewers reuse fresh evidence under the identity rule and rerun only missing, stale, contradictory, externally mutable, or risk-critical checks.
 
 After all milestones are integrated, the coordinator runs the ExecPlan's closure checks, test-relevance audit, documentation validation, and authoritative status checks. A fresh `independent_reviewer` performs ordinary integrated review; use `critical_reviewer` only when an integrated critical trigger remains. The final reviewer concentrates on cross-milestone interaction, unresolved findings, changed evidence, and closure rather than replaying every already accepted milestone.
@@ -253,12 +274,17 @@ The [agent-flow metrics](./agent-flow-metrics.md) are an optional, best-effort s
 ```text
 Act as the primary coordinator for the authorized TASK-* and its living ExecPlan.
 Confirm that the canonical task is In progress. Define the next coherent, independently
-verifiable milestone slice with its acceptance contract, exact authority anchors,
+verifiable milestone slice and select exactly one implementation profile: standard unless
+the contract materially changes rendered UI, otherwise frontend-visual. Define its
+acceptance contract, exact authority anchors,
 non-goals, risk tier, validation cadence, and worker, correction, no-diff, and repeated-
 failure budgets. Put only that information and accepted evidence identities in Milestone
 Assignment Packet v2; expand reading only to resolve a named uncertainty.
 
-Keep one persistent test_worker and one persistent code_worker only for this milestone.
+For frontend-visual, use .agents/skills/frontend-quality/SKILL.md before preflight, accept
+the reuse audit and complete the conditional frontend-visual capsule. Do not add that
+overhead to standard milestones. Keep one persistent test_worker and only the selected
+code_worker or frontend_code_worker for this milestone.
 Have test_worker perform read-only preflight before any test lease and return exactly
 EXISTING_AND_COVERED, EXISTING_BUT_UNCOVERED, MISSING, REGRESSION, PARTIAL,
 CONFLICTING, or UNKNOWN. Existing covered behavior needs no write. Existing uncovered
@@ -270,8 +296,9 @@ CONFLICTING or UNKNOWN stops for coordinator triage.
 Before every write turn, start the automatic write-lease guard with the packet's exact
 identity and four path lists, insert and verify the digest, and authorize writing only
 under that lease. Close and inspect the lease, actual diff, command evidence, and handoff
-before advancing. Freeze an accepted test boundary. Send Green to the persistent
-code_worker under a fresh packet and lease. Reuse accepted Red evidence only when the
+before advancing. Freeze an accepted test boundary. Send Green under a fresh packet and
+lease to code_worker for standard or frontend_code_worker for frontend-visual. Reuse
+accepted Red evidence only when the
 command, working directory, relevant-tree fingerprint, environment fingerprint, and
 no-drift state still match; otherwise reproduce it. Make minimum Green and run a second
 focused check only after an actual Refactor.
@@ -285,7 +312,9 @@ Run proportional affected validation at the milestone barrier and route review b
 S0 or S1 milestone_reviewer, S2 independent_reviewer, and S3 or a critical trigger
 critical_reviewer. Reuse fresh evidence; rerun only missing, stale,
 contradictory, externally mutable, or risk-critical checks. Retire the milestone workers
-after acceptance.
+after acceptance. For frontend-visual, have that same reviewer inspect the accepted reuse
+dispositions and assigned real-browser evidence without changing the risk tier or adding
+a second reviewer.
 
 At task closure, run the ExecPlan's complete validation, relevance, documentation, and
 authority checks. Use a fresh independent_reviewer for ordinary integrated review or a
@@ -308,5 +337,6 @@ or claim implementation evidence without the corresponding repository and runtim
 - [Automatic write-lease guard](./write-lease-guard.md)
 - [Agent-flow metrics](./agent-flow-metrics.md)
 - [Verify repository skill](../.agents/skills/verify-repository/SKILL.md)
+- [Frontend quality skill](../.agents/skills/frontend-quality/SKILL.md)
 - [ADR-0016, current milestone-slice TDD decision](../docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
 - [ADR-0010, superseded historical testing decision](../docs/adrs/superseded/0010-use-a-targeted-automated-testing-strategy.md)

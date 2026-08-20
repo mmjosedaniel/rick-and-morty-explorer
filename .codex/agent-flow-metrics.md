@@ -20,7 +20,7 @@ flowchart LR
 
 The two input paths are intentionally separate:
 
-- [`.codex/hooks.json`](./hooks.json) observes `SubagentStart` and `SubagentStop` for `test_worker`, `code_worker`, `milestone_reviewer`, `independent_reviewer`, and `critical_reviewer`. Hooks know lifecycle identity and time, but they do not know a preflight classification, whether a failure is a false Red, a correction, or a regression, or whether evidence was reused.
+- [`.codex/hooks.json`](./hooks.json) observes `SubagentStart` and `SubagentStop` for `test_worker`, `code_worker`, `frontend_code_worker`, `milestone_reviewer`, `independent_reviewer`, and `critical_reviewer`. Hooks know lifecycle identity and time, but they do not know a preflight classification, implementation profile, whether a failure is a false Red, a correction, or a regression, or whether evidence was reused.
 - The primary coordinator uses [the metrics CLI](./metrics/agent_flow_metrics.py) to record semantic decisions after inspecting the actual handoff and repository evidence. Workers only echo the assigned workflow, cycle, and lease IDs.
 
 Every invocation publishes one uniquely named JSON file under `logs/agent-flow-metrics/v1/events/`. The repository already ignores `logs/`, and the runtime location remains writable even when the Codex configuration layer is protected from shell writes. Files are written through an atomic same-directory replacement, so concurrent asynchronous hooks never append to a shared file and may safely finish out of order.

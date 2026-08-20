@@ -19,7 +19,7 @@ flowchart LR
     F -- "violated" --> H["Stop writes; coordinator triages and reconciles without automatic revert"]
 ```
 
-Only one worker lease may be active in one Git worktree. Independent work can use separate Git worktrees with separate baselines. One persistent test or code agent may receive multiple sequential assignments inside a milestone, but persistence never extends a lease: the agent cannot write between turns, and every follow-up needs a new lease ID, fresh baseline, digest, and terminal close. The coordinator first drafts the semantic packet, starts the guard from its exact identity and path projection, inserts the returned digest, verifies that both representations match, and then sends the complete packet to the worker. The worker never invokes the guard or edits its runtime records. Read-only test-worker preflight has no lease and authorizes no writes.
+Only one worker lease may be active in one Git worktree. Independent work can use separate Git worktrees with separate baselines. One persistent test or selected implementation agent may receive multiple sequential assignments inside a milestone, but persistence never extends a lease: the agent cannot write between turns, and every follow-up needs a new lease ID, fresh baseline, digest, and terminal close. The coordinator first drafts the semantic packet, starts the guard from its exact identity and path projection, inserts the returned digest, verifies that both representations match, and then sends the complete packet to the worker. The worker never invokes the guard or edits its runtime records. Read-only test-worker preflight has no lease and authorizes no writes.
 
 ## Commands
 
@@ -87,7 +87,7 @@ All commands return one JSON object. Exit `0` means the requested operation is v
 
 ## Scope Rules
 
-- `start` accepts attempts `1` and `2`. Its compatibility schema permits `test_worker` phases `red` or `evidence` and `code_worker` phases `setup`, `green`, `refactor`, or `evidence`; values are lowercase and case-sensitive. The active milestone workflow uses `evidence` for a passing characterization, `red` for a missing or regressed contract, `setup` for independent setup, and `green` for implementation plus optional same-turn Refactor. Before attempt 2, the prior lease must be terminal and the coordinator must reconcile the tree and last accepted barrier. The guard pins attempt and owner but does not decide whether a correction is semantically valid.
+- `start` accepts attempts `1` and `2`. Its compatibility schema permits `test_worker` phases `red` or `evidence`, `code_worker` phases `setup`, `green`, `refactor`, or `evidence`, and only the `green` phase for `frontend_code_worker`; values are lowercase and case-sensitive. The active milestone workflow uses `evidence` for a passing characterization, `red` for a missing or regressed contract, `setup` for independent standard-profile setup, and `green` for implementation plus optional same-turn Refactor. The frontend role remains restricted to the conditional `frontend-visual` Green route; the semantic profile and visual capsule stay in the packet because the guard validates only worker/phase compatibility. Before attempt 2, the prior lease must be terminal and the coordinator must reconcile the tree and last accepted barrier. The guard pins attempt and owner but does not decide whether a correction is semantically valid.
 - `--allow-file` matches one exact repository-relative path. An existing endpoint must be an ordinary file; a missing endpoint may be created as a file during the lease.
 - `--allow-dir-root` matches the named directory and descendants on path-component boundaries. `src` never matches `src2`. An existing root must be an ordinary directory, and a root created during the lease must remain a directory.
 - `--forbid-file` and `--forbid-dir-root` use the same matching rules and always override an allowed scope.
@@ -126,3 +126,4 @@ The guard is intentionally separate from [agent-flow metrics](./agent-flow-metri
 - [ExecPlan convention](../PLANS.md)
 - [Repository guidelines](../AGENTS.md)
 - [DPL-DEC-016](../docs/execution/decision-and-progress-log.md)
+- [DPL-DEC-047](../docs/execution/decision-and-progress-log.md)
