@@ -371,6 +371,7 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-008 - Persist favorite and comment mutations
 
 - **Outcome:** GraphQL mutations persist single-user favorite state and bounded plain-text comments in PostgreSQL.
+- **Execution plan:** The active [TASK-008 favorite/comment mutation ExecPlan](./plans/TASK-008-persist-favorite-and-comment-mutations.md) decomposes one lean backend mutation milestone plus closure; registration does not activate this `Pending` task or prove behavior.
 - **Mapped scope:** FR-FE-004, FR-FE-005, FR-BE-001, FR-BE-003, AC-004, AC-005.
 - **Governing decisions:** ADR-0003, ADR-0005, ADR-0006, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-006; DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
