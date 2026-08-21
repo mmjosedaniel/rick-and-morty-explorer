@@ -106,7 +106,7 @@ AI-generated images may support mood, illustration, or decorative exploration. T
 
 ### DG-001 - Resolved TypeScript test harness
 
-TASK-001 resolved DG-001 through accepted ADR-0011. ADR-0011 did not select Storybook stories as an executable test boundary, and DPL-DEC-013 does not change that decision. The pilot remains outside unit, integration, application, browser-smoke, root-command, and CI evidence unless a future project-owner-approved decision and the implementation plan explicitly promote it.
+TASK-001 historically resolved DG-001 through now-Superseded ADR-0011. Accepted ADR-0018 carries forward the rule that Storybook stories are not an executable test boundary, and DPL-DEC-013 does not change that decision. The pilot remains outside unit, integration, application, browser-smoke, root-command, and CI evidence unless a future project-owner-approved decision and the implementation plan explicitly promote it.
 
 The pilot boundary prohibits the following unless that accepted decision and the implementation plan authorize them:
 
@@ -121,7 +121,7 @@ If future decision work proposes Storybook stories as part of the component-test
 
 TASK-009 resolved DG-003 through accepted ADR-0017, selecting TanStack Query plus a project-owned typed GraphQL executor. Presentational pilot stories may remain driven by component inputs, but any story that exercises queries, mutations, cache ownership, generated operations, request mocking, or explicit detail refetching must use that accepted boundary after the owning implementation task receives separate authorization.
 
-Neither this document nor DPL-DEC-013 implements accepted ADR-0017 or changes the resolved ADR-0011 test boundary.
+Neither this document nor DPL-DEC-013 implements accepted ADR-0017 or changes the resolved ADR-0018 test boundary.
 
 ### DG-006 - Accepted character-image URL successor boundary
 

@@ -7,6 +7,17 @@ import { fileURLToPath } from "node:url";
 const host = "127.0.0.1";
 const port = 4173;
 const webRoot = resolve(fileURLToPath(new URL("../dist/", import.meta.url)));
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'none'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "script-src 'self'",
+  "style-src 'self'",
+  "font-src 'self'",
+  "img-src 'self' https://rickandmortyapi.com/api/character/avatar/",
+  "connect-src 'self' http://127.0.0.1:3000 http://127.0.0.1:4174",
+].join("; ");
 
 const contentTypes: Readonly<Record<string, string>> = {
   ".css": "text/css; charset=utf-8",
@@ -42,7 +53,10 @@ const server = createServer(async (request, response) => {
   const filePath = await resolveRequestPath(pathname);
   const contentType = contentTypes[extname(filePath)] ?? "application/octet-stream";
 
-  response.writeHead(200, { "Content-Type": contentType });
+  response.writeHead(200, {
+    "Content-Security-Policy": contentSecurityPolicy,
+    "Content-Type": contentType,
+  });
   createReadStream(filePath).pipe(response);
 });
 

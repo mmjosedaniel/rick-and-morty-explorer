@@ -1,14 +1,16 @@
 # Rick and Morty Full Stack Assessment
 
+> **Project scope note:** This repository is a portfolio implementation of a [full-stack developer assessment](./docs/FULL_STACK_TECHNICAL_ASSESSMENT.md) found online. Its purpose is to demonstrate the requested full-stack boundaries with a faithful, practical implementation rather than to reproduce the complete public Rick and Morty catalog. Runtime on-demand ingestion was considered as a possible extension, but it was deliberately not adopted: the assessment requires [initializing the relational database with 15 characters](./docs/REQUIREMENTS.md#fr-be-004---initial-data), so this project imports a deterministic first-15 baseline and serves ordinary searches through its own GraphQL, PostgreSQL, and Redis boundaries. On-demand ingestion and full-catalog pagination remain possible future enhancements, not required or implemented behavior.
+
 ## Repository status
 
-This repository has completed the owner-authorized TASK-003 through TASK-007 implementation tasks after establishing the initial requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including ADR-0011 for the TypeScript test harness, [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly, [ADR-0015](./docs/adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) as the current build-first migration lifecycle with a restricted lower-case ASCII, exact catalog-bound v2 identity for one fixed local/CI PostgreSQL profile, and [ADR-0016](./docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) for milestone-slice TDD with separate test and implementation ownership; a target system module diagram; a graph-oriented implementation plan; completed TASK-004 through TASK-007 and TASK-018 ExecPlans, including the completed [TASK-007 ExecPlan](./docs/plans/completed/TASK-007-bounded-redis-cache-aside.md); eleven project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. ADR-0015 and ADR-0016 are `Accepted`, ADR-0010 and ADR-0012 are preserved as `Superseded` history, DG-005 is `Resolved`, and TASK-018 is `Complete`. The corrected [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) remains `PASS`. ADR-0014 remains `Accepted`; ADR-0001, ADR-0004, and ADR-0013 remain preserved `Superseded` history. DG-001, DG-002, DG-004, DG-005, and DG-006 are resolved; TASK-001 through TASK-007, TASK-016, TASK-017, and TASK-018 are `Complete`. TASK-007's earlier acceptance and reproducibility records remain point-in-time evidence, while the current [hosted-CI acceptance re-review](./docs/reviews/2026-08-20-task-007-hosted-ci-acceptance-re-review.md) returns `PASS` on exact merged run `32396138822`. [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) remains `Authorized` only for this personal, educational, non-commercial portfolio under ADR-0014's exact direct-URL boundary and ordinary browser/intermediary caching.
+This repository has completed the owner-authorized TASK-003 through TASK-007 implementation tasks after establishing the initial requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including [ADR-0018](./docs/adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md) for the current TypeScript test harness, with ADR-0011 preserved as Superseded history, [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly, [ADR-0015](./docs/adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) as the current build-first migration lifecycle with a restricted lower-case ASCII, exact catalog-bound v2 identity for one fixed local/CI PostgreSQL profile, and [ADR-0016](./docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) for milestone-slice TDD with separate test and implementation ownership; a target system module diagram; a graph-oriented implementation plan; completed TASK-004 through TASK-007 and TASK-018 ExecPlans, including the completed [TASK-007 ExecPlan](./docs/plans/completed/TASK-007-bounded-redis-cache-aside.md); eleven project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. ADR-0015 and ADR-0016 are `Accepted`, ADR-0010 and ADR-0012 are preserved as `Superseded` history, DG-005 is `Resolved`, and TASK-018 is `Complete`. The corrected [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) remains `PASS`. ADR-0014 remains `Accepted`; ADR-0001, ADR-0004, and ADR-0013 remain preserved `Superseded` history. DG-001, DG-002, DG-004, DG-005, and DG-006 are resolved; TASK-001 through TASK-007, TASK-016, TASK-017, and TASK-018 are `Complete`. TASK-007's earlier acceptance and reproducibility records remain point-in-time evidence, while the current [hosted-CI acceptance re-review](./docs/reviews/2026-08-20-task-007-hosted-ci-acceptance-re-review.md) returns `PASS` on exact merged run `32396138822`. [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) remains `Authorized` only for this personal, educational, non-commercial portfolio under ADR-0014's exact direct-URL boundary and ordinary browser/intermediary caching.
 
-TASK-003 through TASK-007 are `Complete`. TASK-007's canonical/versioned finite-lived Redis search caching, bounded fail-open operations, Redis list-cache-demand-lazy connection, and scoped post-import SCAN/UNLINK invalidation are implemented. PostgreSQL initializes on the first list, detail, or comment read; Redis remains unconnected until a list cache operation. The earlier failed hosted run remains historical evidence, while merged `main` run `32396138822` passes unit 140/140, PostgreSQL/Redis integration 74/74, application 13/13, Chromium 1/1, lifecycle 6/6, and unconditional teardown. The completed [ExecPlan](./docs/plans/completed/TASK-007-bounded-redis-cache-aside.md) preserves the full chronology. Favorite/comment mutations remain owned by TASK-008. AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes; minimum-assessment readiness remains `Fail` at 5/12.
+TASK-003 through TASK-007 and TASK-010 are `Complete`. TASK-007's canonical/versioned finite-lived Redis search caching, bounded fail-open operations, Redis list-cache-demand-lazy connection, and scoped post-import SCAN/UNLINK invalidation are implemented. PostgreSQL initializes on the first list, detail, or comment read; Redis remains unconnected until a list cache operation. Completed TASK-010 adds the typed React list route, exact cards, stable A-Z/Z-A sorting, URL-owned status/species/gender filters, browser states, and the first browser-to-GraphQL-to-PostgreSQL product path. Favorite/comment mutations remain owned by TASK-008. AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes; minimum-assessment readiness remains `Fail` at 7/12.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
-TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. Acceptance is direction, not frontend implementation; TASK-010 remains pending separate execution authorization.
+TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-010 is also `Complete`: its [completed ExecPlan](./docs/plans/completed/TASK-010-character-list-sorting-and-interface-filters.md) and [acceptance review](./docs/reviews/2026-08-20-task-010-acceptance-review.md) preserve the implementation, browser, lifecycle, review, and closure evidence.
 
 ## Documentation map
 
@@ -72,14 +74,14 @@ The current adopted and deferred optional scope is authoritative in the [optiona
 
 ## Readiness status
 
-The current evidence-based [TASK-007 hosted-CI acceptance re-review](./docs/reviews/2026-08-20-task-007-hosted-ci-acceptance-re-review.md) records:
+The current evidence-based [TASK-010 acceptance review](./docs/reviews/2026-08-20-task-010-acceptance-review.md) records:
 
 | View | Current result |
 |---|---|
-| Minimum assessment | Fail: 5 of 12 acceptance criteria pass. TASK-007 completes AC-010 in addition to the already passing AC-007, AC-008, AC-009, and AC-011; mutations, product UI, responsive behavior, final ERD, and complete delivery remain incomplete. |
-| Repository baseline | Fail: TASK-005's deterministic import, TASK-006's adopted OR-001/OR-007/OR-008, and completed TASK-007's Redis behavior and hosted closure pass, but the remaining adopted product commitments are incomplete. |
+| Minimum assessment | Fail: 7 of 12 acceptance criteria pass. TASK-010 completes AC-001 and AC-002 in addition to AC-007, AC-008, AC-009, AC-010, and AC-011; detail/favorite/comment UI, responsive behavior, final ERD, and complete delivery remain incomplete. |
+| Repository baseline | Fail: TASK-005's deterministic import, TASK-006's adopted OR-001/OR-007/OR-008, TASK-007's Redis behavior, and TASK-010's adopted OR-003/OR-004 task portion pass, but the remaining adopted product commitments are incomplete. |
 
-[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is `Resolved` by [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) after fresh final independent `PASS` and explicit project-owner approval of exact proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`. TASK-009 is `Complete`; TASK-010 remains pending separate execution authorization. TASK-004 through TASK-007 are `Complete`. Completed migration/import evidence makes SPEC-010, HS-012, and AC-009 pass. TASK-007 product and hosted evidence makes SPEC-012, HS-013, AC-010, and the Redis portion of NFR-003 pass. Exactly AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes at 5/12.
+[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is `Resolved` by [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) after fresh final independent `PASS` and explicit project-owner approval of exact proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`. TASK-009 and TASK-010 are `Complete`; TASK-004 through TASK-007 are also `Complete`. Completed migration/import evidence makes SPEC-010, HS-012, and AC-009 pass. TASK-007 product and hosted evidence makes SPEC-012, HS-013, AC-010, and the Redis portion of NFR-003 pass. TASK-010 makes SPEC-001, SPEC-002, SPEC-006, AC-001, AC-002, and its HS-015/HS-016/HS-017 portions pass. Exactly AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes at 7/12.
 
 ## Delivery status
 
@@ -93,35 +95,77 @@ This status section must be updated and supplemented with links to reproducible 
 
 ## Repository operation and migration workflow
 
-The repository currently targets Node.js `24.18.0` and npm `11.16.0`. Install the immutable dependency graph and Chromium with:
+### Start the project locally
 
-```text
+The repository targets Node.js `24.18.0` and npm `11.16.0`. Local PostgreSQL and Redis run through Docker Desktop using Linux containers. Before continuing, start Docker Desktop and verify that both the client and server are available and that the server reports `linux`:
+
+```powershell
+node --version
+npm --version
+docker version
+docker info --format '{{.OSType}}'
+```
+
+If a Docker command reports a missing `dockerDesktopLinuxEngine` pipe or cannot connect to the Docker API, wait for Docker Desktop to finish starting or restart it. Do not run migrations, imports, or the applications until Docker is available.
+
+Install the immutable dependency graph once from the repository root:
+
+```powershell
 npm ci
+```
+
+Install Playwright's Chromium only when you intend to run the browser smoke tests:
+
+```powershell
 npm run browser:install
 ```
 
-The local defaults are recorded in [`.env.example`](./.env.example). The API accepts only loopback `API_HOST=127.0.0.1` and a decimal `API_PORT` from 1 through 65535; its defaults are `127.0.0.1:3000`. Redis is fixed to loopback and defaults to `REDIS_PORT=6379`, `REDIS_NAMESPACE=character-app:local`, `REDIS_SEARCH_TTL_SECONDS=300`, and `REDIS_OPERATION_TIMEOUT_MS=250`. Invalid Redis settings disable caching with a stable warning while PostgreSQL remains authoritative. Do not commit real secrets.
+The supported local values are recorded in [`.env.example`](./.env.example). Export them in every new PowerShell session because the API and command-line tools read the current process environment:
 
-With Docker Compose available, the complete development entry starts healthy PostgreSQL and Redis before the foreground web and API processes:
-
-```text
-npm run dev
+```powershell
+$env:API_HOST = '127.0.0.1'
+$env:API_PORT = '3000'
+$env:VITE_GRAPHQL_ENDPOINT = 'http://127.0.0.1:3000/graphql'
+$env:POSTGRES_USER = 'rick_and_morty'
+$env:POSTGRES_PASSWORD = 'local-development-only'
+$env:POSTGRES_DB = 'rick_and_morty'
+$env:POSTGRES_SCHEMA = 'public'
+$env:POSTGRES_PORT = '5432'
+$env:POSTGRES_MIGRATION_LOCK_TIMEOUT_MS = '5000'
+$env:REDIS_PORT = '6379'
+$env:REDIS_NAMESPACE = 'character-app:local'
+$env:REDIS_SEARCH_TTL_SECONDS = '300'
+$env:REDIS_OPERATION_TIMEOUT_MS = '250'
 ```
 
-If another local service already owns a default infrastructure port, set explicit free loopback ports in the same PowerShell session before running the development and infrastructure commands. For example, the verified Windows run preserved an existing PostgreSQL 18.1 service on `5432` and used:
+If another service already owns PostgreSQL port `5432` or Redis port `6379`, select free loopback ports before starting infrastructure. For example:
 
 ```powershell
 $env:POSTGRES_PORT = '55432'
 $env:REDIS_PORT = '56400'
+```
+
+On the first run, start and inspect the scoped infrastructure, apply the schema, import the deterministic 15-character baseline, and only then start the foreground applications:
+
+```powershell
+npm run infra:up
+npm run infra:ps
+npm run migrate:up
+npm run import:characters
+npm run dev:apps
+```
+
+Do not continue past `infra:up` or `infra:ps` if either command fails. `infra:ps` must show both PostgreSQL and Redis as healthy. The import requires internet access to the public Rick and Morty API.
+
+Open the development web application at `http://127.0.0.1:5173`; its `/` route lists imported characters, applies A-Z/Z-A sorting and status/species/gender filters, and keeps applied state in the URL. API liveness is `http://127.0.0.1:3000/healthz`.
+
+For later runs with the initialized Docker volumes, export the same environment values and use the combined entry point:
+
+```powershell
 npm run dev
 ```
 
-The development web URL is `http://127.0.0.1:5173`; API liveness is `http://127.0.0.1:3000/healthz`. Infrastructure remains under the named `rick-and-morty-dev` project after the foreground applications stop. Inspect or remove only that project with:
-
-```text
-npm run infra:ps
-npm run infra:down
-```
+Press `Ctrl+C` to stop the foreground web and API processes. Infrastructure remains under the named `rick-and-morty-dev` Compose project. Inspect it with `npm run infra:ps`. The `npm run infra:down` command removes that project's containers, network, and volumes, including local PostgreSQL and Redis data; use it only when that data loss is intended.
 
 For compiled application processes, run `npm run build` followed by `npm start`. This starts the built web server on `127.0.0.1:4173` and the API on `127.0.0.1:3000`; both remain foreground-owned. `GET /healthz` is liveness-only and remains independent of PostgreSQL and Redis. `POST /graphql` is the query API described below; the first character-list query initializes PostgreSQL and, when configuration is valid, Redis on demand. Detail and comment queries do not acquire Redis.
 
@@ -222,7 +266,7 @@ npm run validate:tailwind
 npm run test:smoke:lifecycle
 ```
 
-Build before the aggregate test command: inherited TASK-004 CLI integration tests execute the compiled `apps/api/dist` migration artifact. Root `npm test` then runs unit, PostgreSQL integration, application, and Chromium smoke in canonical order. Integration tests require the closed local PostgreSQL profile; the smoke owns only ports 4173/4174 and remains independent of PostgreSQL and Redis.
+Build before the aggregate test command: inherited TASK-004 CLI integration tests execute the compiled `apps/api/dist` migration artifact. Root `npm test` then runs unit, PostgreSQL/Redis integration, application, and Chromium smoke in canonical order. Integration tests require the closed local PostgreSQL profile and a test-only Redis namespace. The TASK-010 smoke also requires loopback PostgreSQL and Redis ports; it owns a unique `t010_smoke_<runId>` schema, exact `character-app:test:t010-smoke-<runId>` namespace, and app ports 4173/4174, then cleans only those identities.
 
 ## Codex quick start
 

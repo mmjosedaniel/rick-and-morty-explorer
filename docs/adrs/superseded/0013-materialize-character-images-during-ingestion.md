@@ -524,7 +524,7 @@ Relative-selection confidence is 0.89. Renewed semantic-readiness confidence is 
 - [ADR-0008: Deterministic bootstrap and synchronization](../0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0009: Frontend state ownership](../0009-keep-frontend-state-close-to-its-owner.md)
 - [ADR-0010: Targeted automated testing](./0010-use-a-targeted-automated-testing-strategy.md)
-- [ADR-0011: TypeScript test harness](../0011-define-the-typescript-test-harness.md)
+- [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
 - [ADR-0012: Build-first migration lifecycle](./0012-use-a-build-first-programmatic-migration-lifecycle.md)
 - [Implementation plan](../../IMPLEMENTATION_PLAN.md)
 - [Target system diagram](../../SYSTEM_DIAGRAM.md)

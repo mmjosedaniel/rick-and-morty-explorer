@@ -8,12 +8,12 @@ Feature: Non-negotiable application and delivery constraints
   isolation, validation, and evidence boundaries. Human-controlled decisions
   must not proceed until their governing decision gates are resolved.
 
-  @HS-001 @repository_baseline @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0011 @ADR-0016
-  Rule: Test-harness work must follow accepted ADR-0011
+  @HS-001 @repository_baseline @DG-001 @NFR-004 @OR-001 @OR-004 @OR-007 @ADR-0018 @ADR-0016
+  Rule: Test-harness work must follow accepted ADR-0018
 
     Scenario Outline: Keep controlled work inside the accepted harness boundary
       Given DG-001 has status "Resolved"
-      And ADR-0011 has status "Accepted"
+      And ADR-0018 has status "Accepted"
       When a change proposes <controlledWork>
       Then the change must use <acceptedBoundary>
       And the artifact must be added only by its owning TASK after every other controlling gate is resolved
@@ -45,7 +45,7 @@ Feature: Non-negotiable application and delivery constraints
         | the first migration                          | strict TypeScript source mapped to authenticated immutable emitted ESM |
         | a root migration command                     | the ADR-0015 factory and command facade over one selected build |
         | the PostgreSQL namespace migration lock      | the accepted ADR-0015 catalog-bound migrations:v2 identity instead of ADR-0012's NFC-based migrations:v1 identity |
-        | a database-backed migration test harness     | ADR-0011 isolation invoking the ADR-0015 boundary in TASK-004 |
+        | a database-backed migration test harness     | ADR-0018 isolation invoking the ADR-0015 boundary in TASK-004 |
         | an ERD                                       | migrated-state evidence produced only after TASK-004 implementation |
 
   @HS-003 @repository_baseline @human_decision @DG-003 @FR-FE-001 @FR-FE-002 @FR-FE-003 @FR-FE-004 @FR-FE-005 @OR-003

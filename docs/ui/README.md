@@ -5,6 +5,7 @@
 - Documentation entry point: [repository documentation map](../../README.md#documentation-map)
 - Field-visibility decision: [DPL-DEC-005](../execution/decision-and-progress-log.md#decision-log)
 - Visual foundation: [Color and typography](./visual-foundations.md)
+- Completed implementation plan: [TASK-010 character list, sorting, and interface filters](../plans/completed/TASK-010-character-list-sorting-and-interface-filters.md)
 - Proposed component-workshop pilot: [Storybook workflow](./storybook-workflow.md)
 
 ## Document role
@@ -27,7 +28,7 @@ Rick and Morty REST API
        -> https://rickandmortyapi.com/api/character/avatar/<id>.jpeg
 ```
 
-In that target, the browser communicates with the project GraphQL API for product data. PostgreSQL remains authoritative for the character-to-image-locator association, while a native image element requests the exact validated upstream avatar URL directly under anonymous CORS, a no-referrer policy, and an enforcing path-qualified CSP. The application will not acquire, store, proxy, cache, or serve image bytes. [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns character ingestion and accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) owns the image boundary. No product GraphQL, persistence, import, or image-delivery path is implemented yet.
+In that target, the browser communicates with the project GraphQL API for product data. PostgreSQL remains authoritative for the character-to-image-locator association, while a native image element requests the exact validated upstream avatar URL directly under anonymous CORS, a no-referrer policy, and an enforcing path-qualified CSP. The application will not acquire, store, proxy, cache, or serve image bytes. [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns character ingestion and accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) owns the image boundary. Migrations, deterministic import, PostgreSQL persistence, exact URL validation/projection, GraphQL reads, bounded Redis summary caching, the React list product-data request, the native list-avatar request, and the enforcing web CSP are implemented with repository and runtime evidence. Detail imagery and image-failure presentation remain pending later frontend tasks.
 
 The [target system module diagram](../SYSTEM_DIAGRAM.md#module-view) shows these distinct product-data and avatar-representation paths in the complete modular context. ADR-0014 resolves DG-006 and supersedes ADR-0001 and ADR-0013 as whole records while carrying their unaffected architecture forward. ADR-0004 remains Superseded history, and GraphQL remains the only product-data API.
 
@@ -95,7 +96,7 @@ Favorite state and comments are intentionally absent from `CharacterSummary`. Ca
 
 The backend also supports name and origin filters, but they are not adopted frontend controls under OR-003. The project-owned origin filter operates on imported `origin.name` data because the upstream REST API does not provide an origin filter. The upstream API supports a type filter, but the project GraphQL contract and current requirements do not. A mockup must not add name, origin, or type controls without first checking whether that changes the approved UI scope.
 
-The default sort direction, URL parameter names, invalid-value recovery, and the source of selectable species values remain reversible TASK-010 UI decisions. Record the accepted choices in the [decision and progress log](../execution/decision-and-progress-log.md) before dependent implementation begins.
+[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the reversible TASK-010 choices before implementation: the URL parameters are `sort`, `status`, `species`, and `gender`; omitted/`asc` is the A-Z default and `desc` is Z-A. Status accepts `alive`, `dead`, or `unknown`; gender accepts `female`, `male`, `genderless`, or `unknown`. Unsupported closed values are removed, and species remains open text but is trimmed, lower-cased, and removed when blank. Invalid-URL recovery replaces the current history entry. Status and gender use closed selects, species uses a text input, and one explicit form submission updates the URL-owned applied state.
 
 ### Character detail
 
@@ -143,17 +144,11 @@ The visible detail controls are a favorite toggle reflecting `isFavorite`, a com
 
 Accepted [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) resolves [DG-006](../IMPLEMENTATION_PLAN.md#dg-006---character-image-url-successor-boundary). The explicit importer must bind the requested ID, payload ID, and exact `Character.image` URL; PostgreSQL stores only that locator; GraphQL and the finite Redis summary projection return the same absolute value; and native list and detail images request it with anonymous CORS, no referrer, and the enforcing path-qualified `img-src`. The browser must not call the upstream character JSON API, and the application must not add image bytes, a proxy, or an asset route. Provider availability, redirects, final content, cache freshness, revocation, request telemetry, and visitor metadata disclosure remain documented limitations. ADR-0001 and ADR-0013 are retained as Superseded history, and ADR-0004 remains Superseded through that chronology.
 
-This field audit records the accepted target, not implementation evidence. No migration, importer, URL mapping, CSP header, browser request, fallback, or executable image test exists. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only within the recorded personal, educational, non-commercial portfolio and direct-URL scope; the implementation plan owns its scope-bound continuity and reopen policy, while ADR-0014 independently owns the current direct-URL technical boundary. Mockups and deterministic local fixtures may define the required square image and failure presentation, but authorization does not make them a production path or prove live runtime behavior.
+This field audit records the accepted UI target and links to evidence owners rather than serving as acceptance evidence itself. The migration, importer, PostgreSQL mapping, exact URL projection, GraphQL summary/detail results, Redis summary codec, enforcing built-web CSP, and native list product-browser avatar request exist with task-owned tests and deterministic browser evidence. The list smoke proves exact native URLs, anonymous CORS, no referrer or credentials, matching Origin/ACAO, successful 300-by-300 decoding, and no public character-JSON request. Native detail imagery and the layout-safe image-failure fallback remain pending later tasks. [AUTH-001](../IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) is `Authorized` only within the recorded personal, educational, non-commercial portfolio and direct-URL scope; the implementation plan owns its scope-bound continuity and reopen policy, while ADR-0014 independently owns the current direct-URL technical boundary. Mockups and deterministic local fixtures may define the required square image and failure presentation, but authorization does not make them a production path or prove live runtime behavior.
 
 ## Open UI decisions
 
-The field audit leaves these presentation choices open:
-
-1. Choose the status, species, and gender control types and the source of species options.
-2. Select the default sort direction, URL parameter names, and invalid-value recovery behavior.
-3. Decide whether the initial 20 comments need a visible pagination or load-more control.
-
-These are design or reversible execution decisions, not reasons to expose additional upstream fields.
+[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the TASK-010 control types, default sort, URL parameters, and invalid-value recovery. The remaining open presentation decision is whether TASK-011 needs a visible pagination or load-more control for its initial 20 comments. That later decision is not a reason to add list pagination or expose additional upstream fields in TASK-010.
 
 ## Planned mockup coverage
 

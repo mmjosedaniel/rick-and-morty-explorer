@@ -375,7 +375,7 @@ If a candidate cannot make schema and metadata changes atomic, the research and 
 
 At plan-authoring time, the relevant tracked-tree baseline is:
 
-    Highest allocated ADR: docs/adrs/0011-define-the-typescript-test-harness.md
+    Highest allocated ADR: docs/adrs/superseded/0011-define-the-typescript-test-harness.md
     TASK-002 status: Pending
     DG-002 status: Pending
     TASK-004 status: Pending

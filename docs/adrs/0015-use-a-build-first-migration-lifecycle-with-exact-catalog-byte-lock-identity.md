@@ -5,13 +5,15 @@
 - Approval date: 2026-08-14
 - Decision owners: Project owner and project maintainers
 - Related requirements: FR-BE-003, FR-BE-004, NFR-003, DEL-002, AC-009, AC-012, OR-001
-- Related decisions: ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0012, ADR-0014
+- Related decisions: ADR-0002, ADR-0003, ADR-0008, ADR-0010, ADR-0011, ADR-0012, ADR-0014, ADR-0018
 - Controlled gate: DG-005; resolved by fresh independent `PASS` on exact proposal SHA-256 `8B7B9EC9508DF01E57EA067344896814CD0B0B1B3D8083B889C7ED44AA5432B1` and explicit project-owner approval on 2026-08-14
 - Owning task: TASK-018 (Complete)
 - Supersedes: ADR-0012
 - Superseded by: None
 
 ## Context
+
+> Current harness note: references below to ADR-0011 preserve this decision's approved historical wording. Accepted ADR-0018 now carries those run-isolation, cleanup, and failure-preservation rules forward unchanged while replacing only browser-smoke process ownership.
 
 The backend must use Sequelize migrations to create a PostgreSQL application schema, and the repository has adopted strict TypeScript and ECMAScript modules as delivery commitments. The same logical migration sequence must support local setup, ADR-0011 isolated PostgreSQL namespaces, rollback and recovery, and later delivery execution. Migrations must remain deterministic and network-free, while ADR-0008's explicit importer initializes the required 15 characters only after schema creation.
 
@@ -517,7 +519,8 @@ The score is 92/100. The owner-selected ASCII/local profile is proportional for 
 - [ADR-0003: PostgreSQL relational persistence](./0003-use-postgresql-for-relational-persistence.md)
 - [ADR-0008: Deterministic bootstrap and import](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0010: Targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
-- [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
+- [ADR-0011: Superseded TypeScript test harness](./superseded/0011-define-the-typescript-test-harness.md)
+- [ADR-0018: Current TypeScript test harness with repository-owned smoke orchestration](./0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md)
 - [ADR-0012: Superseded build-first migration lifecycle](./superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md)
 - [ADR-0014: Accepted direct image-URL persistence](./0014-persist-and-deliver-character-image-urls-directly.md)
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
