@@ -6,11 +6,11 @@
 
 This repository has completed the owner-authorized TASK-003 through TASK-007 implementation tasks after establishing the initial requirements and architecture foundation. It contains the assessment contract; accepted architecture decisions including [ADR-0018](./docs/adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md) for the current TypeScript test harness, with ADR-0011 preserved as Superseded history, [ADR-0014](./docs/adrs/0014-persist-and-deliver-character-image-urls-directly.md) for persisting each exact validated official avatar URL and loading it directly, [ADR-0015](./docs/adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) as the current build-first migration lifecycle with a restricted lower-case ASCII, exact catalog-bound v2 identity for one fixed local/CI PostgreSQL profile, and [ADR-0016](./docs/adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md) for milestone-slice TDD with separate test and implementation ownership; a target system module diagram; a graph-oriented implementation plan; completed TASK-004 through TASK-007 and TASK-018 ExecPlans, including the completed [TASK-007 ExecPlan](./docs/plans/completed/TASK-007-bounded-redis-cache-aside.md); eleven project-scoped Codex agent definitions; derived Gherkin specifications; UI specifications; execution records; and repository-specific workflow guidance. ADR-0015 and ADR-0016 are `Accepted`, ADR-0010 and ADR-0012 are preserved as `Superseded` history, DG-005 is `Resolved`, and TASK-018 is `Complete`. The corrected [TASK-004 acceptance re-review](./docs/reviews/2026-08-16-task-004-acceptance-re-review.md) remains `PASS`. ADR-0014 remains `Accepted`; ADR-0001, ADR-0004, and ADR-0013 remain preserved `Superseded` history. DG-001, DG-002, DG-004, DG-005, and DG-006 are resolved; TASK-001 through TASK-007, TASK-016, TASK-017, and TASK-018 are `Complete`. TASK-007's earlier acceptance and reproducibility records remain point-in-time evidence, while the current [hosted-CI acceptance re-review](./docs/reviews/2026-08-20-task-007-hosted-ci-acceptance-re-review.md) returns `PASS` on exact merged run `32396138822`. [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) remains `Authorized` only for this personal, educational, non-commercial portfolio under ADR-0014's exact direct-URL boundary and ordinary browser/intermediary caching.
 
-TASK-003 through TASK-007 and TASK-010 are `Complete`. TASK-007's canonical/versioned finite-lived Redis search caching, bounded fail-open operations, Redis list-cache-demand-lazy connection, and scoped post-import SCAN/UNLINK invalidation are implemented. PostgreSQL initializes on the first list, detail, or comment read; Redis remains unconnected until a list cache operation. Completed TASK-010 adds the typed React list route, exact cards, stable A-Z/Z-A sorting, URL-owned status/species/gender filters, browser states, and the first browser-to-GraphQL-to-PostgreSQL product path. Favorite/comment mutations remain owned by TASK-008. AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes; minimum-assessment readiness remains `Fail` at 7/12.
+TASK-003 through TASK-008 and TASK-010 are `Complete`. TASK-007's canonical/versioned finite-lived Redis search caching, bounded fail-open operations, Redis list-cache-demand-lazy connection, and scoped post-import SCAN/UNLINK invalidation are implemented. PostgreSQL initializes on the first list, detail, or comment read or the first favorite/comment mutation; mutation-first initialization does not connect to Redis. Completed TASK-010 adds the typed React list route, exact cards, stable A-Z/Z-A sorting, URL-owned status/species/gender filters, browser states, and the first browser-to-GraphQL-to-PostgreSQL product path. Completed TASK-008 adds the exact backend favorite/comment mutations, validation, PostgreSQL persistence, and TASK-006 detail-query readback; UI mutation operations, refetching, and end-to-end interaction evidence remain TASK-011. AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes; minimum-assessment readiness remains `Fail` at 7/12.
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
-TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-010 is also `Complete`: its [completed ExecPlan](./docs/plans/completed/TASK-010-character-list-sorting-and-interface-filters.md) and [acceptance review](./docs/reviews/2026-08-20-task-010-acceptance-review.md) preserve the implementation, browser, lifecycle, review, and closure evidence.
+TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-010 and TASK-008 are also `Complete`: their completed [TASK-010 ExecPlan](./docs/plans/completed/TASK-010-character-list-sorting-and-interface-filters.md), [TASK-008 ExecPlan](./docs/plans/completed/TASK-008-persist-favorite-and-comment-mutations.md), and [TASK-008 acceptance review](./docs/reviews/2026-08-21-task-008-acceptance-review.md) preserve implementation, runtime, review, and closure evidence.
 
 ## Documentation map
 
@@ -74,14 +74,14 @@ The current adopted and deferred optional scope is authoritative in the [optiona
 
 ## Readiness status
 
-The current evidence-based [TASK-010 acceptance review](./docs/reviews/2026-08-20-task-010-acceptance-review.md) records:
+The current evidence-based [TASK-008 acceptance review](./docs/reviews/2026-08-21-task-008-acceptance-review.md) records:
 
 | View | Current result |
 |---|---|
-| Minimum assessment | Fail: 7 of 12 acceptance criteria pass. TASK-010 completes AC-001 and AC-002 in addition to AC-007, AC-008, AC-009, AC-010, and AC-011; detail/favorite/comment UI, responsive behavior, final ERD, and complete delivery remain incomplete. |
-| Repository baseline | Fail: TASK-005's deterministic import, TASK-006's adopted OR-001/OR-007/OR-008, TASK-007's Redis behavior, and TASK-010's adopted OR-003/OR-004 task portion pass, but the remaining adopted product commitments are incomplete. |
+| Minimum assessment | Fail: 7 of 12 acceptance criteria pass. TASK-008 completes the backend favorite/comment mutation branch without completing AC-004 or AC-005; detail/favorite/comment UI, responsive behavior, final ERD, and complete delivery remain incomplete. |
+| Repository baseline | Fail: TASK-005's deterministic import, TASK-006's adopted OR-001/OR-007/OR-008, TASK-007's Redis behavior, TASK-008's single-user backend interaction portions, and TASK-010's adopted OR-003/OR-004 task portion pass, but the remaining adopted product commitments are incomplete. |
 
-[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is `Resolved` by [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) after fresh final independent `PASS` and explicit project-owner approval of exact proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`. TASK-009 and TASK-010 are `Complete`; TASK-004 through TASK-007 are also `Complete`. Completed migration/import evidence makes SPEC-010, HS-012, and AC-009 pass. TASK-007 product and hosted evidence makes SPEC-012, HS-013, AC-010, and the Redis portion of NFR-003 pass. TASK-010 makes SPEC-001, SPEC-002, SPEC-006, AC-001, AC-002, and its HS-015/HS-016/HS-017 portions pass. Exactly AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes at 7/12.
+[DG-003](./docs/IMPLEMENTATION_PLAN.md#dg-003---frontend-graphql-client-and-query-cache) is `Resolved` by [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) after fresh final independent `PASS` and explicit project-owner approval of exact proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158`. TASK-004 through TASK-010 are `Complete` except TASK-011, which remains `Pending`. Completed migration/import evidence makes SPEC-010, HS-012, and AC-009 pass. TASK-007 product and hosted evidence makes SPEC-012, HS-013, AC-010, and the Redis portion of NFR-003 pass. TASK-008 completes the backend mutation portions of SPEC-004, SPEC-005, SPEC-008, HS-005, HS-009, and HS-015 and completes SPEC-011 when joined with TASK-005/TASK-006 evidence; it does not complete their TASK-011 UI/refetch portions or AC-004/AC-005. TASK-010 makes SPEC-001, SPEC-002, SPEC-006, AC-001, AC-002, and its HS-015/HS-016/HS-017 portions pass. Exactly AC-001, AC-002, AC-007, AC-008, AC-009, AC-010, and AC-011 product behavior passes at 7/12.
 
 ## Delivery status
 
@@ -248,9 +248,29 @@ query CharacterDetail($id: ID!, $limit: Int, $offset: Int) {
 }
 ```
 
+Persist the exact ADR-0006 interactions with:
+
+```graphql
+mutation SetCharacterFavorite($id: ID!, $isFavorite: Boolean!) {
+  setCharacterFavorite(id: $id, isFavorite: $isFavorite) {
+    id
+    isFavorite
+  }
+}
+
+mutation AddCharacterComment($characterId: ID!, $body: String!) {
+  addCharacterComment(characterId: $characterId, body: $body) {
+    id
+    characterId
+    body
+    createdAt
+  }
+}
+```
+
 Character IDs must be positive base-10 safe integers. Comment pagination defaults to `limit: 20` and `offset: 0`; limits must be 1 through 50 and offsets must be non-negative. Comments are returned newest first by stored creation time and then descending comment ID. The exact stored `image_url` is projected as `imageUrl`; the API does not fetch upstream character JSON, proxy image bytes, or transform the URL.
 
-Invalid input returns `BAD_USER_INPUT`, a valid missing character returns `NOT_FOUND`, and unexpected failures return redacted `INTERNAL_SERVER_ERROR`. Original unexpected failures are written only to the server diagnostic sink. Every completed Express response writes one bounded JSON record to standard output with `requestId`, `method`, query-free `path`, `status`, `durationMs`, `errorCount`, and a bounded `operationName` or `null`; request bodies, GraphQL variables/documents, credentials, comments, stacks, SQL, and diagnostics are excluded. The schema is query-only: TASK-008 owns future favorite/comment mutations.
+Invalid input returns `BAD_USER_INPUT`, a valid missing character returns `NOT_FOUND`, and unexpected failures return redacted `INTERNAL_SERVER_ERROR`. Comment bodies are trimmed and must contain 1 through 1,000 Unicode code points; their validated value is stored as plain text. The mutations use ADR-0005's global single-user model, persist only in PostgreSQL, and do not invalidate the list-search Redis cache. Original unexpected failures are written only to the server diagnostic sink. Every completed Express response writes one bounded JSON record to standard output with `requestId`, `method`, query-free `path`, `status`, `durationMs`, `errorCount`, and a bounded `operationName` or `null`; request bodies, GraphQL variables/documents, credentials, comments, stacks, SQL, and diagnostics are excluded. Anonymous public deployment of the write surface remains blocked by ADR-0005 and HS-005.
 
 Authoritative verification commands are:
 

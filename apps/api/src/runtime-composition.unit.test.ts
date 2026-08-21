@@ -39,6 +39,45 @@ interface OwnedCharacterReadRepository {
   close(): Promise<void>;
 }
 
+interface CharacterInteractionRepository {
+  setFavorite(
+    id: number,
+    isFavorite: boolean,
+  ): Promise<CharacterDetail | null>;
+  addComment(
+    characterId: number,
+    body: string,
+  ): Promise<CharacterComment | null>;
+}
+
+interface CharacterInteractionService {
+  setFavorite(
+    id: number,
+    isFavorite: boolean,
+  ): Promise<CharacterDetail | null>;
+  addComment(
+    characterId: number,
+    body: string,
+  ): Promise<CharacterComment | null>;
+}
+
+interface LazyCharacterRuntimeOwner extends LazyCharacterReadServiceOwner {
+  readonly characterInteractionService: CharacterInteractionService;
+}
+
+type CreateProductionCharacterRuntimeOwner = (options: {
+  readonly environment: Readonly<Record<string, string | undefined>>;
+  readonly initializePostgres: () => Promise<
+    OwnedCharacterReadRepository & {
+      readonly interactionRepository: CharacterInteractionRepository;
+    }
+  >;
+  readonly createCacheOwner: (
+    config: RedisRuntimeConfig,
+  ) => OwnedCharacterSearchCache;
+  readonly writeWarning?: (diagnostic: string) => void;
+}) => LazyCharacterRuntimeOwner;
+
 type CreateProductionCharacterReadServiceOwner = (options: {
   readonly environment: Readonly<Record<string, string | undefined>>;
   readonly initializePostgres: () => Promise<OwnedCharacterReadRepository>;
@@ -58,6 +97,18 @@ async function loadProductionOwnerFactory(): Promise<CreateProductionCharacterRe
     "function",
   );
   return module.createProductionCharacterReadServiceOwner as CreateProductionCharacterReadServiceOwner;
+}
+
+async function loadProductionRuntimeOwnerFactory(): Promise<CreateProductionCharacterRuntimeOwner> {
+  const module = (await import("./runtime-composition.js")) as Record<
+    string,
+    unknown
+  >;
+
+  expect(module.createProductionCharacterReadServiceOwner).toBeTypeOf(
+    "function",
+  );
+  return module.createProductionCharacterReadServiceOwner as CreateProductionCharacterRuntimeOwner;
 }
 
 function createDeferred<T>(): Deferred<T> {
@@ -194,6 +245,50 @@ describe("TASK-007 Milestone 2 production cache ownership", () => {
     expect(closePostgres).toHaveBeenCalledOnce();
   });
 
+  it("closes initialized PostgreSQL immediately when cache-owner construction fails", async () => {
+    const createProductionCharacterReadServiceOwner =
+      await loadProductionOwnerFactory();
+    const closePostgres = vi.fn(async () => {});
+    const queryAfterClose = new Error("QUERY_AFTER_CLOSE");
+    const findDetail = vi.fn(async () => {
+      throw queryAfterClose;
+    });
+    const initializePostgres = vi.fn(async () => ({
+      repository: { search: vi.fn(async () => [summary]), findDetail },
+      close: closePostgres,
+    }));
+    const cacheOwnerFailure = new Error("CACHE_OWNER_CONSTRUCTION_FAILED");
+    const createCacheOwner = vi.fn((_config: RedisRuntimeConfig) => {
+      throw cacheOwnerFailure;
+    });
+    const owner = createProductionCharacterReadServiceOwner({
+      environment: {
+        REDIS_PORT: "56400",
+        REDIS_NAMESPACE: "character-app:test:t008-m1-cache-cleanup",
+        REDIS_SEARCH_TTL_SECONDS: "300",
+        REDIS_OPERATION_TIMEOUT_MS: "250",
+      },
+      initializePostgres,
+      createCacheOwner,
+    });
+
+    await expect(owner.characterReadService.list(undefined)).rejects.toBe(
+      cacheOwnerFailure,
+    );
+    expect(initializePostgres).toHaveBeenCalledOnce();
+    expect(createCacheOwner).toHaveBeenCalledOnce();
+    expect.soft(closePostgres).toHaveBeenCalledOnce();
+
+    await expect
+      .soft(owner.characterReadService.detail?.(2))
+      .rejects.toThrow("CHARACTER_RUNTIME_CLOSED");
+    expect.soft(findDetail).not.toHaveBeenCalled();
+    expect(createCacheOwner).toHaveBeenCalledOnce();
+
+    await owner.close();
+    expect(closePostgres).toHaveBeenCalledOnce();
+  });
+
   it("emits one safe warning and disables only caching for invalid Redis configuration", async () => {
     const createProductionCharacterReadServiceOwner =
       await loadProductionOwnerFactory();
@@ -223,5 +318,71 @@ describe("TASK-007 Milestone 2 production cache ownership", () => {
 
     await owner.close();
     expect(closePostgres).toHaveBeenCalledOnce();
+  });
+});
+
+describe("TASK-008 Milestone 1 interaction runtime ownership", () => {
+  it("initializes and closes PostgreSQL once for mutations without creating a Redis owner", async () => {
+    const createProductionCharacterRuntimeOwner =
+      await loadProductionRuntimeOwnerFactory();
+    const summary: CharacterSummary = {
+      id: 1,
+      name: "Rick Sanchez",
+      imageUrl: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+      species: "Human",
+    };
+    const detail: CharacterDetail = {
+      ...summary,
+      status: "Alive",
+      gender: "Male",
+      type: "",
+      origin: { name: "Earth", url: "https://example.test/earth" },
+      isFavorite: true,
+    };
+    const comment: CharacterComment = { id: 9, body: "Runtime comment" };
+    const setFavorite = vi.fn(async () => detail);
+    const addComment = vi.fn(async () => comment);
+    const closePostgres = vi.fn(async () => {});
+    const initializePostgres = vi.fn(async () => ({
+      repository: { search: vi.fn(async () => []) },
+      interactionRepository: { setFavorite, addComment },
+      close: closePostgres,
+    }));
+    const createCacheOwner = vi.fn((_config: RedisRuntimeConfig) => ({
+      cache: {
+        read: vi.fn(async () => null),
+        write: vi.fn(async () => {}),
+        unlink: vi.fn(async () => {}),
+      },
+      close: vi.fn(async () => {}),
+    }));
+    const owner = createProductionCharacterRuntimeOwner({
+      environment: {
+        REDIS_PORT: "56400",
+        REDIS_NAMESPACE: "character-app:test:t008-m1-runtime",
+        REDIS_SEARCH_TTL_SECONDS: "300",
+        REDIS_OPERATION_TIMEOUT_MS: "250",
+      },
+      initializePostgres,
+      createCacheOwner,
+    });
+
+    expect(initializePostgres).not.toHaveBeenCalled();
+    expect(createCacheOwner).not.toHaveBeenCalled();
+
+    await expect(
+      owner.characterInteractionService.setFavorite(1, true),
+    ).resolves.toBe(detail);
+    await expect(
+      owner.characterInteractionService.addComment(1, "Runtime comment"),
+    ).resolves.toBe(comment);
+    expect(setFavorite).toHaveBeenCalledWith(1, true);
+    expect(addComment).toHaveBeenCalledWith(1, "Runtime comment");
+    expect(initializePostgres).toHaveBeenCalledOnce();
+    expect(createCacheOwner).not.toHaveBeenCalled();
+
+    await Promise.all([owner.close(), owner.close()]);
+    expect(closePostgres).toHaveBeenCalledOnce();
+    expect(createCacheOwner).not.toHaveBeenCalled();
   });
 });

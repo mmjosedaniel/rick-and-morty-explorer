@@ -5,6 +5,7 @@ import { createApp } from "./app.js";
 import { parseApiHost, parseApiPort } from "./config.js";
 import { createPostgresSequelize } from "./infrastructure/database/postgres-runtime.js";
 import { createSequelizeCharacterReadRepository } from "./infrastructure/database/sequelize-character-read-repository.js";
+import { createSequelizeCharacterInteractionRepository } from "./infrastructure/database/sequelize-character-interaction-repository.js";
 import { createRedisCharacterSearchCacheOwner } from "./infrastructure/redis/redis-character-search-cache.js";
 import { createProductionCharacterReadServiceOwner } from "./runtime-composition.js";
 
@@ -19,9 +20,14 @@ const characterReadServiceOwner = createProductionCharacterReadServiceOwner({
       sequelize,
       schema,
     });
+    const interactionRepository = createSequelizeCharacterInteractionRepository({
+      sequelize,
+      schema,
+    });
 
     return {
       repository,
+      interactionRepository,
       close: async () => sequelize.close(),
     };
   },
@@ -30,6 +36,8 @@ const characterReadServiceOwner = createProductionCharacterReadServiceOwner({
 });
 const app = createApp({
   characterReadService: characterReadServiceOwner.characterReadService,
+  characterInteractionService:
+    characterReadServiceOwner.characterInteractionService,
   enableGraphiql: false,
   requestLogging: {
     write: (line) => {

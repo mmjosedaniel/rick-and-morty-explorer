@@ -1,6 +1,7 @@
 import type { GraphQLError } from "graphql";
 import { createGraphQLError } from "graphql-yoga";
 
+import { InvalidCharacterCommentError } from "../../application/characters/character-interaction-service.js";
 import type { CharacterFilterInput } from "../../application/characters/character-read-service.js";
 import type { Resolvers } from "./generated/resolver-types.js";
 import type { GraphqlContext } from "./graphql-handler.js";
@@ -73,6 +74,26 @@ function internalError(
   });
 }
 
+function notFound(): GraphQLError {
+  return createGraphQLError("Character not found", {
+    extensions: { code: "NOT_FOUND" },
+  });
+}
+
+function mapCharacterDetail(character: {
+  readonly id: number;
+  readonly name: string;
+  readonly imageUrl: string;
+  readonly species: string;
+  readonly status: string;
+  readonly gender: string;
+  readonly type: string;
+  readonly origin: { readonly name: string; readonly url: string };
+  readonly isFavorite: boolean;
+}) {
+  return { ...character, id: character.id.toString(), comments: [] };
+}
+
 export const resolvers: Resolvers<GraphqlContext> = {
   Query: {
     characters: async (
@@ -115,12 +136,53 @@ export const resolvers: Resolvers<GraphqlContext> = {
       }
 
       if (character === null) {
-        throw createGraphQLError("Character not found", {
-          extensions: { code: "NOT_FOUND" },
-        });
+        throw notFound();
       }
 
-      return { ...character, id: character.id.toString(), comments: [] };
+      return mapCharacterDetail(character);
+    },
+  },
+  Mutation: {
+    setCharacterFavorite: async (
+      _parent,
+      { id: rawId, isFavorite },
+      { characterInteractionService, reportUnexpectedError },
+    ) => {
+      const id = parseCharacterId(rawId);
+      let character;
+      try {
+        character = await characterInteractionService.setFavorite(
+          id,
+          isFavorite,
+        );
+      } catch (error) {
+        throw internalError(error, reportUnexpectedError);
+      }
+
+      if (character === null) throw notFound();
+      return mapCharacterDetail(character);
+    },
+    addCharacterComment: async (
+      _parent,
+      { characterId: rawCharacterId, body },
+      { characterInteractionService, reportUnexpectedError },
+    ) => {
+      const characterId = parseCharacterId(rawCharacterId);
+      let comment;
+      try {
+        comment = await characterInteractionService.addComment(
+          characterId,
+          body,
+        );
+      } catch (error) {
+        if (error instanceof InvalidCharacterCommentError) {
+          throw badUserInput();
+        }
+        throw internalError(error, reportUnexpectedError);
+      }
+
+      if (comment === null) throw notFound();
+      return { id: comment.id.toString(), body: comment.body };
     },
   },
   CharacterDetail: {

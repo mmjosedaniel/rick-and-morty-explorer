@@ -6,6 +6,8 @@ The repository has completed TASK-003 through TASK-007 and TASK-010 after establ
 
 TASK-009 is `Complete` after the project owner approved exact independently reviewed proposal SHA-256 `2A691BB6C2A025F264B9ABE70E93F45801B932404C4005090D0EB71808267158` on 2026-08-18, DG-003 was resolved, and the documentation gate passed. [Accepted ADR-0017](./adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. The project owner separately authorized TASK-010 execution on 2026-08-20; its milestones, complete closure packet, fresh integrated `PASS WITH FOLLOW-UPS`, and documentation gate now pass, so TASK-010 is `Complete`.
 
+TASK-008 is `Complete` after owner-authorized workflow `TASK-008-20260821-01` implemented the exact ADR-0006 backend mutations, persisted and read back favorite/comment state through PostgreSQL, passed fresh integrated `PASS` with no finding, and passed its documentation gate. PostgreSQL initializes on the first list, detail, or comment read or interaction mutation; mutation-first initialization does not connect to Redis. AC-004 and AC-005 remain incomplete because TASK-011 still owns the detail UI, frontend mutation operations, explicit refetching, and end-to-end interaction evidence. TASK-011 remains `Pending`; no publication or deployment is authorized.
+
 Mandatory requirements and deliverables remain defined in the [requirements specification](./REQUIREMENTS.md). Optional requirements retain the source assessment's classification, and their repository dispositions remain authoritative in the [ADR index](./adrs/README.md#optional-scope-decisions).
 
 Use the repository [documentation map](../README.md#documentation-map) for authority and task routing. This plan owns sequencing, task IDs, gates, and implementation-enabling task outcomes; it cannot expand product or assessment scope, approve an unresolved architectural choice, or prove implementation.
@@ -223,7 +225,7 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-005 | Complete | TASK-004, TASK-017 | Owner-authorized on 2026-08-18; three behavior milestones, full closure validation, fresh independent `PASS`, and documentation gate passed; AUTH-001 Authorized |
 | TASK-006 | Complete | TASK-004, TASK-017 | Owner-authorized on 2026-08-16; four behavior milestones, build-first closure packet, fresh independent `PASS`, and documentation gate passed on 2026-08-17 |
 | TASK-007 | Complete | TASK-005, TASK-006 | Product behavior, merged hosted-CI namespace correction, exact run `32396138822`, fresh integrated re-review, and documentation gate passed; AUTH-001 remains Authorized for cached image URLs |
-| TASK-008 | Pending | TASK-006 | None |
+| TASK-008 | Complete | TASK-006 | Backend mutation milestone, corrected lifecycle, full closure packet, fresh integrated `PASS`, and task-closure documentation gate passed on 2026-08-21 |
 | TASK-009 | Complete | TASK-006 | ADR-0017 accepted, DG-003 resolved, and documentation gate passed on 2026-08-18 |
 | TASK-010 | Complete | TASK-005, TASK-009 | Owner-authorized milestones, integrated `PASS WITH FOLLOW-UPS`, AC-001/AC-002 evidence, and task-closure documentation gate passed; AUTH-001 remains Authorized for browser image work |
 | TASK-011 | Pending | TASK-008, TASK-010 | AUTH-001 Authorized for detail image work |
@@ -371,14 +373,15 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-008 - Persist favorite and comment mutations
 
 - **Outcome:** GraphQL mutations persist single-user favorite state and bounded plain-text comments in PostgreSQL.
-- **Execution plan:** The active [TASK-008 favorite/comment mutation ExecPlan](./plans/TASK-008-persist-favorite-and-comment-mutations.md) decomposes one lean backend mutation milestone plus closure; registration does not activate this `Pending` task or prove behavior.
+- **Execution plan:** The completed [TASK-008 favorite/comment mutation ExecPlan](./plans/completed/TASK-008-persist-favorite-and-comment-mutations.md) preserves workflow `TASK-008-20260821-01`, preflight, coherent mutation Red/Green, correction receipts, exact persistence and cleanup evidence, integrated review, and documentation closure.
 - **Mapped scope:** FR-FE-004, FR-FE-005, FR-BE-001, FR-BE-003, AC-004, AC-005.
 - **Governing decisions:** ADR-0003, ADR-0005, ADR-0006, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-006; DG-001 and DG-002 are resolved, DG-004 is historical closure evidence, and current DG-006 is resolved through the completed decision path.
 - **Expected artifacts:** Application services, favorite/comment mutation resolvers, comment-body validation, mutation persistence, and GraphQL/persistence tests. Reuse the accepted TASK-006 detail/comment-read contract instead of reimplementing its ordering or pagination.
+- **Completion evidence:** Fresh integrated [TASK-008 acceptance review](./reviews/2026-08-21-task-008-acceptance-review.md) returns `PASS` with no Blocker, Major, or Minor on corrected 15-path candidate `58A8808786F45D5195FE441FD48D89E1AC0DBA644A37DA75DDCFF41DEDB9413B`. Typecheck, build and both GraphQL drift checks, Tailwind, unit 174/174, isolated PostgreSQL/Redis integration 77/77, application 25/25, Chromium smoke 1/1, Windows lifecycle 7/7, exact external cleanup, documentation/ADR validation, and diff checking pass. The mutations persist across independent service composition, preserve source-owned fields, reuse TASK-006 readback, and never demand Redis.
 - **Validation:** Record TDD evidence for valid and invalid favorite/comment mutations, persistence across API restarts, missing IDs, safe plain-text comment handling, mutation readback through the existing TASK-006 detail query, and no interaction-driven search-cache invalidation. Do not duplicate ownership of newest-first ordering or pagination semantics.
 - **Documentation impact:** GraphQL mutation examples, single-user limitation, current status, implementation plan, and execution log.
-- **Done when:** Backend mutation, comment-input, and persistence evidence covers the TASK-008 portions required by SPEC-004, SPEC-005, SPEC-008, HS-005, HS-009, and HS-015 while reusing accepted TASK-006 read-side HS-009 evidence; end-to-end UI completion remains owned by TASK-011.
+- **Done when:** Achieved on 2026-08-21: backend mutation, comment-input, persistence, lifecycle, and cleanup evidence covers the TASK-008 portions required by SPEC-004, SPEC-005, SPEC-008, HS-005, HS-009, and HS-015 while reusing accepted TASK-006 read-side evidence. Joined TASK-005/TASK-006/TASK-008 evidence completes SPEC-011. End-to-end UI completion remains owned by TASK-011, so AC-004 and AC-005 remain unchecked.
 
 ### TASK-009 - Resolve the frontend GraphQL client gate
 

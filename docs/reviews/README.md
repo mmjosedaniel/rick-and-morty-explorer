@@ -4,10 +4,11 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
-- [2026-08-20 TASK-010 acceptance review](./2026-08-20-task-010-acceptance-review.md) — returns `PASS WITH FOLLOW-UPS` with no Blocker, Major, or Minor after authenticating the complete character-list candidate and closure packet. TASK-010, AC-001, and AC-002 pass; minimum-assessment readiness remains `Fail` at 7/12.
+- [2026-08-21 TASK-008 acceptance review](./2026-08-21-task-008-acceptance-review.md) — returns `PASS` with no Blocker, Major, or Minor after authenticating the corrected backend mutation candidate, exact persistence/cleanup evidence, and complete closure packet. TASK-008 passes; AC-004/AC-005 remain TASK-011 scope and readiness remains `Fail` at 7/12.
 
 ## Historical Records
 
+- [2026-08-20 TASK-010 acceptance review](./2026-08-20-task-010-acceptance-review.md) — remains the current TASK-010 record and historical predecessor to the repository status advanced by TASK-008; it returned `PASS WITH FOLLOW-UPS`, completed TASK-010/AC-001/AC-002, and advanced readiness to 7/12.
 - [2026-08-20 TASK-007 hosted-CI acceptance re-review](./2026-08-20-task-007-hosted-ci-acceptance-re-review.md) — remains the current TASK-007 record and historical predecessor to the repository-wide readiness advanced by TASK-010; it passed exact merged `main` run `32396138822` and closed TASK-007 at 5/12.
 - [2026-08-20 TASK-007 CI reproducibility review](./2026-08-20-task-007-ci-reproducibility-review.md) — preserved `REVISE` with one hosted-evidence Major because run `32391250007` omitted the explicit Redis test namespace and failed integration 72/74; the hosted-CI acceptance re-review supersedes its closure conclusion without rewriting its evidence.
 - [2026-08-20 TASK-007 acceptance re-review](./2026-08-20-task-007-acceptance-re-review.md) — preserved `PASS` after the deterministic-loading correction and complete local closure; the later hosted failure reopened closure, and the current hosted-CI acceptance re-review supersedes that interim conclusion without rewriting its evidence.

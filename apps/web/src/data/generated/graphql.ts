@@ -56,6 +56,24 @@ export type Comment = {
   id: Scalars['ID']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  addCharacterComment: Comment;
+  setCharacterFavorite: CharacterDetail;
+};
+
+
+export type MutationAddCharacterCommentArgs = {
+  body: Scalars['String']['input'];
+  characterId: Scalars['ID']['input'];
+};
+
+
+export type MutationSetCharacterFavoriteArgs = {
+  id: Scalars['ID']['input'];
+  isFavorite: Scalars['Boolean']['input'];
+};
+
 export type Origin = {
   __typename?: 'Origin';
   name: Scalars['String']['output'];
