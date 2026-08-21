@@ -2,12 +2,14 @@ import { getOperationAST } from "graphql";
 import { createSchema, createYoga, type Plugin } from "graphql-yoga";
 
 import type { CharacterReadService } from "../../application/characters/character-read-service.js";
+import type { CharacterInteractionService } from "../../application/characters/character-interaction-service.js";
 import type { RequestLogMetadata } from "../http/request-log-middleware.js";
 import { resolvers } from "./resolvers.js";
 import { typeDefs } from "./schema.js";
 
 export interface GraphqlContext {
   readonly characterReadService: CharacterReadService;
+  readonly characterInteractionService: CharacterInteractionService;
   readonly reportUnexpectedError: (error: unknown) => void;
 }
 
@@ -60,12 +62,17 @@ const browserOrigins = new Set([
 
 export function createGraphqlHandler({
   characterReadService,
+  characterInteractionService,
   enableGraphiql,
   reportUnexpectedError,
 }: GraphqlHandlerOptions) {
   return createYoga<GraphqlServerContext, GraphqlContext>({
     schema: createSchema<GraphqlContext>({ typeDefs, resolvers }),
-    context: { characterReadService, reportUnexpectedError },
+    context: {
+      characterReadService,
+      characterInteractionService,
+      reportUnexpectedError,
+    },
     logging: false,
     graphqlEndpoint: "/graphql",
     graphiql: enableGraphiql,

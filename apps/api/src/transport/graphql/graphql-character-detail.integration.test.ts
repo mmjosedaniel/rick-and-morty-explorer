@@ -700,9 +700,6 @@ describe("TASK-006 Milestone 4 PostgreSQL GraphQL character detail", () => {
                 expectErrorCode(missing.body, "NOT_FOUND");
 
                 const introspection = await postGraphql<{
-                  readonly __schema: {
-                    readonly mutationType: { readonly name: string } | null;
-                  };
                   readonly detail: {
                     readonly fields: readonly { readonly name: string }[];
                   } | null;
@@ -714,14 +711,12 @@ describe("TASK-006 Milestone 4 PostgreSQL GraphQL character detail", () => {
                   } | null;
                 }>(baseUrl, {
                   query: `query DetailSchema {
-                    __schema { mutationType { name } }
                     detail: __type(name: "CharacterDetail") { fields { name } }
                     origin: __type(name: "Origin") { fields { name } }
                     comment: __type(name: "Comment") { fields { name } }
                   }`,
                 });
                 expect(introspection.body.errors).toBeUndefined();
-                expect(introspection.body.data?.__schema.mutationType).toBeNull();
                 expect(
                   introspection.body.data?.detail?.fields
                     .map(({ name }) => name)

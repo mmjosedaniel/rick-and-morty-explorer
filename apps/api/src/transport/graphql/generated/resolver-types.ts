@@ -54,6 +54,24 @@ export type Comment = {
   readonly id: Scalars['ID']['output'];
 };
 
+export type Mutation = {
+  readonly __typename?: 'Mutation';
+  readonly addCharacterComment: Comment;
+  readonly setCharacterFavorite: CharacterDetail;
+};
+
+
+export type MutationAddCharacterCommentArgs = {
+  body: Scalars['String']['input'];
+  characterId: Scalars['ID']['input'];
+};
+
+
+export type MutationSetCharacterFavoriteArgs = {
+  id: Scalars['ID']['input'];
+  isFavorite: Scalars['Boolean']['input'];
+};
+
 export type Origin = {
   readonly __typename?: 'Origin';
   readonly name: Scalars['String']['output'];
@@ -156,6 +174,7 @@ export type ResolversTypes = {
   Comment: ResolverTypeWrapper<Comment>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Origin: ResolverTypeWrapper<Origin>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -170,6 +189,7 @@ export type ResolversParentTypes = {
   Comment: Comment;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  Mutation: Record<PropertyKey, never>;
   Origin: Origin;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
@@ -200,6 +220,11 @@ export type CommentResolvers<ContextType = GraphqlContext, ParentType extends Re
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
+export type MutationResolvers<ContextType = GraphqlContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addCharacterComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCharacterCommentArgs, 'body' | 'characterId'>>;
+  setCharacterFavorite?: Resolver<ResolversTypes['CharacterDetail'], ParentType, ContextType, RequireFields<MutationSetCharacterFavoriteArgs, 'id' | 'isFavorite'>>;
+};
+
 export type OriginResolvers<ContextType = GraphqlContext, ParentType extends ResolversParentTypes['Origin'] = ResolversParentTypes['Origin']> = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -214,6 +239,7 @@ export type Resolvers<ContextType = GraphqlContext> = {
   CharacterDetail?: CharacterDetailResolvers<ContextType>;
   CharacterSummary?: CharacterSummaryResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Origin?: OriginResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 };

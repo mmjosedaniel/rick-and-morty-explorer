@@ -145,7 +145,7 @@ describe("TASK-006 Milestone 1 GraphQL summary boundary", () => {
     });
   });
 
-  it("publishes the exact query-only CharacterSummary schema", async () => {
+  it("publishes the exact summary and interaction mutation schema", async () => {
     const list = vi.fn(async (_filter: undefined) => []);
 
     await withGraphqlApp({ characterReadService: { list } }, async (baseUrl) => {
@@ -157,7 +157,31 @@ describe("TASK-006 Milestone 1 GraphQL summary boundary", () => {
               name
             }
           }
-          __type(name: "CharacterSummary") {
+          __type(name: "Mutation") {
+            fields {
+              name
+              args {
+                name
+                type {
+                  kind
+                  name
+                  ofType {
+                    kind
+                    name
+                  }
+                }
+              }
+              type {
+                kind
+                name
+                ofType {
+                  kind
+                  name
+                }
+              }
+            }
+          }
+          summaryType: __type(name: "CharacterSummary") {
             fields {
               name
             }
@@ -172,13 +196,91 @@ describe("TASK-006 Milestone 1 GraphQL summary boundary", () => {
           readonly mutationType: { readonly name: string } | null;
         };
         readonly __type: {
+          readonly fields: readonly {
+            readonly name: string;
+            readonly args: readonly {
+              readonly name: string;
+              readonly type: {
+                readonly kind: string;
+                readonly name: string | null;
+                readonly ofType: {
+                  readonly kind: string;
+                  readonly name: string;
+                } | null;
+              };
+            }[];
+            readonly type: {
+              readonly kind: string;
+              readonly name: string | null;
+              readonly ofType: {
+                readonly kind: string;
+                readonly name: string;
+              } | null;
+            };
+          }[];
+        } | null;
+        readonly summaryType: {
           readonly fields: readonly { readonly name: string }[];
         } | null;
       }>;
 
       expect(body.errors).toBeUndefined();
-      expect(body.data?.__schema.mutationType).toBeNull();
-      expect(body.data?.__type?.fields.map(({ name }) => name).sort()).toEqual([
+      expect(body.data?.__schema.mutationType).toEqual({ name: "Mutation" });
+      expect(body.data?.__type?.fields).toEqual([
+        {
+          name: "setCharacterFavorite",
+          args: [
+            {
+              name: "id",
+              type: {
+                kind: "NON_NULL",
+                name: null,
+                ofType: { kind: "SCALAR", name: "ID" },
+              },
+            },
+            {
+              name: "isFavorite",
+              type: {
+                kind: "NON_NULL",
+                name: null,
+                ofType: { kind: "SCALAR", name: "Boolean" },
+              },
+            },
+          ],
+          type: {
+            kind: "NON_NULL",
+            name: null,
+            ofType: { kind: "OBJECT", name: "CharacterDetail" },
+          },
+        },
+        {
+          name: "addCharacterComment",
+          args: [
+            {
+              name: "characterId",
+              type: {
+                kind: "NON_NULL",
+                name: null,
+                ofType: { kind: "SCALAR", name: "ID" },
+              },
+            },
+            {
+              name: "body",
+              type: {
+                kind: "NON_NULL",
+                name: null,
+                ofType: { kind: "SCALAR", name: "String" },
+              },
+            },
+          ],
+          type: {
+            kind: "NON_NULL",
+            name: null,
+            ofType: { kind: "OBJECT", name: "Comment" },
+          },
+        },
+      ]);
+      expect(body.data?.summaryType?.fields.map(({ name }) => name).sort()).toEqual([
         "id",
         "imageUrl",
         "name",

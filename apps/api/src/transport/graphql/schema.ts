@@ -4,6 +4,11 @@ export const typeDefs = /* GraphQL */ `
     character(id: ID!): CharacterDetail
   }
 
+  type Mutation {
+    setCharacterFavorite(id: ID!, isFavorite: Boolean!): CharacterDetail!
+    addCharacterComment(characterId: ID!, body: String!): Comment!
+  }
+
   input CharacterFilter {
     status: String
     species: String
