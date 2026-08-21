@@ -412,8 +412,9 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-011 - Deliver character detail, favorites, and comments
 
 - **Outcome:** The addressable detail route renders character data and supports durable favorite and comment interactions with clear mutation errors.
+- **Execution plan:** The active [TASK-011 ExecPlan](./plans/TASK-011-character-detail-favorites-and-comments.md) preserves the accepted reuse audit, one-component detail boundary, two coherent frontend-visual product milestones, exact mutation/refetch semantics, proportional validation, and TASK-012 exclusions. TASK-011 remains `Pending` until separate project-owner execution authorization.
 - **Mapped scope:** FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, NFR-005, AC-003, AC-004, AC-005; OR-004 (adopted optional).
-- **Governing decisions:** ADR-0005, ADR-0006, ADR-0009, ADR-0014, ADR-0016.
+- **Governing decisions:** ADR-0005, ADR-0006, ADR-0009, ADR-0014, ADR-0016, ADR-0017, ADR-0018; DPL-DEC-051 records the reversible TASK-011 execution choices.
 - **Design inputs:** [UI field visibility and states](./ui/README.md#ui-field-visibility-decision) and [visual foundations](./ui/visual-foundations.md); use the [Storybook pilot guidance](./ui/storybook-workflow.md) only if that reversible pilot is active.
 - **Prerequisites and gates:** TASK-008 and the routing foundation from TASK-010; DG-001 through DG-004 and DG-006 are resolved through completed decision paths, and AUTH-001 is Authorized under disposition A for detail image work.
 - **Expected artifacts:** Detail route/view, favorite and comment controls, explicit post-mutation detail refetch, validation/error presentation, and component/route tests.

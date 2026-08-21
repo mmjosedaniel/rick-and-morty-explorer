@@ -6,6 +6,7 @@
 - Field-visibility decision: [DPL-DEC-005](../execution/decision-and-progress-log.md#decision-log)
 - Visual foundation: [Color and typography](./visual-foundations.md)
 - Completed implementation plan: [TASK-010 character list, sorting, and interface filters](../plans/completed/TASK-010-character-list-sorting-and-interface-filters.md)
+- Active implementation plan: [TASK-011 character detail, favorites, and comments](../plans/TASK-011-character-detail-favorites-and-comments.md)
 - Proposed component-workshop pilot: [Storybook workflow](./storybook-workflow.md)
 
 ## Document role
@@ -148,7 +149,9 @@ This field audit records the accepted UI target and links to evidence owners rat
 
 ## Open UI decisions
 
-[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the TASK-010 control types, default sort, URL parameters, and invalid-value recovery. The remaining open presentation decision is whether TASK-011 needs a visible pagination or load-more control for its initial 20 comments. That later decision is not a reason to add list pagination or expose additional upstream fields in TASK-010.
+[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the TASK-010 control types, default sort, URL parameters, and invalid-value recovery. [DPL-DEC-051](../execution/decision-and-progress-log.md#decision-log) resolves the initial TASK-011 comment presentation: use the GraphQL default first 20 newest comments and add no pagination or load-more control. This satisfies the current detail/comment flows without duplicating TASK-006's bounded pagination/order evidence or inventing a total count the contract does not expose. A later demonstrated need to navigate beyond the first 20 comments requires a new task-scoped execution decision and evidence; it is not implicit TASK-011 scope.
+
+No unresolved UI presentation decision currently blocks TASK-011 planning. Its active ExecPlan remains non-authorizing, and TASK-011 remains `Pending` until separate project-owner execution authorization.
 
 ## Planned mockup coverage
 
