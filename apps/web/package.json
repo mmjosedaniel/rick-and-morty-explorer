@@ -4,19 +4,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && tsc --project tsconfig.server.json",
+    "build": "npm run graphql:check && vite build && tsc --project tsconfig.server.json",
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "graphql:check": "graphql-codegen --config codegen.ts --check",
+    "graphql:generate": "graphql-codegen --config codegen.ts",
     "start": "node dist-server/server.js",
     "start:smoke": "npm run build && npm run start",
     "test:unit": "vitest run --config ../../vitest.config.ts --project web-unit",
     "test:application": "vitest run --config ../../vitest.config.ts --project web-application"
   },
   "dependencies": {
+    "@fontsource/bangers": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "@tanstack/react-query": "5.101.4",
+    "graphql": "16.14.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "7.18.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "7.2.0",
+    "@graphql-codegen/typed-document-node": "7.1.0",
+    "@graphql-codegen/typescript": "6.1.0",
+    "@graphql-codegen/typescript-operations": "6.1.6",
+    "@graphql-typed-document-node/core": "3.2.0",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.1",

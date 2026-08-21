@@ -1,1 +1,207 @@
 @import "tailwindcss";
+@import "@fontsource/bangers/400.css";
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+
+:root {
+  color: #f4f8f7;
+  background: #070b14;
+  font-family:
+    "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100vh;
+  margin: 0;
+  background: #070b14;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #38e8d2;
+  outline-offset: 3px;
+}
+
+.application-shell {
+  min-height: 100vh;
+}
+
+.application-header,
+.application-main {
+  width: min(100% - 2rem, 72rem);
+  margin-inline: auto;
+}
+
+.application-header {
+  padding-block: 2rem 1.25rem;
+  border-bottom: 1px solid #263a55;
+}
+
+h1.text-3xl {
+  margin: 0;
+  color: #a8ff60;
+  font-family: "Bangers", "Arial Black", Impact, sans-serif;
+  font-size: clamp(2.75rem, 8vw, 4rem);
+  font-weight: 400;
+  line-height: 1.125;
+  letter-spacing: 0.035em;
+}
+
+.application-main {
+  padding-block: 2rem 3rem;
+}
+
+.character-list-route {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.character-list-route h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.character-list-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #263a55;
+  border-radius: 0.75rem;
+  background: #0e1625;
+}
+
+.character-list-field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.character-list-field label {
+  color: #f4f8f7;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.character-list-field input,
+.character-list-field select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #537596;
+  border-radius: 0.5rem;
+  color: #f4f8f7;
+  background: #17243a;
+}
+
+.character-list-controls button,
+.query-state button {
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid #a8ff60;
+  border-radius: 0.5rem;
+  color: #081009;
+  background: #a8ff60;
+  font-weight: 500;
+}
+
+.character-list-controls button {
+  align-self: end;
+}
+
+.character-list-controls button:hover,
+.query-state button:hover {
+  background: #8fe64c;
+}
+
+.query-state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3rem;
+  margin: 0;
+  color: #b8c4cc;
+}
+
+.query-state--error {
+  color: #ff6b7a;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+}
+
+.character-card {
+  overflow: hidden;
+  border: 1px solid #263a55;
+  border-radius: 0.75rem;
+  background: #0e1625;
+}
+
+.character-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #17243a;
+}
+
+.character-card__content {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+.character-card h3,
+.character-card p {
+  margin: 0;
+}
+
+.character-card h3 {
+  overflow-wrap: anywhere;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.character-card p {
+  color: #b8c4cc;
+  line-height: 1.5;
+}
+
+@media (min-width: 48rem) {
+  .application-header,
+  .application-main {
+    width: min(100% - 3rem, 72rem);
+  }
+
+  .application-header {
+    padding-top: 2.5rem;
+  }
+}

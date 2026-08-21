@@ -181,8 +181,8 @@ Documentation must explain how to run the application and use the API; it may be
 
 These observable criteria summarize the minimum assessment outcomes. They do not replace or relax the mandatory functional, technical, non-functional, or delivery requirements above.
 
-- [ ] AC-001: The application lists characters as cards containing their name, image, and species.
-- [ ] AC-002: The list can be sorted by name from A-Z and Z-A.
+- [x] AC-001: The application lists characters as cards containing their name, image, and species.
+- [x] AC-002: The list can be sorted by name from A-Z and Z-A.
 - [ ] AC-003: Selecting a card displays the character's details and image.
 - [ ] AC-004: A character can be marked as a favorite from the detail view.
 - [ ] AC-005: Comments can be added to a character.

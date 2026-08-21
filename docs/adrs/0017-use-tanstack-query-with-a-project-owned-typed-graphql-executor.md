@@ -4,7 +4,7 @@
 - Date: 2026-08-18
 - Decision owners: Project owner and project maintainers; the project owner approved the exact independently reviewed proposal on 2026-08-18
 - Related requirements: FR-FE-001, FR-FE-002, FR-FE-003, FR-FE-004, FR-FE-005, NFR-001, OR-003, AC-001, AC-002, AC-003, AC-004, AC-005
-- Related decisions: ADR-0002, ADR-0006, ADR-0009, ADR-0011, ADR-0016
+- Related decisions: ADR-0002, ADR-0006, ADR-0009, ADR-0011, ADR-0016, ADR-0018
 - Related gate and task: DG-003, TASK-009
 - Supersedes: None
 - Superseded by: None
@@ -17,7 +17,7 @@ The mandatory frontend scope is FR-FE-001 through FR-FE-005, NFR-001, and AC-001
 
 The checked-in GraphQL schema is currently query-only. Favorite and comment mutations remain TASK-008 work, but their client-side success and failure convergence contract must be fixed before later artifacts can introduce normalized-identity-dependent behavior or ambiguous refetches. The web workspace currently has no GraphQL client, query cache, frontend operation generation, request-mocking, or global-state dependency.
 
-ADR-0009 assigns URL state to navigation and filters, server-returned data to the query cache, and isolated transient drafts to component state. ADR-0002 requires strict TypeScript and schema-derived client operation types. ADR-0006 owns the project GraphQL contract and stable GraphQL error codes. ADR-0011 and ADR-0016 own the Vitest/jsdom and milestone-slice TDD boundaries.
+ADR-0009 assigns URL state to navigation and filters, server-returned data to the query cache, and isolated transient drafts to component state. ADR-0002 requires strict TypeScript and schema-derived client operation types. ADR-0006 owns the project GraphQL contract and stable GraphQL error codes. ADR-0018 and ADR-0016 own the current Vitest/jsdom and milestone-slice TDD boundaries; ADR-0011 is Superseded history.
 
 ## Decision drivers
 
@@ -154,7 +154,7 @@ The hard-gate-first candidate matrix ranks TanStack Query plus the owned executo
 | Criterion | Score | Maximum | Rationale |
 |---|---:|---:|---|
 | Requirements traceability | 19 | 20 | Maps all required frontend, quality, acceptance, and adopted-optional scope identifiers; implementation evidence remains intentionally absent. |
-| Architectural fit and consistency | 19 | 20 | Preserves ADR-0002, ADR-0006, ADR-0009, ADR-0011, and ADR-0016 boundaries. |
+| Architectural fit and consistency | 19 | 20 | Preserves ADR-0002, ADR-0006, ADR-0009, the harness boundary now carried by ADR-0018, and ADR-0016. |
 | Options and trade-offs | 15 | 15 | Compares every frozen candidate, records hard-gate exclusion, and preserves rejected-option rationale. |
 | Feasibility and proportionality | 13 | 15 | Uses compatible existing boundaries and a credible native baseline; package versions and measured costs remain prove-later. |
 | Quality attributes | 9 | 10 | Defines correctness, privacy-bounded diagnostics, determinism, and maintainability controls. |
@@ -176,7 +176,8 @@ The project owner approved exact independently reviewed proposal SHA-256 `2A691B
 - [ADR-0002: Use TypeScript across the stack](./0002-use-typescript-across-the-stack.md)
 - [ADR-0006: Define a use-case-oriented GraphQL contract](./0006-define-a-use-case-oriented-graphql-contract.md)
 - [ADR-0009: Keep frontend state close to its owner](./0009-keep-frontend-state-close-to-its-owner.md)
-- [ADR-0011: Define the TypeScript test harness](./0011-define-the-typescript-test-harness.md)
+- [ADR-0011: Superseded TypeScript test harness](./superseded/0011-define-the-typescript-test-harness.md)
+- [ADR-0018: Current TypeScript test harness with repository-owned smoke orchestration](./0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md)
 - [ADR-0016: Use milestone-slice TDD with independent test and implementation ownership](./0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md)
 - [Feature specification](../specs/SPEC.feature)
 - [Hard specification](../specs/HARD_SPEC.feature)

@@ -1,14 +1,16 @@
 # ADR-0011: Define the TypeScript Test Harness
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-10
 - Approval date: 2026-08-10
 - Decision owners: Project owner and project maintainers
 - Related requirements: NFR-004, OR-001, OR-004, OR-007, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009, AC-010, AC-011, AC-012
-- Related decisions: ADR-0001, ADR-0002, ADR-0010
+- Related decisions: ADR-0001, ADR-0002, ADR-0010, ADR-0018
 - Controlled gate: DG-001; resolved by this accepted decision
 - Supersedes: None
-- Superseded by: None
+- Superseded by: ADR-0018
+
+> Lifecycle notice: ADR-0018 superseded this whole record on 2026-08-20 after ADR-0011's recorded Windows process-cleanup reversal trigger occurred during TASK-010. The project owner explicitly approved the bounded repository-owned smoke orchestrator, R3 research and pre-draft review passed, and ADR-0018 carries forward every unaffected test-harness rule while replacing only smoke-server process ownership. This body remains preserved as historical evidence.
 
 ## Context
 
@@ -159,14 +161,15 @@ Reversal is required when no supported Node.js version overlaps stable Vitest an
 
 ## References
 
-- [Requirements specification](../REQUIREMENTS.md)
-- [ADR index](./README.md)
-- [ADR-0001: Modular monolith workspace](./superseded/0001-use-a-modular-monolith-workspace.md)
-- [ADR-0002: TypeScript across the stack](./0002-use-typescript-across-the-stack.md)
-- [ADR-0010: Targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
-- [Implementation plan](../IMPLEMENTATION_PLAN.md)
-- [Gherkin specification index](../specs/README.md)
-- [Completed TASK-001 ExecPlan](../plans/completed/TASK-001-test-harness-decision.md)
+- [Requirements specification](../../REQUIREMENTS.md)
+- [ADR index](../README.md)
+- [ADR-0001: Modular monolith workspace](./0001-use-a-modular-monolith-workspace.md)
+- [ADR-0002: TypeScript across the stack](../0002-use-typescript-across-the-stack.md)
+- [ADR-0010: Targeted automated testing strategy](./0010-use-a-targeted-automated-testing-strategy.md)
+- [ADR-0018: Whole-record TypeScript test-harness successor](../0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md)
+- [Implementation plan](../../IMPLEMENTATION_PLAN.md)
+- [Gherkin specification index](../../specs/README.md)
+- [Completed TASK-001 ExecPlan](../../plans/completed/TASK-001-test-harness-decision.md)
 - [Vitest features](https://vitest.dev/guide/features.html)
 - [Vitest releases](https://main.vitest.dev/releases)
 - [Vitest projects](https://vitest.dev/guide/projects.html)

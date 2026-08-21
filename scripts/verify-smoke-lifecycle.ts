@@ -1,5 +1,9 @@
 import { spawn, type ChildProcess } from "node:child_process";
+import { randomBytes } from "node:crypto";
+import { createServer as createHttpServer } from "node:http";
 import { createServer, type Server } from "node:net";
+
+import { cleanupTask010Runtime } from "../tests/smoke/fixtures/task-010-runtime.js";
 
 const host = "127.0.0.1";
 const ports = [4173, 4174] as const;
@@ -17,6 +21,7 @@ type SmokeResult = {
 
 type SmokeRun = {
   child: ChildProcess;
+  environment: NodeJS.ProcessEnv;
   output: () => string;
   result: Promise<SmokeResult>;
 };
@@ -24,6 +29,7 @@ type SmokeRun = {
 type CleanupResult = {
   terminationError?: string;
   closeError?: string;
+  externalStateError?: string;
 };
 
 type LifecycleCase = {
@@ -46,6 +52,10 @@ function startSmoke(overrides: Readonly<Record<string, string>> = {}): SmokeRun 
 
   delete environment["TASK003_SMOKE_EXPECTED_HEADING"];
   delete environment["TASK003_SMOKE_API_MODE"];
+  delete environment["TASK010_SMOKE_API_FIXTURE_MODE"];
+  environment["TASK010_SMOKE_RUN_ID"] = randomBytes(8).toString("hex");
+  environment["POSTGRES_PORT"] ??= "55432";
+  environment["REDIS_PORT"] ??= "6379";
   Object.assign(environment, overrides);
 
   const child = spawn(process.execPath, [npmCli, "run", "test:smoke"], {
@@ -72,7 +82,7 @@ function startSmoke(overrides: Readonly<Record<string, string>> = {}): SmokeRun 
     });
   });
 
-  return { child, output: () => capturedOutput, result };
+  return { child, environment, output: () => capturedOutput, result };
 }
 
 async function withTimeout<T>(
@@ -178,6 +188,13 @@ async function cleanupSmokeRun(run: SmokeRun): Promise<CleanupResult> {
     cleanup.closeError = error instanceof Error ? error.message : String(error);
   }
 
+  try {
+    await cleanupTask010Runtime(run.environment);
+  } catch (error) {
+    cleanup.externalStateError =
+      error instanceof Error ? error.message : String(error);
+  }
+
   return cleanup;
 }
 
@@ -187,6 +204,9 @@ function formatCleanup(cleanup: CleanupResult): string | undefined {
       ? undefined
       : `termination=${cleanup.terminationError}`,
     cleanup.closeError === undefined ? undefined : `close=${cleanup.closeError}`,
+    cleanup.externalStateError === undefined
+      ? undefined
+      : `external-state=${cleanup.externalStateError}`,
   ].filter((failure): failure is string => failure !== undefined);
 
   return failures.length === 0 ? undefined : failures.join("; ");
@@ -315,9 +335,13 @@ const cases: LifecycleCase[] = [
   {
     name: "startup conflict",
     run: async () => {
-      const listener = createServer((socket) => {
-        socket.on("error", () => {});
-        socket.destroy();
+      const listener = createHttpServer((_request, response) => {
+        response.writeHead(200, {
+          "content-security-policy":
+            "default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' https://rickandmortyapi.com/api/character/avatar/; connect-src 'self' http://127.0.0.1:3000 http://127.0.0.1:4174",
+          "content-type": "text/html; charset=utf-8",
+        });
+        response.end("<!doctype html><html><body><h1>Rick and Morty Explorer</h1></body></html>");
       });
       await new Promise<void>((resolveListen, rejectListen) => {
         listener.once("error", rejectListen);
@@ -377,6 +401,45 @@ const cases: LifecycleCase[] = [
         [/Timed out waiting/i, /webServer.*timeout/i, /Process from config\.webServer/i],
         "Readiness-timeout smoke lacked the Playwright web-server timeout diagnostic.",
       );
+    },
+  },
+  {
+    name: "post-readiness owned API exit",
+    run: async () => {
+      const result = await useSmokeRun(
+        {
+          TASK003_SMOKE_API_MODE: "never-ready",
+          TASK010_SMOKE_API_FIXTURE_MODE: "exit-after-graphql-response",
+        },
+        waitForResult,
+      );
+
+      if (result.code === 0) {
+        throw new Error(
+          `Post-readiness owned-API-exit smoke unexpectedly exited 0.\nCaptured smoke output:\n${result.output}`,
+        );
+      }
+
+      requireDiagnostic(
+        result.output,
+        [/1 passed/, /1\/1/],
+        "Post-readiness owned-API-exit smoke did not complete the Chromium assertion.",
+      );
+      requireDiagnostic(
+        result.output,
+        [/TASK_010_INTENTIONAL_POST_READINESS_API_EXIT code=23/],
+        "Post-readiness owned-API-exit smoke lacked the intentional fixture diagnostic.",
+      );
+      requireDiagnostic(
+        result.output,
+        [/API server exited unexpectedly after readiness.*code=23/i],
+        "Post-readiness owned-API-exit smoke lacked the owned-child failure diagnostic.",
+      );
+      if (/TASK_010_SMOKE_CLEANUP_FAILED|Cleanup failure:/u.test(result.output)) {
+        throw new Error(
+          `Post-readiness owned-API-exit smoke substituted a cleanup failure.\nCaptured smoke output:\n${result.output}`,
+        );
+      }
     },
   },
   {
@@ -459,7 +522,11 @@ if (failures.length > 0) {
     console.error(`[FAIL] ${failure}`);
   }
 
-  throw new Error(`Smoke lifecycle verification failed: ${passed}/6 cases passed.`);
+  throw new Error(
+    `Smoke lifecycle verification failed: ${passed}/${cases.length} cases passed.`,
+  );
 }
 
-console.log("Smoke lifecycle verification passed: 6/6 cases.");
+console.log(
+  `Smoke lifecycle verification passed: ${cases.length}/${cases.length} cases.`,
+);

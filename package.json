@@ -34,7 +34,7 @@
     "test:unit": "vitest run --config vitest.config.ts --project web-unit --project api-unit",
     "test:integration": "vitest run --config vitest.config.ts --project api-persistence-integration",
     "test:application": "vitest run --config vitest.config.ts --project web-application --project api-application",
-    "test:smoke": "playwright test --config playwright.config.ts",
+    "test:smoke": "tsx scripts/run-smoke.ts",
     "test:smoke:lifecycle": "tsx scripts/verify-smoke-lifecycle.ts",
     "test": "npm run test:unit && npm run test:integration && npm run test:application && npm run test:smoke"
   },

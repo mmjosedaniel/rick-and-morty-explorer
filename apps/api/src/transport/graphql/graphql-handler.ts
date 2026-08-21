@@ -53,6 +53,11 @@ const requestLogPlugin: Plugin<
   },
 };
 
+const browserOrigins = new Set([
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:4173",
+]);
+
 export function createGraphqlHandler({
   characterReadService,
   enableGraphiql,
@@ -64,6 +69,13 @@ export function createGraphqlHandler({
     logging: false,
     graphqlEndpoint: "/graphql",
     graphiql: enableGraphiql,
+    cors: (request) => {
+      const origin = request.headers.get("origin");
+
+      return origin !== null && browserOrigins.has(origin)
+        ? { origin, credentials: false }
+        : false;
+    },
     plugins: [requestLogPlugin],
   });
 }

@@ -5,7 +5,7 @@
 - Approval date: 2026-08-16
 - Decision owners: Project owner and project maintainers
 - Related requirements: NFR-004, OR-004, OR-007, AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008, AC-009, AC-010, AC-011, AC-012
-- Related decisions: ADR-0010, ADR-0011, ADR-0015
+- Related decisions: ADR-0010, ADR-0011, ADR-0015, ADR-0018
 - Supersedes: [ADR-0010](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
 - Superseded by: None
 
@@ -65,7 +65,7 @@ Validation is proportional and evidence-aware:
 
 - run the relevant existing scope once during preflight;
 - run one decisive focused command for Red and the same focused boundary during Green;
-- after all coherent slices in an ExecPlan milestone reach Green, run the milestone's affected suites and relevant strict type-check or build boundary once as the holistic join under ADR-0011;
+- after all coherent slices in an ExecPlan milestone reach Green, run the milestone's affected suites and relevant strict type-check or build boundary once as the holistic join under ADR-0018;
 - obtain an independent semantic milestone review whose reasoning depth is proportional to the change risk;
 - validate clean-checkout or hosted-platform boundaries at the first milestone that introduces or changes those boundaries, rather than waiting until final closure;
 - run closure-level full checks once unless evidence is incomplete, contaminated, or invalidated by a later change; and
@@ -75,7 +75,7 @@ Deterministic repository validators are preferred to repeated prose review. Exac
 
 At plan completion, retain ADR-0010's semantic relevance audit: remove or revise tests that duplicate another test without adding confidence, assert an abandoned implementation detail, exercise scaffolding with no current consumer, or no longer map to a requirement, accepted decision, regression, or supported behavior. This audit preserves relevant coverage; it is not a mandate to reduce test count.
 
-ADR-0016 carries forward ADR-0010's adoption of OR-004 and OR-007 and its preference for focused unit, component, application, real-infrastructure integration, and narrow browser-smoke boundaries. ADR-0011 continues to own the concrete TypeScript harness and scope activation.
+ADR-0016 carries forward ADR-0010's adoption of OR-004 and OR-007 and its preference for focused unit, component, application, real-infrastructure integration, and narrow browser-smoke boundaries. ADR-0018 now owns the concrete TypeScript harness and scope activation; ADR-0011 is Superseded history.
 
 ADR-0015 remains unchanged. Before future work extends or materially touches its migration lifecycle, the owning plan must record the mapped obligations, reusable versus new tests, projected milestone slices and worker handoffs, expected focused and full-suite runtime, and net-new custom lifecycle surface. Observed cost is compared with that estimate after the milestone. Disproportionate extension cost triggers project-owner review and, when the accepted boundary must change, a successor ADR; it never authorizes silently weakening ADR-0015.
 
@@ -163,7 +163,8 @@ The project owner authorized this repository-policy decision on 2026-08-16. Acce
 - [ExecPlan standard](../../PLANS.md)
 - [Implementation plan](../IMPLEMENTATION_PLAN.md)
 - [ADR-0010: Targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
-- [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
+- [ADR-0011: Superseded TypeScript test harness](./superseded/0011-define-the-typescript-test-harness.md)
+- [ADR-0018: Current TypeScript test harness with repository-owned smoke orchestration](./0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md)
 - [ADR-0015: Build-first migration lifecycle with exact catalog-bound identity](./0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md)
 - [Agentic workflow efficiency audit](../reviews/2026-08-16-agentic-workflow-efficiency-audit.md)
 - [Decision and progress log](../execution/decision-and-progress-log.md)

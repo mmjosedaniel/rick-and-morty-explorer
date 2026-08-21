@@ -1,0 +1,8 @@
+query Characters($status: String, $species: String, $gender: String) {
+  characters(filter: { status: $status, species: $species, gender: $gender }) {
+    id
+    name
+    imageUrl
+    species
+  }
+}

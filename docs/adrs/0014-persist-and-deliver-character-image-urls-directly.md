@@ -5,7 +5,7 @@
 - Approval date: 2026-08-11
 - Decision owners: Project owner and project maintainers
 - Related requirements: FR-FE-001, FR-FE-003, NFR-001, NFR-003, NFR-004, NFR-005, OR-008, AC-001, AC-003, AC-007, AC-012
-- Related decisions: ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0013
+- Related decisions: ADR-0001, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0013, ADR-0018
 - Controlled gate: DG-006; resolved by project-owner approval of this decision on 2026-08-11
 - Owning task: TASK-017
 - Supersedes: ADR-0001 and ADR-0013
@@ -358,7 +358,8 @@ Recommendation confidence is 0.88. Complete fresh final independent review passe
 - [ADR-0008: Use deterministic bootstrap and idempotent synchronization](./0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0009: Keep frontend state close to its owner](./0009-keep-frontend-state-close-to-its-owner.md)
 - [ADR-0010: Use a targeted automated testing strategy](./superseded/0010-use-a-targeted-automated-testing-strategy.md)
-- [ADR-0011: Define the TypeScript test harness](./0011-define-the-typescript-test-harness.md)
+- [ADR-0011: Superseded TypeScript test harness](./superseded/0011-define-the-typescript-test-harness.md)
+- [ADR-0018: Current TypeScript test harness with repository-owned smoke orchestration](./0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md)
 - [ADR-0012: Use a build-first programmatic migration lifecycle](./superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md)
 - [ADR-0013: Materialize character images during ingestion](./superseded/0013-materialize-character-images-during-ingestion.md)
 - [Rick and Morty API Character schema](https://rickandmortyapi.com/documentation/#character-schema)

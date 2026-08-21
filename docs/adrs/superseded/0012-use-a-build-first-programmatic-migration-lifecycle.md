@@ -269,7 +269,7 @@ TASK-014 will derive and validate the ERD only after TASK-004 has implemented an
 - [ADR-0003: PostgreSQL relational persistence](../0003-use-postgresql-for-relational-persistence.md)
 - [ADR-0008: Deterministic bootstrap and import](../0008-use-deterministic-bootstrap-and-idempotent-sync.md)
 - [ADR-0010: Targeted automated testing strategy](./0010-use-a-targeted-automated-testing-strategy.md)
-- [ADR-0011: TypeScript test harness](../0011-define-the-typescript-test-harness.md)
+- [ADR-0011: TypeScript test harness](./0011-define-the-typescript-test-harness.md)
 - [ADR-0015: Accepted whole-record successor](../0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md)
 - [Implementation plan](../../IMPLEMENTATION_PLAN.md)
 - [Gherkin specification index](../../specs/README.md)
