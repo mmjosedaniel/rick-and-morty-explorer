@@ -15,11 +15,22 @@ type LoadRedisRuntimeConfig = (
   writeWarning?: (diagnostic: string) => void,
 ) => RedisRuntimeConfig | null;
 
+type ShouldEnableGraphiql = (
+  environment: Readonly<Record<string, string | undefined>>,
+) => boolean;
+
 async function loadRedisRuntimeConfigFactory(): Promise<LoadRedisRuntimeConfig> {
   const module = (await import("./config.js")) as Record<string, unknown>;
 
   expect(module.loadRedisRuntimeConfig).toBeTypeOf("function");
   return module.loadRedisRuntimeConfig as LoadRedisRuntimeConfig;
+}
+
+async function shouldEnableGraphiqlFactory(): Promise<ShouldEnableGraphiql> {
+  const module = (await import("./config.js")) as Record<string, unknown>;
+
+  expect(module.shouldEnableGraphiql).toBeTypeOf("function");
+  return module.shouldEnableGraphiql as ShouldEnableGraphiql;
 }
 
 describe("parseApiPort", () => {
@@ -58,6 +69,29 @@ describe("parseApiHost", () => {
     expect(() => parseApiHost("0.0.0.0")).toThrowError(
       new Error("API_HOST must be 127.0.0.1."),
     );
+  });
+});
+
+describe("TASK-014 development-only GraphiQL selection", () => {
+  it("enables only the supported development lifecycle and fails closed otherwise", async () => {
+    const shouldEnableGraphiql = await shouldEnableGraphiqlFactory();
+    const scenarios = [
+      { name: "workspace development", environment: { npm_lifecycle_event: "dev" }, expected: true },
+      { name: "direct built startup", environment: {}, expected: false },
+      { name: "workspace start", environment: { npm_lifecycle_event: "start" }, expected: false },
+      { name: "unit test", environment: { npm_lifecycle_event: "test:unit" }, expected: false },
+      { name: "smoke", environment: { npm_lifecycle_event: "test:smoke" }, expected: false },
+      { name: "other lifecycle", environment: { npm_lifecycle_event: "graphql:check" }, expected: false },
+      {
+        name: "production-marked development",
+        environment: { npm_lifecycle_event: "dev", NODE_ENV: "production" },
+        expected: false,
+      },
+    ] as const;
+
+    for (const { name, environment, expected } of scenarios) {
+      expect(shouldEnableGraphiql(environment), name).toBe(expected);
+    }
   });
 });
 

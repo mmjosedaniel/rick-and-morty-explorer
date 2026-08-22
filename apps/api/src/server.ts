@@ -2,7 +2,11 @@ import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 
 import { createApp } from "./app.js";
-import { parseApiHost, parseApiPort } from "./config.js";
+import {
+  parseApiHost,
+  parseApiPort,
+  shouldEnableGraphiql,
+} from "./config.js";
 import { createPostgresSequelize } from "./infrastructure/database/postgres-runtime.js";
 import { createSequelizeCharacterReadRepository } from "./infrastructure/database/sequelize-character-read-repository.js";
 import { createSequelizeCharacterInteractionRepository } from "./infrastructure/database/sequelize-character-interaction-repository.js";
@@ -38,7 +42,7 @@ const app = createApp({
   characterReadService: characterReadServiceOwner.characterReadService,
   characterInteractionService:
     characterReadServiceOwner.characterInteractionService,
-  enableGraphiql: false,
+  enableGraphiql: shouldEnableGraphiql(process.env),
   requestLogging: {
     write: (line) => {
       process.stdout.write(line);

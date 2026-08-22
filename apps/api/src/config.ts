@@ -24,6 +24,16 @@ export function parseApiHost(value: string | undefined): string {
   return "127.0.0.1";
 }
 
+export function shouldEnableGraphiql(
+  environment: Readonly<Record<string, string | undefined>>,
+): boolean {
+  if (environment.NODE_ENV === "production") {
+    return false;
+  }
+
+  return environment.npm_lifecycle_event === "dev";
+}
+
 const REDIS_CONFIG_INVALID = "CHARACTER_SEARCH_CACHE_CONFIG_INVALID\n";
 const REDIS_NAMESPACE_PATTERN =
   /^[a-z0-9][a-z0-9_-]*(?::[a-z0-9][a-z0-9_-]*)*$/;
