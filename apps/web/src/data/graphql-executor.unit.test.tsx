@@ -2,7 +2,14 @@ import { print } from "graphql";
 import { describe, expect, it, vi } from "vitest";
 
 import { CharactersDocument } from "./generated/graphql";
+import * as graphqlDecoders from "./graphql-executor";
 import { decodeCharactersData, executeGraphql } from "./graphql-executor";
+
+interface CharacterDetailDecoderOwner {
+  decodeCharacterDetailData: (data: unknown) => unknown;
+  decodeSetCharacterFavoriteData: (data: unknown) => unknown;
+  decodeAddCharacterCommentData: (data: unknown) => unknown;
+}
 
 const endpoint = "http://127.0.0.1:3000/graphql";
 const variables = {
@@ -273,5 +280,84 @@ describe("decodeCharactersData", () => {
     { characters: [{ ...charactersData.characters[0], species: 42 }] },
   ])("rejects an invalid data.characters value", (value) => {
     expect(() => decodeCharactersData(value)).toThrow();
+  });
+});
+
+describe("decodeCharacterDetailData", () => {
+  const character = {
+    id: "101",
+    name: "Rick Sanchez",
+    imageUrl: "https://example.test/rick.jpeg",
+    species: "Human",
+    status: "Alive",
+    gender: "Male",
+    type: "",
+    origin: { name: "Earth" },
+    isFavorite: false,
+    comments: [
+      { id: "comment-1", body: "First" },
+      { id: "comment-2", body: "Second" },
+    ],
+  };
+
+  it("accepts a nullable exact detail and rejects malformed nested data", () => {
+    expect(graphqlDecoders).toHaveProperty("decodeCharacterDetailData");
+    const { decodeCharacterDetailData } = graphqlDecoders as typeof graphqlDecoders &
+      CharacterDetailDecoderOwner;
+
+    expect(decodeCharacterDetailData({ character })).toEqual({ character });
+    expect(decodeCharacterDetailData({ character: null })).toEqual({
+      character: null,
+    });
+
+    for (const invalid of [
+      undefined,
+      {},
+      { character: { ...character, isFavorite: "false" } },
+      { character: { ...character, origin: { name: null } } },
+      { character: { ...character, comments: [{ id: "comment-1" }] } },
+    ]) {
+      expect(() => decodeCharacterDetailData(invalid)).toThrow();
+    }
+  });
+
+  it("accepts only the non-null string id selected by the favorite mutation", () => {
+    expect(graphqlDecoders).toHaveProperty("decodeSetCharacterFavoriteData");
+    const { decodeSetCharacterFavoriteData } = graphqlDecoders as typeof graphqlDecoders &
+      CharacterDetailDecoderOwner;
+    const favorite = { id: "101" };
+
+    expect(decodeSetCharacterFavoriteData({ setCharacterFavorite: favorite })).toEqual({
+      setCharacterFavorite: favorite,
+    });
+    for (const invalid of [
+      undefined,
+      {},
+      { setCharacterFavorite: null },
+      { setCharacterFavorite: {} },
+      { setCharacterFavorite: { id: 101 } },
+    ]) {
+      expect(() => decodeSetCharacterFavoriteData(invalid)).toThrow();
+    }
+  });
+
+  it("accepts only the exact added-comment mutation result", () => {
+    expect(graphqlDecoders).toHaveProperty("decodeAddCharacterCommentData");
+    const { decodeAddCharacterCommentData } = graphqlDecoders as typeof graphqlDecoders &
+      CharacterDetailDecoderOwner;
+    const comment = { id: "comment-3", body: "A new comment" };
+
+    expect(decodeAddCharacterCommentData({ addCharacterComment: comment })).toEqual({
+      addCharacterComment: comment,
+    });
+    for (const invalid of [
+      undefined,
+      {},
+      { addCharacterComment: null },
+      { addCharacterComment: { body: "missing id" } },
+      { addCharacterComment: { id: "comment-3", body: 3 } },
+    ]) {
+      expect(() => decodeAddCharacterCommentData(invalid)).toThrow();
+    }
   });
 });

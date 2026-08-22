@@ -1,29 +1,49 @@
 # Deliver TASK-011 Character Detail, Favorites, and Comments
 
 
-- Status: Planned; awaiting separate project-owner execution authorization
-- Task: [TASK-011](../IMPLEMENTATION_PLAN.md#task-011---deliver-character-detail-favorites-and-comments)
+- Status: Complete; integrated acceptance and task-closure documentation gate passed
+- Task: [TASK-011](../../IMPLEMENTATION_PLAN.md#task-011---deliver-character-detail-favorites-and-comments)
 - Plan ID and prospective workflow ID: `TASK-011-20260821-01`
 - Created: 2026-08-21
 - Last updated: 2026-08-21
-- Governing convention: [PLANS.md](../../PLANS.md)
+- Governing convention: [PLANS.md](../../../PLANS.md)
 
 This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` as work proceeds. This document must be maintained in accordance with `PLANS.md`.
 
-This plan is implementation-ready but does not authorize implementation. TASK-011 remains `Pending` until the project owner separately authorizes execution and the primary coordinator completes the activation documentation transition.
+The project owner authorized this ExecPlan on 2026-08-21. TASK-011 and workflow `TASK-011-20260821-01` are `Complete` after two accepted product milestones, cumulative relevance review, the authoritative closure packet, fresh integrated acceptance, and the task-closure documentation gate. Activation itself remains historical chronology rather than implementation or acceptance evidence.
 
 ## Progress
 
 
 - [x] (2026-08-21) Read TASK-011, its mapped requirements, accepted ADRs, routed specifications, UI authorities, completed TASK-008/TASK-010 evidence boundaries, manifests, frontend source, test projects, and the current browser-smoke lifecycle.
 - [x] (2026-08-21) Completed reuse audit `TASK-011-REUSE-20260821-01` against the application/test baseline at clean `main` HEAD `a6574e2` and the synchronized planned UI authority, with relevant-tree aggregate `D0B217AD16FF5FB8929DEF95290FB09D1B151CD6C6DAB5D10327C17E077D869A`.
-- [x] (2026-08-21) Recorded the proportional TASK-011 execution choices in [DPL-DEC-051](../execution/decision-and-progress-log.md#decision-log): one cohesive detail route, inline interaction controls, default bounded comment reads, no pagination control, exact target-detail refetching, and reuse of the existing frontend/data/test boundaries.
+- [x] (2026-08-21) Recorded the proportional TASK-011 execution choices in [DPL-DEC-051](../../execution/decision-and-progress-log.md#decision-log): one cohesive detail route, inline interaction controls, default bounded comment reads, no pagination control, exact target-detail refetching, and reuse of the existing frontend/data/test boundaries.
 - [x] (2026-08-21) Registered this planning-only ExecPlan and kept TASK-011 `Pending`.
 - [x] (2026-08-21) Passed documentation validation for 74 Markdown files and 123 scenarios, ADR validation for 18 ADRs and 38 mapped requirements with only the established NFR-006 warning, `git diff --check`, task-state readback, and a documentation-only scope audit.
-- [ ] Receive separate project-owner execution authorization, validate the baseline and AUTH-001 continuity, change TASK-011 to `In progress`, and record the activation before any implementation assignment.
-- [ ] Complete Milestone 1: addressable detail navigation, detail data, required states, and governed detail image.
-- [ ] Complete Milestone 2: durable favorite and comment interactions with exact refetch and clear failure states.
-- [ ] Complete Milestone 3: cumulative relevance audit, authoritative closure packet, integrated review, documentation reconciliation, status closure, and plan archival.
+- [x] (2026-08-21) Received project-owner execution authorization; confirmed TASK-008/TASK-010 `Complete`, DG-003/DG-006 `Resolved`, AUTH-001 `Authorized` without a reopen trigger, a clean branch baseline, the exact accepted reuse aggregate, healthy local PostgreSQL/Redis, and transitioned TASK-011 to `In progress` under workflow `TASK-011-20260821-01`.
+- [x] (2026-08-21) Validated activation with documentation validation for 74 Markdown files and 123 scenarios, ADR validation for 18 ADRs and 38 requirements with only the established NFR-006 warning, all 26 lease-guard self-tests, `git diff --check`, task/gate/authorization readback, and inspection of the six-document activation diff.
+- [x] (2026-08-21) Accepted Milestone 1 read-only preflight `TASK-011-M1-PREFLIGHT-01` as `MISSING`: the card link, detail route/operation/query key/decoder/application coverage, and detail smoke assertions are absent; the existing API schema and smoke lifecycle are sufficient without a new fixture or process owner.
+- [x] (2026-08-21) Accepted Milestone 1 Red `TASK-011-M1-RED-01`: lease `TASK-011-M1-DETAIL-RED-04` closed compliant at receipt `038b23fe28aeb74f6013199a334e5b147358b64c8999408d4c7c3a4841c7fef1`, and the focused scope failed only for the missing route, card link, detail query owner, and detail decoder while 28 existing tests remained green.
+- [x] (2026-08-21) Accepted Milestone 1 Green and both bounded corrections: the eight-path production lease closed compliant at `0798add61381b9d264dc3a75181a972c8e0228c63def41204888e4655c191142`; the test-harness type correction closed at `9fc312824c16e831f8ac8b3a2565bcbbb88b6eff6ee1bb5e847399efced0a700`; and the card semantic-spacing correction closed at `5b5a9a236780640a21eb8208080f824e04207d1b993abc483ea7e40c1a331141`.
+- [x] (2026-08-21) Passed the Milestone 1 candidate boundary at 14-path aggregate `B67647FD02208CC204B650BBC46D6B4C3FEC802065F9FB8DA7EC227B64877EE3`: web unit 33/33, application 17/17, root typecheck, web build/GraphQL drift, Tailwind validation, targeted diff checking, and isolated Chromium smoke 1/1 at both required viewports passed; smoke run `7dad27de89543d45` logged matching READY and CLEANUP on PostgreSQL `55432` and Redis `56400`.
+- [x] (2026-08-21) Reconciled the fresh Milestone 1 S2 verdict as `REVISE`: one Major proves that the new full-card link's outside focus outline can be clipped by the card boundary while the smoke checks computed outline properties only. Milestone 1 remains unaccepted, and automatic continuation stopped because both writer correction budgets are exhausted.
+- [x] (2026-08-21) Received project-owner authorization for one additional bounded `TASK-011-M1-FOCUS` correction subcycle: the persistent test worker may change only the existing smoke to prove visible linked-card focus, the frontend worker may then change only `styles.css`, and fresh Chromium plus S2 confirmation remain mandatory.
+- [x] (2026-08-21) Accepted `TASK-011-M1-FOCUS` Red at receipt `d83b9b9cb9a216f5fe41156dad8789fdf35685939f1f17b19fc79abbd9444995`: Chromium proved the focused outline's painted bounds extend four pixels beyond the overflow-hidden card on every side, and run `6c1b10b8c48866d1` logged exact cleanup.
+- [x] (2026-08-21) Completed the bounded focus correction at corrected 14-path aggregate `D37E3D31128E367E0A6D440B2E566CF3459ACEBAB2AD2867F42683F951496F2D`: styles Green receipt `bb6393996cdf6348ce696ceacb6fe4131842da48b86c6b80270a40c5be09b3c5` preserves the 2-pixel/3-pixel-offset focus treatment without ancestor clipping; smoke correction receipt `01dc96e558f06abfd18a762bed445bafb97cf1034682c1b07e5faf0184db12d7` removes the detail-heading race; Chromium run `c883edbe25d84402` passed 1/1 with exact cleanup.
+- [x] (2026-08-21) Completed Milestone 1 after finding-specific S2 confirmation reproduced aggregate `D37E3D31128E367E0A6D440B2E566CF3459ACEBAB2AD2867F42683F951496F2D`, closed the visible-focus Major, preserved every other accepted checklist item, and returned `PASS` with no Blocker, Major, or Minor.
+- [x] (2026-08-21) Refreshed Milestone 2 reuse audit `TASK-011-REUSE-20260821-02` across the accepted 14-path M1 candidate, TASK-008 schema/resolver/integration evidence, API composition, and the unchanged smoke fixture/orchestrator at 21-path aggregate `EE05431D7F216F17FB12DA9FAFE385C97DAF80C9E064902915A77986CA26A6CD`; the planned EXTEND/REUSE_AS_IS dispositions remain unchanged.
+- [x] (2026-08-21) Accepted fresh Milestone 2 preflight `TASK-011-M2-PREFLIGHT-01` as `MISSING`: the route has a disabled favorite display and no comment form, mutation operation/decoder/coordinator/pending/failure/convergence behavior is absent, while TASK-008 and the current single smoke provide the complete reusable backend and lifecycle boundary.
+- [x] (2026-08-21) Accepted Milestone 2 Red `TASK-011-M2-RED-01`: lease `TASK-011-M2-INTERACTIONS-RED-01` closed compliant at receipt `3b292127474ea6419d9a131ce1f48fb0ccbb8260f0a97574916edfb6b6a50f63`; the focused scope ran 43 tests with 32 accepted M1 passes and 11 intended failures only for the missing coordinator, mutation decoders, and route interaction behavior.
+- [x] (2026-08-21) Accepted Milestone 2 Green: lease `TASK-011-M2-INTERACTIONS-GREEN-01` closed compliant at receipt `fef80b354ef8a3a3f0de4216071b4670a1d4c56a4e1af7f830275c88a45fb978`, changing only the six approved existing production/generated owners; the final focused boundary passed 43/43 and root typecheck passed while all four Red paths remained frozen.
+- [x] (2026-08-21) Accepted the one Milestone 2 test-role correction at receipt `0925961b637bdd11311f77a81e387df62180234fd61aa1e67ab45b24e3e64831`: the mobile focus step now uses real Tab navigation rather than programmatic focus, and isolated Chromium run `423c0d58e0d1c77f` passed the complete interaction/persistence flow with matching cleanup.
+- [x] (2026-08-21) Passed the Milestone 2 candidate boundary at 14-path aggregate `AC6047D66FF07F60EAA8D4D15622095F7C64691EB8DD76334446CDDFE960304E`: web unit 38/38, application 23/23, root typecheck, web build/GraphQL drift, Tailwind validation, targeted diff checking, and the corrected Chromium smoke passed. Fresh S2 review remains open.
+- [x] (2026-08-21) Reconciled the fresh Milestone 2 S2 verdict as `REVISE`: one Major proves that the favorite operation and its frozen decoder test request and require full detail even though this plan's binding interface requires the ID-only mutation payload. Milestone 2 remains unaccepted, and automatic continuation stopped because the test-role correction budget is exhausted.
+- [x] (2026-08-21) Received project-owner authorization for one additional bounded Milestone 2 correction cycle: the persistent test worker may reconcile only the favorite operation/decoder application fixtures and decoder contract to ID-only; a standard implementation worker may then narrow only the nonvisual operation, generated output, and decoder; focused, affected, browser, fingerprint, and S2 evidence must be refreshed.
+- [x] (2026-08-21) Accepted corrective Red `TASK-011-M2-OPERATION-RED-01`: lease closed compliant at receipt `8a3cb5c33494535513773b2c620954d7f8c1be1881289cc940cba4cf6aec61f6`; the focused scope ran 43 tests with 40 passes and three intended failures only for the current full-detail favorite document/decoder, freezing corrected application hash `40D0F913...` and executor-test hash `3EC7297D...`.
+- [x] (2026-08-21) Accepted corrective Green `TASK-011-M2-OPERATION-GREEN-01`: lease closed compliant at receipt `82f8235b9dbaa2d0772f1d94bbc7e10c9dbe9eca3732c00e895781524e8b85c3`, changing only the operation source, regenerated output, and decoder; focused 43/43, root typecheck, and web build/GraphQL drift passed with the corrected tests unchanged.
+- [x] (2026-08-21) Refreshed the corrected Milestone 2 boundary at 14-path aggregate `2108E6AFFFC599B3A4F486D02DDC0D7E6D30D241AFD3FFF0433B31DBD437D42D`: web unit 38/38, application 23/23, typecheck, web build/GraphQL drift, Tailwind, and isolated Chromium run `09d8bfce4d9e9b5b` passed with the ID-only favorite request, full interaction persistence, zero unexpected browser errors, and exact cleanup. Finding-specific S2 confirmation remains open.
+- [x] (2026-08-21) Completed Milestone 2 after finding-specific S2 confirmation reproduced corrected candidate `2108E6AFFFC599B3A4F486D02DDC0D7E6D30D241AFD3FFF0433B31DBD437D42D`, closed the ID-only operation Major, preserved every previously passing interaction/reuse/scope item, and returned `PASS WITH FOLLOW-UPS`; the sole stale-current-status follow-up is synchronized before closure validation.
+- [x] (2026-08-21) Completed Milestone 3: cumulative relevance returned `PASS`; candidate `2108E6AFFFC599B3A4F486D02DDC0D7E6D30D241AFD3FFF0433B31DBD437D42D` passed root typecheck/build/Tailwind, unit 181/181, integration 77/77, application 36/36, Chromium 1/1, lifecycle 7/7, documentation/ADR/diff checks, and exact external cleanup; fresh integrated review returned closure-permitting `PASS WITH FOLLOW-UPS`, and the sole revision-history Minor was resolved before status closure and archival.
 
 ## Surprises & Discoveries
 
@@ -39,6 +59,30 @@ This plan is implementation-ready but does not authorize implementation. TASK-01
 
 - Observation: The UI authority left comment pagination as a presentation question even though TASK-006 already proves default-20, maximum-50, newest-first reads. TASK-011 can satisfy every mapped requirement with the default page because a newly added comment is newest and therefore appears in that page.
   Evidence: `docs/ui/README.md`, ADR-0005, ADR-0006, SPEC-005, and completed TASK-006/TASK-008 evidence.
+
+- Observation: The activation worktree began as a clean `codex/execplan-011` branch at `cf30011c4b982b0422d2a336a2d2e2e720479355`, one planning commit beyond the plan's historical `main` baseline. The application/test projection stayed byte-identical, while the coordinator-owned UI-authority status update refreshed the 23-path aggregate.
+  Evidence: `git status --short --branch`, `git rev-parse HEAD`, planning aggregate `D0B217AD16FF5FB8929DEF95290FB09D1B151CD6C6DAB5D10327C17E077D869A`, and activation aggregate `B35B6C42F06801AAE3C5FCD36CE0B19153785CFFDE36D66941CBBE1A08882A1E`.
+
+- Observation: A no-lease Vitest preflight could mutate the existing repository-local Vitest cache, so the test worker correctly used static source/status evidence and withheld runtime evidence until the guarded Red assignment.
+  Evidence: `TASK-011-M1-PREFLIGHT-01`; existing `node_modules/.vite/vitest` cache ownership; `vitest.config.ts`.
+
+- Observation: The first complete Milestone 1 typecheck found a test-spy typing error even though the focused runtime tests were green. The bounded test-owner correction used the real `QueryClient` type without changing an assertion or product behavior.
+  Evidence: `TS2769` at `apps/web/src/app.application.test.tsx:21`; correction receipt `9fc312824c16e831f8ac8b3a2565bcbbb88b6eff6ee1bb5e847399efced0a700`.
+
+- Observation: The first infrastructure-backed smoke reached the existing list contract and found that moving the card content into a link had removed the explicit semantic separator between name and species. The bounded frontend correction restored only `{" "}`; the next owned smoke passed the list and new detail contracts and cleaned its run identity.
+  Evidence: failed smoke run `1e926e185c82505e`; passing smoke run `7dad27de89543d45`; correction receipt `5b5a9a236780640a21eb8208080f824e04207d1b993abc483ea7e40c1a331141`.
+
+- Observation: Computed `outline` values do not prove that a focus indicator is visibly painted when an ancestor clips overflow. The card keeps `overflow: hidden`, while the linked-card focus rule paints its outline outside the link with a positive offset.
+  Evidence: fresh Milestone 1 S2 review; `apps/web/src/styles.css`; `tests/smoke/walking-skeleton.smoke.test.ts` focus helper.
+
+- Observation: After the styles-only focus fix passed the new geometry assertion, the mobile detail helper could advance on the list card's same-name heading before route navigation committed, then fail strict `Human` lookup against eight list cards. The retained failure screenshot and accessibility snapshot show the intended detail route rendered, so this is a smoke-locator race rather than a CSS/navigation regression.
+  Evidence: smoke run `e9354c2e1442ab11`; retained Playwright screenshot, trace, and error context; the helper's unscoped heading lookup before its species assertion.
+
+- Observation: Programmatic Playwright focus does not establish the keyboard modality required for Chromium's `:focus-visible` matching. The initial Milestone 2 smoke passed persistence, failure, refetch, and reload checkpoints but failed only that mobile focus-style assertion; the bounded correction reset focus and used Tab traversal through the Back link to the favorite button before Enter activation.
+  Evidence: failed smoke run `9c476238c7dd54d7`; passing smoke run `423c0d58e0d1c77f`; correction receipt `0925961b637bdd11311f77a81e387df62180234fd61aa1e67ab45b24e3e64831`.
+
+- Observation: The Milestone 2 Red mistakenly required the favorite mutation decoder to accept a complete character detail, and Green therefore expanded the client selection beyond the plan's exact `{ id }` interface. The convergence coordinator still discards mutation data, so no false cache convergence occurred, but the unused selection couples mutation success to unrelated fields and violates the accepted KISS/YAGNI boundary.
+  Evidence: fresh Milestone 2 S2 review; `apps/web/src/data/characters.graphql`; `apps/web/src/data/graphql-executor.ts`; `apps/web/src/data/graphql-executor.unit.test.tsx`; the exact operation interface in this plan.
 
 ## Decision Log
 
@@ -67,10 +111,66 @@ This plan is implementation-ready but does not authorize implementation. TASK-01
   Rationale: An implementation-ready plan is intent, not separate owner authorization or implementation evidence.
   Date/Author: 2026-08-21 / primary coordinator.
 
+- Decision: Activate TASK-011 under workflow `TASK-011-20260821-01` after exact project-owner authorization and baseline continuity checks.
+  Rationale: TASK-008 and TASK-010 remain `Complete`; DG-003 and DG-006 remain `Resolved`; AUTH-001 remains `Authorized` because the planned exact direct-URL portfolio boundary has no reopen trigger; the worktree and accepted reuse projection contain no conflicting drift.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept Milestone 1 classification `MISSING` and authorize one coherent Red across the existing card, app, query-owner, decoder, and smoke tests plus the single planned detail-route application test.
+  Rationale: The source and existing tests prove that only list routing/data behavior exists, while the checked-in API schema already supplies the complete public detail contract and the existing smoke lifecycle needs no new owner. Query-key and decoder tests are part of the same addressable-detail contract rather than separate product outcomes.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept one same-contract correction for each Milestone 1 writer and freeze candidate `B67647FD02208CC204B650BBC46D6B4C3FEC802065F9FB8DA7EC227B64877EE3` for fresh S2 review.
+  Rationale: The test correction repaired only the real-provider spy type, and the frontend correction restored only the pre-existing readable card summary separator. Neither changed the observable detail contract, reuse dispositions, mutation freeze, or architectural boundaries. All refreshed milestone commands and the isolated two-viewport browser contract pass.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Withhold Milestone 1 acceptance after the fresh S2 `REVISE` verdict and stop before another write.
+  Rationale: The visible-focus Major is valid and requires both a stronger frozen browser assertion and a bounded style correction. The plan permits only one same-contract correction per role; both the persistent test worker and frontend worker already used that budget. Starting another cycle, resetting attempt count, or editing implementation directly would bypass the accepted stopping rule without project-owner authorization.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept the project owner's explicit budget extension for exactly one `TASK-011-M1-FOCUS` corrective Red/Green and confirmation loop.
+  Rationale: The owner replied `go ahead` to the coordinator's exact proposal limiting the test write to `tests/smoke/walking-skeleton.smoke.test.ts`, the implementation write to `apps/web/src/styles.css`, and the evidence refresh to the M1 browser/validation boundary plus S2 confirmation. This does not reopen any other scope, correction budget, dependency, mutation behavior, or milestone.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Classify the post-Green 375-pixel failure as a same-contract smoke test defect and authorize attempt 2 on the already owner-approved smoke-only surface.
+  Rationale: The new focus assertion passes, the captured page is the loaded detail, and the accessibility snapshot contains only the detail tree. The helper's first same-name heading lookup can pass against a list-card heading before navigation commits, causing the next broad species lookup to see the still-present list. Requiring the existing level-2 detail heading removes the race without changing CSS, product behavior, fields, viewports, fixtures, or the focus contract. This is the sole test correction inside the owner-approved subcycle; any further failure stops.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Freeze corrected Milestone 1 candidate `D37E3D31128E367E0A6D440B2E566CF3459ACEBAB2AD2867F42683F951496F2D` for finding-specific S2 confirmation.
+  Rationale: The new geometry assertion now proves the focused outline is paintable; the CSS retains the global 2-pixel Plasma Cyan ring and 3-pixel offset while moving descendant clipping to the rounded link; the corrected helper waits for the level-2 detail heading. Chromium, unit, application, typecheck, build/GraphQL drift, Tailwind, relevance, and diff checks pass. No original M1 behavior or prohibited scope changed.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept Milestone 1 after closure-permitting S2 confirmation and advance to Milestone 2 preflight.
+  Rationale: The same independent reviewer reproduced the corrected candidate, exact two-path corrective delta, focus paintability proof, card containment, locator-race correction, receipts, evidence, and prohibited-scope searches. It closed the sole Major and returned `PASS` with no finding. This accepts only addressable detail reading; mutation behavior, AC-003, task closure, and TASK-012 remain separate.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept refreshed Milestone 2 reuse audit `TASK-011-REUSE-20260821-02` without changing a disposition.
+  Rationale: The accepted M1 route/data/test owners are the exact planned extension points; TASK-008's public schema, resolver, persistence evidence, and API composition already own both durable mutations; the single smoke fixture/orchestrator already owns real PostgreSQL/Redis lifecycle and cleanup. M2 therefore needs no backend, fixture, process, dependency, component, or data-module owner unless read-only preflight proves a binding contradiction.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept Milestone 2 classification `MISSING` and authorize one coherent Red across the existing detail application, query-owner, executor-decoder, and single smoke tests.
+  Rationale: No frontend mutation operation, mutation result decoder, exact-key refetch coordinator, valid/invalid form behavior, pending/failure truthfulness, reload persistence, or inert-comment browser evidence exists. These assertions jointly prove one user-visible interaction/convergence contract. TASK-008 already proves backend mutation behavior, so no backend or fixture Red is valid.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept and freeze Milestone 2 Red aggregate `A21FD544DAC7A29C8A52474EDE4D28FE98A29E01B933FFE10CD664857E5FE1AB` for separate frontend Green.
+  Rationale: The 11 failures are exclusively the missing public frontend owners; all 32 pre-existing M1 assertions pass. The four tests prove one coherent mutation/convergence outcome across semantic DOM, exact-key network refetch, operation-specific decoding, and the existing real-browser lifecycle. No fixture, backend, generated, infrastructure, or unrelated failure contaminated the Red.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Withhold Milestone 2 after fresh S2 `REVISE` and accept the project owner's bounded operation-correction extension.
+  Rationale: The original favorite Red required full detail even though the binding client interface selects only `{ id }`. The expanded response was unused and never established convergence, but it violated KISS/YAGNI and coupled mutation success to unrelated fields. The owner authorized one test correction limited to the application/decoder contract and one standard nonvisual Green limited to the operation, generated output, and decoder.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept corrected Milestone 2 candidate `2108E6AFFFC599B3A4F486D02DDC0D7E6D30D241AFD3FFF0433B31DBD437D42D` after finding-specific S2 `PASS WITH FOLLOW-UPS` and advance to integrated closure.
+  Rationale: The corrected Red proves the ID-only mismatch; the separate Green narrows only the exact three owners; focused, affected, type/build/GraphQL drift, Tailwind, and real two-viewport persistence evidence pass. The reviewer closed the sole product Major and retained only a documentation-currentness follow-up, which this reconciliation resolves without changing product bytes or claiming AC/task closure.
+  Date/Author: 2026-08-21 / primary coordinator.
+
+- Decision: Accept the complete closure packet and fresh integrated `PASS WITH FOLLOW-UPS`, mark TASK-011 and AC-003 through AC-005 complete, and archive this plan after active-location documentation validation.
+  Rationale: Cumulative relevance found no obsolete or irrelevant coverage; every authoritative command passes on exact candidate `2108E6AF...37D42D`; Chromium proves the complete detail/interaction flow with exact GraphQL operation counts and cleanup; PostgreSQL/Redis residue and owned ports are empty; and the fresh reviewer found no Blocker or Major. Its one documentation-only Minor required this cumulative revision note, which is now resolved. TASK-012 remains the owner of image-failure and full responsive closure, and no commit, push, pull request, publication, or deployment is authorized.
+  Date/Author: 2026-08-21 / primary coordinator.
+
 ## Outcomes & Retrospective
 
 
-Planning outcome: TASK-011 now has a dependency-ordered, reuse-first execution path with two product milestones and one closure milestone. No application, test, generated file, manifest, dependency, runtime, acceptance criterion, task status, publication, or deployment changed during planning. Execution has not started.
+TASK-011 is complete. Milestone 1 is accepted at candidate `D37E3D31128E367E0A6D440B2E566CF3459ACEBAB2AD2867F42683F951496F2D`, and corrected Milestone 2 plus integrated closure are accepted at candidate `2108E6AFFFC599B3A4F486D02DDC0D7E6D30D241AFD3FFF0433B31DBD437D42D`. Addressable detail reading, governed imagery, visible keyboard focus, ID-only favorite mutation, validated plain-text comments, exact target-detail convergence, truthful failure states, reload persistence, cumulative relevance, authoritative closure, independent acceptance, and documentation reconciliation pass. AC-003 through AC-005 are complete and current readiness is 10/12. TASK-012 still owns image-failure fallback and full responsive/error closure; commit, push, pull request, publication, and deployment remain outside this workflow.
 
 ## Purpose / Big Picture
 
@@ -84,15 +184,15 @@ A reviewer will observe success through focused semantic DOM tests, the existing
 ## Context and Orientation
 
 
-TASK-011 owns [FR-FE-003 through FR-FE-005](../REQUIREMENTS.md#fr-fe-003---character-details), [NFR-001](../REQUIREMENTS.md#nfr-001---frontend-technologies), [NFR-005](../REQUIREMENTS.md#nfr-005---usability), and [AC-003 through AC-005](../REQUIREMENTS.md#8-minimum-acceptance-criteria). It contributes to adopted optional [OR-004](../REQUIREMENTS.md#or-004---frontend-tests) without reclassifying that source-optional requirement.
+TASK-011 owns [FR-FE-003 through FR-FE-005](../../REQUIREMENTS.md#fr-fe-003---character-details), [NFR-001](../../REQUIREMENTS.md#nfr-001---frontend-technologies), [NFR-005](../../REQUIREMENTS.md#nfr-005---usability), and [AC-003 through AC-005](../../REQUIREMENTS.md#8-minimum-acceptance-criteria). It contributes to adopted optional [OR-004](../../REQUIREMENTS.md#or-004---frontend-tests) without reclassifying that source-optional requirement.
 
-The governing decisions are [ADR-0005](../adrs/0005-use-single-user-persistence-for-character-interactions.md), [ADR-0006](../adrs/0006-define-a-use-case-oriented-graphql-contract.md), [ADR-0009](../adrs/0009-keep-frontend-state-close-to-its-owner.md), [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md), [ADR-0016](../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md), [ADR-0017](../adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md), and [ADR-0018](../adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md). DPL-DEC-051 owns the reversible TASK-011 choices that these authorities leave open.
+The governing decisions are [ADR-0005](../../adrs/0005-use-single-user-persistence-for-character-interactions.md), [ADR-0006](../../adrs/0006-define-a-use-case-oriented-graphql-contract.md), [ADR-0009](../../adrs/0009-keep-frontend-state-close-to-its-owner.md), [ADR-0014](../../adrs/0014-persist-and-deliver-character-image-urls-directly.md), [ADR-0016](../../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md), [ADR-0017](../../adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md), and [ADR-0018](../../adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md). DPL-DEC-051 owns the reversible TASK-011 choices that these authorities leave open.
 
-The routed observable rules are [SPEC-003 through SPEC-005](../specs/SPEC.feature) plus the TASK-011 portions of [HS-009, HS-015, HS-016, and HS-017](../specs/HARD_SPEC.feature). TASK-006 already owns bounded newest-first detail/comment reads; TASK-008 already owns the exact mutations, validation, PostgreSQL persistence, and backend lifecycle. Do not duplicate their proof. TASK-011 owns only the frontend operations, presentation, explicit refetch, browser rendering, reload, and end-to-end AC evidence.
+The routed observable rules are [SPEC-003 through SPEC-005](../../specs/SPEC.feature) plus the TASK-011 portions of [HS-009, HS-015, HS-016, and HS-017](../../specs/HARD_SPEC.feature). TASK-006 already owns bounded newest-first detail/comment reads; TASK-008 already owns the exact mutations, validation, PostgreSQL persistence, and backend lifecycle. Do not duplicate their proof. TASK-011 owns only the frontend operations, presentation, explicit refetch, browser rendering, reload, and end-to-end AC evidence.
 
-The UI authorities are the [field-visibility decision](../ui/README.md#ui-field-visibility-decision), [data-driven constraints](../ui/README.md#data-driven-design-constraints), and [Interdimensional Dark visual foundation](../ui/visual-foundations.md). AUTH-001 is `Authorized` only for the recorded personal, educational, non-commercial portfolio and exact ADR-0014 direct-URL boundary. Its continuity must be rechecked at activation; no planning artifact can substitute for that owner-controlled state.
+The UI authorities are the [field-visibility decision](../../ui/README.md#ui-field-visibility-decision), [data-driven constraints](../../ui/README.md#data-driven-design-constraints), and [Interdimensional Dark visual foundation](../../ui/visual-foundations.md). AUTH-001 is `Authorized` only for the recorded personal, educational, non-commercial portfolio and exact ADR-0014 direct-URL boundary. Its continuity must be rechecked at activation; no planning artifact can substitute for that owner-controlled state.
 
-Prerequisite TASK-008 and TASK-010 are `Complete`. TASK-011 is `Pending`. The current root list, API, persistence, and smoke infrastructure are implemented; the detail UI and frontend mutation operations are not.
+Prerequisite TASK-008 and TASK-010 are `Complete`. TASK-011 is `In progress` under workflow `TASK-011-20260821-01`. The root list, API, persistence, smoke infrastructure, addressable detail UI, and frontend favorite/comment operations are implemented and accepted at their milestone barriers; integrated task closure remains pending.
 
 ## Scope and Non-Goals
 
@@ -100,7 +200,7 @@ Prerequisite TASK-008 and TASK-010 are `Complete`. TASK-011 is `Pending`. The cu
 ### Accepted reuse audit
 
 
-Reuse audit `TASK-011-REUSE-20260821-01` covers the 23 ordered paths listed under `Artifacts and Notes` at aggregate `D0B217AD16FF5FB8929DEF95290FB09D1B151CD6C6DAB5D10327C17E077D869A`.
+Refreshed reuse audit `TASK-011-REUSE-20260821-01` covers the 23 ordered paths listed under `Artifacts and Notes` at activation aggregate `B35B6C42F06801AAE3C5FCD36CE0B19153785CFFDE36D66941CBBE1A08882A1E`.
 
 | Element or responsibility | Disposition | Exact path and bounded change |
 |---|---|---|
@@ -383,6 +483,18 @@ Planning baseline:
 - accepted reuse-audit ID: `TASK-011-REUSE-20260821-01`;
 - 23-path aggregate after that planning synchronization: `D0B217AD16FF5FB8929DEF95290FB09D1B151CD6C6DAB5D10327C17E077D869A`.
 
+Activation baseline:
+
+- branch and HEAD: `codex/execplan-011` at `cf30011c4b982b0422d2a336a2d2e2e720479355`, with clean worktree and index before activation;
+- toolchain: Node.js `v24.18.0`, npm `11.16.0`, Playwright `1.61.1`;
+- services: Docker client/server `29.7.2` on Linux; healthy `postgres:18.6-alpine` at loopback port `55432` and `redis:8.8.1-alpine` at loopback port `56400`;
+- authorization/gates: TASK-008/TASK-010 `Complete`, DG-003/DG-006 `Resolved`, and AUTH-001 `Authorized` with no changed continuity dimension; and
+- refreshed accepted reuse aggregate after the UI-authority activation status update: `B35B6C42F06801AAE3C5FCD36CE0B19153785CFFDE36D66941CBBE1A08882A1E`.
+
+Milestone 1 assignment evidence:
+
+- `TASK-011-M1-PREFLIGHT-01`: persistent `test_worker`, read-only, no lease or changed path, `MISSING`; static source/status inspection passed, the no-lease Vitest command was correctly withheld because it could mutate the repository-local cache, and no fixture/process-owner gap was found.
+
 Ordered reuse projection:
 
 1. `docs/ui/README.md`
@@ -470,3 +582,9 @@ The existing one-worker Chromium project and repository-owned smoke orchestrator
 
 
 2026-08-21: Created the implementation-ready TASK-011 ExecPlan, accepted reuse audit, DPL-DEC-051 execution choices, two coherent frontend-visual product milestones, proportional S2 review path, one standard closure milestone, exact no-new-component/dependency/test-project boundaries, and task-closure workflow. Synchronized the UI authority and refreshed the reuse projection after planning-only documentation edits. Documentation/ADR validation and diff checking pass. TASK-011 remains `Pending`; no implementation or acceptance evidence was created.
+
+2026-08-21: Recorded explicit project-owner execution authorization, verified dependency/gate/authorization continuity and the clean activation baseline, transitioned TASK-011 and workflow `TASK-011-20260821-01` to `In progress`, refreshed the accepted reuse aggregate after the UI-authority status update, and passed the complete activation validation barrier. This activation revision changes documentation/status only and creates no implementation or acceptance evidence.
+
+2026-08-21: Recorded the material implementation history omitted from the earlier revision note. Milestone 1 implemented addressable detail and governed imagery, then used the owner-authorized focus correction to close visible clipping and a smoke-locator race before accepting candidate `D37E3D31...`. Milestone 2 implemented durable favorite/comment interactions, then used the owner-authorized operation correction to restore the exact ID-only favorite boundary before accepting candidate `2108E6AF...`. The cumulative relevance audit, authoritative type/build/Tailwind/unit/integration/application/browser/lifecycle/documentation/ADR/diff packet, exact process/data cleanup, and fresh integrated `PASS WITH FOLLOW-UPS` all pass; the review's sole documentation-only revision-history Minor is resolved by this note. TASK-011 and AC-003 through AC-005 are now complete at 10/12 readiness, all affected current-status and evidence owners are reconciled, and this plan is ready for the required completed-archive move after active-location validation. No commit, push, pull request, publication, or deployment occurred.
+
+2026-08-21: Passed the active-location documentation gate, moved this complete plan to `docs/plans/completed/`, repaired its relative links and every current/historical inbound plan link, and passed the final completed-archive documentation/ADR/diff readback. TASK-011 is closed with no remaining plan work. Product/test candidate `2108E6AF...` remains byte-identical; no commit, push, pull request, publication, or deployment occurred.

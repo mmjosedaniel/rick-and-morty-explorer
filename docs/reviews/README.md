@@ -4,10 +4,11 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
-- [2026-08-21 TASK-008 documentation re-review](./2026-08-21-task-008-documentation-re-review.md) — returns `PASS` after preserving and correcting one independently reported Minor: the README comment mutation selected two fields absent from the public `Comment` type. Exact schema and documentation validation now pass; TASK-008 remains complete and readiness remains `Fail` at 7/12.
+- [2026-08-21 TASK-011 acceptance review](./2026-08-21-task-011-acceptance-review.md) — returns closure-permitting `PASS WITH FOLLOW-UPS` with no product Blocker or Major; the coordinator resolved its one ExecPlan revision-history Minor before archival. TASK-011 and AC-003 through AC-005 are complete, and readiness remains `Fail` at 10/12.
 
 ## Historical Records
 
+- [2026-08-21 TASK-008 documentation re-review](./2026-08-21-task-008-documentation-re-review.md) — remains the current TASK-008 record and historical predecessor to readiness advanced by TASK-011; it returns `PASS` after correcting the README mutation example and leaves readiness at 7/12.
 - [2026-08-21 TASK-008 acceptance review](./2026-08-21-task-008-acceptance-review.md) — preserved implementation/runtime `PASS` on candidate `58A88087...`. The current documentation re-review supersedes only its documentation-closure conclusion for the invalid README comment selection and confirms the narrow correction.
 - [2026-08-20 TASK-010 acceptance review](./2026-08-20-task-010-acceptance-review.md) — remains the current TASK-010 record and historical predecessor to the repository status advanced by TASK-008; it returned `PASS WITH FOLLOW-UPS`, completed TASK-010/AC-001/AC-002, and advanced readiness to 7/12.
 - [2026-08-20 TASK-007 hosted-CI acceptance re-review](./2026-08-20-task-007-hosted-ci-acceptance-re-review.md) — remains the current TASK-007 record and historical predecessor to the repository-wide readiness advanced by TASK-010; it passed exact merged `main` run `32396138822` and closed TASK-007 at 5/12.

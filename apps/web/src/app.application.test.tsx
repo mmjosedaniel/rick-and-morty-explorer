@@ -1,8 +1,9 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import type { ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { QueryClient } from "@tanstack/react-query";
+import { createElement, type ReactNode } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const queryProviderClients = vi.hoisted(() => [] as object[]);
+const queryProviderClients = vi.hoisted(() => [] as QueryClient[]);
 
 vi.mock("@tanstack/react-query", async (importOriginal) => {
   const original =
@@ -15,10 +16,10 @@ vi.mock("@tanstack/react-query", async (importOriginal) => {
       client,
     }: {
       readonly children: ReactNode;
-      readonly client: object;
+      readonly client: QueryClient;
     }) => {
       queryProviderClients.push(client);
-      return children;
+      return createElement(original.QueryClientProvider, { client, children });
     },
   };
 });
@@ -33,6 +34,10 @@ import { createCharactersQueryClient } from "./data/characters-query";
 describe("App", () => {
   beforeEach(() => {
     queryProviderClients.length = 0;
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("renders the TASK-003 shell at the root route", () => {
@@ -67,5 +72,22 @@ describe("App", () => {
     expect(queryProviderClients).toHaveLength(3);
     expect(queryProviderClients[2]).toBe(applicationClient);
     expect(applicationClient).not.toBe(testClient);
+  });
+
+  it("registers the addressable character detail route inside the shared shell", () => {
+    window.history.replaceState({}, "", "/characters/101");
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+
+    render(<App queryClient={createCharactersQueryClient()} />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Rick and Morty Explorer",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Loading character...",
+    );
   });
 });

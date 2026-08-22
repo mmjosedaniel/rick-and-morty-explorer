@@ -183,9 +183,9 @@ These observable criteria summarize the minimum assessment outcomes. They do not
 
 - [x] AC-001: The application lists characters as cards containing their name, image, and species.
 - [x] AC-002: The list can be sorted by name from A-Z and Z-A.
-- [ ] AC-003: Selecting a card displays the character's details and image.
-- [ ] AC-004: A character can be marked as a favorite from the detail view.
-- [ ] AC-005: Comments can be added to a character.
+- [x] AC-003: Selecting a card displays the character's details and image.
+- [x] AC-004: A character can be marked as a favorite from the detail view.
+- [x] AC-005: Comments can be added to a character.
 - [ ] AC-006: The interface is responsive and uses Flexbox and Grid.
 - [x] AC-007: The backend exposes a GraphQL API through Express.
 - [x] AC-008: The API filters characters by status, species, gender, name, and origin.

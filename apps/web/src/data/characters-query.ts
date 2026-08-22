@@ -1,6 +1,11 @@
 import { QueryClient, queryOptions } from "@tanstack/react-query";
 
-import type { CharactersQuery, CharactersQueryVariables } from "./generated/graphql";
+import type {
+  CharacterDetailQuery,
+  CharacterDetailQueryVariables,
+  CharactersQuery,
+  CharactersQueryVariables,
+} from "./generated/graphql";
 
 export interface CharacterFilters {
   readonly status?: string | null;
@@ -13,6 +18,10 @@ type CharactersExecutor = (
   variables: CharactersQueryVariables,
   signal: AbortSignal,
 ) => Promise<CharactersQuery>;
+type CharacterDetailExecutor = (
+  variables: CharacterDetailQueryVariables,
+  signal: AbortSignal,
+) => Promise<CharacterDetailQuery>;
 
 function normalizeFilters(filters: CharacterFilters): NormalizedCharacterFilters {
   return {
@@ -40,6 +49,48 @@ export function createCharactersQueryOptions(
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
+}
+
+export function characterDetailQueryKey(id: string) {
+  return ["character-detail", id] as const;
+}
+
+export function createCharacterDetailQueryOptions(
+  id: string,
+  executor: CharacterDetailExecutor,
+) {
+  return queryOptions({
+    queryKey: characterDetailQueryKey(id),
+    queryFn: async ({ signal }) => (await executor({ id }, signal)).character,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
+
+interface ExecuteCharacterDetailMutationOptions {
+  readonly queryClient: QueryClient;
+  readonly detailQueryOptions: ReturnType<
+    typeof createCharacterDetailQueryOptions
+  >;
+  readonly mutation: () => Promise<unknown>;
+}
+
+export async function executeCharacterDetailMutation({
+  queryClient,
+  detailQueryOptions,
+  mutation,
+}: ExecuteCharacterDetailMutationOptions): Promise<
+  "converged" | "persisted-but-not-refreshed"
+> {
+  await mutation();
+
+  try {
+    await queryClient.fetchQuery(detailQueryOptions);
+    return "converged";
+  } catch {
+    return "persisted-but-not-refreshed";
+  }
 }
 
 export function createCharactersQueryClient() {
