@@ -229,7 +229,7 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-009 | Complete | TASK-006 | ADR-0017 accepted, DG-003 resolved, and documentation gate passed on 2026-08-18 |
 | TASK-010 | Complete | TASK-005, TASK-009 | Owner-authorized milestones, integrated `PASS WITH FOLLOW-UPS`, AC-001/AC-002 evidence, and task-closure documentation gate passed; AUTH-001 remains Authorized for browser image work |
 | TASK-011 | Complete | TASK-008, TASK-010 | Owner-authorized workflow `TASK-011-20260821-01`; two product milestones, integrated acceptance, AC-003/AC-004/AC-005 evidence, and task-closure documentation gate passed; AUTH-001 remains Authorized for detail image work |
-| TASK-012 | Pending | TASK-011 | AUTH-001 Authorized for image fallback and display work |
+| TASK-012 | Pending | TASK-011 | Implementation-ready ExecPlan registered; AUTH-001 Authorized for image fallback/display; separate execution authorization required |
 | TASK-013 | Pending | TASK-007, TASK-012 | Test-relevance audit and all authoritative quality gates |
 | TASK-014 | Pending | TASK-013 | Clean-clone delivery verification |
 | TASK-015 | Pending | TASK-014 | No unresolved release-blocking gate or ADR follow-up |
@@ -425,6 +425,7 @@ The liveness route is operational process evidence only. It does not query Postg
 ### TASK-012 - Complete responsive and resilient UI states
 
 - **Outcome:** List and detail flows remain readable and operable across the selected viewports and all required data/image states.
+- **Execution plan:** The active [TASK-012 ExecPlan](./plans/TASK-012-responsive-and-resilient-ui-states.md) records the accepted zero-new-owner reuse audit, one frontend-visual product milestone, exact three-viewport/state matrix, bounded worker scopes, validation, and closure barriers. Workflow `TASK-012-20260821-01` remains planning-only and `Pending` until separate project-owner execution authorization.
 - **Mapped scope:** NFR-001, NFR-002, NFR-005, AC-006; OR-004 (adopted optional).
 - **Governing decisions:** ADR-0009, ADR-0014, ADR-0016.
 - **Design inputs:** [UI data-driven constraints](./ui/README.md#data-driven-design-constraints), [planned mockup coverage](./ui/README.md#planned-mockup-coverage), and [responsive visual foundations](./ui/visual-foundations.md#responsive-type-scale).

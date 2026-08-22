@@ -7,6 +7,7 @@
 - Visual foundation: [Color and typography](./visual-foundations.md)
 - Completed implementation plan: [TASK-010 character list, sorting, and interface filters](../plans/completed/TASK-010-character-list-sorting-and-interface-filters.md)
 - Completed implementation plan: [TASK-011 character detail, favorites, and comments](../plans/completed/TASK-011-character-detail-favorites-and-comments.md)
+- Active implementation plan: [TASK-012 responsive and resilient UI states](../plans/TASK-012-responsive-and-resilient-ui-states.md)
 - Proposed component-workshop pilot: [Storybook workflow](./storybook-workflow.md)
 
 ## Document role
@@ -149,7 +150,7 @@ This field audit records the accepted UI target and links to evidence owners rat
 
 ## Open UI decisions
 
-[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the TASK-010 control types, default sort, URL parameters, and invalid-value recovery. [DPL-DEC-051](../execution/decision-and-progress-log.md#decision-log) resolves the initial TASK-011 comment presentation: use the GraphQL default first 20 newest comments and add no pagination or load-more control. This satisfies the current detail/comment flows without duplicating TASK-006's bounded pagination/order evidence or inventing a total count the contract does not expose. A later demonstrated need to navigate beyond the first 20 comments requires a new task-scoped execution decision and evidence; it is not implicit TASK-011 scope.
+[DPL-DEC-049](../execution/decision-and-progress-log.md#decision-log) resolves the TASK-010 control types, default sort, URL parameters, and invalid-value recovery. [DPL-DEC-051](../execution/decision-and-progress-log.md#decision-log) resolves the initial TASK-011 comment presentation: use the GraphQL default first 20 newest comments and add no pagination or load-more control. This satisfies the current detail/comment flows without duplicating TASK-006's bounded pagination/order evidence or inventing a total count the contract does not expose. A later demonstrated need to navigate beyond the first 20 comments requires a new task-scoped execution decision and evidence; it is not implicit TASK-011 scope. [DPL-DEC-052](../execution/decision-and-progress-log.md#decision-log) records TASK-012's planning-only choice to extend the existing card/detail/style and test/smoke owners, keep image-failure state local to the current image URL, use the exact accessible `Image unavailable` fallback, and prove the contract at 375, 768, and 1280 CSS pixels without a new component, dependency, fixture, test project, or breakpoint framework.
 
 Owner-authorized TASK-011 workflow `TASK-011-20260821-01` is `Complete`. Addressable detail, favorite/comment interaction, explicit convergence, governed detail imagery, and milestone operability at 1280 by 800 and 375 by 812 have accepted unit, application, real-browser, persistence, and closure evidence. TASK-012 still owns complete 375/768/1280 responsive/error coverage and image-failure fallback.
 
