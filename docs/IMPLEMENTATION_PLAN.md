@@ -230,7 +230,7 @@ This table is the canonical current status for `TASK-*` work. `Pending` means pr
 | TASK-010 | Complete | TASK-005, TASK-009 | Owner-authorized milestones, integrated `PASS WITH FOLLOW-UPS`, AC-001/AC-002 evidence, and task-closure documentation gate passed; AUTH-001 remains Authorized for browser image work |
 | TASK-011 | Complete | TASK-008, TASK-010 | Owner-authorized workflow `TASK-011-20260821-01`; two product milestones, integrated acceptance, AC-003/AC-004/AC-005 evidence, and task-closure documentation gate passed; AUTH-001 remains Authorized for detail image work |
 | TASK-012 | Complete | TASK-011 | Owner-authorized workflow, Milestone 1, authoritative closure, fresh integrated `PASS WITH FOLLOW-UPS`, resolved documentation follow-up, AC-006 evidence, and task-closure documentation gate passed |
-| TASK-013 | Pending | TASK-007, TASK-012 | Test-relevance audit and all authoritative quality gates |
+| TASK-013 | Pending | TASK-007, TASK-012 | Implementation-ready ExecPlan registered; separate execution authorization, lint boundary, relevance audit, and all authoritative quality gates remain |
 | TASK-014 | Pending | TASK-013 | Clean-clone delivery verification |
 | TASK-015 | Pending | TASK-014 | No unresolved release-blocking gate or ADR follow-up |
 
@@ -441,6 +441,7 @@ The liveness route is operational process evidence only. It does not query Postg
 - **Mapped scope:** NFR-004; OR-001, OR-004, OR-007, OR-008 (adopted optional).
 - **Governing decisions:** ADR-0002, ADR-0006, ADR-0007, ADR-0014, ADR-0016.
 - **Prerequisites and gates:** TASK-007 and TASK-012; all active implementation gates and other implementation branches are complete through those dependency paths.
+- **Execution plan:** [TASK-013 code-quality and adopted-test closure](./plans/TASK-013-code-quality-and-test-commitments.md) is implementation-ready and awaiting separate project-owner execution authorization; TASK-013 remains `Pending`.
 - **Expected artifacts:** Passing type/lint/build/test automation, at least three meaningful frontend component/layout tests, backend search unit coverage, real boundary integration coverage, and a recorded test-relevance audit.
 - **Validation:** Run every authoritative repository quality command; inspect dependency direction, skipped/focused tests, test-only production branches, unused fixtures/mocks/helpers/snapshots, and requirement/ADR traceability.
 - **Documentation impact:** Verification guidance, plan/task status, review evidence, and execution log.
