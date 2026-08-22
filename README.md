@@ -10,7 +10,7 @@ TASK-003 through TASK-011 are `Complete`. TASK-007's canonical/versioned finite-
 
 An accepted ADR records approved implementation direction only. Requirements, ADRs, plans, examples, mocks, and stubs must not be treated as implementation or acceptance evidence.
 
-TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-008, TASK-010, and TASK-011 are also `Complete`: their completed [TASK-008 ExecPlan](./docs/plans/completed/TASK-008-persist-favorite-and-comment-mutations.md), [TASK-010 ExecPlan](./docs/plans/completed/TASK-010-character-list-sorting-and-interface-filters.md), [TASK-011 ExecPlan](./docs/plans/completed/TASK-011-character-detail-favorites-and-comments.md), and current [TASK-011 acceptance review](./docs/reviews/2026-08-21-task-011-acceptance-review.md) preserve implementation, runtime, review, correction, and closure evidence.
+TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-008, TASK-010, and TASK-011 are also `Complete`: their completed [TASK-008 ExecPlan](./docs/plans/completed/TASK-008-persist-favorite-and-comment-mutations.md), [TASK-010 ExecPlan](./docs/plans/completed/TASK-010-character-list-sorting-and-interface-filters.md), [TASK-011 ExecPlan](./docs/plans/completed/TASK-011-character-detail-favorites-and-comments.md), and current [TASK-011 documentation re-review](./docs/reviews/2026-08-21-task-011-documentation-re-review.md) preserve implementation, runtime, review, correction, and closure evidence.
 
 ## Documentation map
 
@@ -74,7 +74,7 @@ The current adopted and deferred optional scope is authoritative in the [optiona
 
 ## Readiness status
 
-The current evidence-based [TASK-011 acceptance review](./docs/reviews/2026-08-21-task-011-acceptance-review.md) records:
+The current evidence-based [TASK-011 documentation re-review](./docs/reviews/2026-08-21-task-011-documentation-re-review.md) records:
 
 | View | Current result |
 |---|---|
