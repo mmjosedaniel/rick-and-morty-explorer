@@ -4,11 +4,12 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
-- [2026-08-22 TASK-013 acceptance review](./2026-08-22-task-013-acceptance-review.md) — records closure-permitting `PASS WITH FOLLOW-UPS` on candidate `024F1415...4B3D`, with zero Blocker, zero Major, and one documentation-only currentness Minor resolved during the coordinator-owned gate. TASK-014 retains AC-012 and clean-clone delivery.
+- [2026-08-22 TASK-013 documentation re-review](./2026-08-22-task-013-documentation-re-review.md) — records `PASS` after resolving two independently reported post-commit documentation/evidence Minors. Candidate `024F1415...4B3D`, TASK-013, TASK-014, and readiness at 11/12 remain unchanged; local commit `a7819f8` and TASK-012's merged PR #21 history are now reported accurately.
 - [2026-08-22 TASK-012 documentation re-review](./2026-08-22-task-012-documentation-re-review.md) — records `PASS` after resolving two independently reported post-commit documentation-currentness Minors. Candidate `D4E87CB...FE3983`, TASK-012, AC-006, and readiness at 11/12 remain unchanged; local commit `312d462` is now reported accurately.
 
 ## Historical Records
 
+- [2026-08-22 TASK-013 acceptance review](./2026-08-22-task-013-acceptance-review.md) — preserves the implementation/runtime `PASS WITH FOLLOW-UPS` on candidate `024F1415...4B3D`. The current documentation re-review supersedes only its documentation-currentness conclusion after two later reported Minors; its implementation and runtime evidence remains unchanged.
 - [2026-08-22 TASK-012 acceptance review](./2026-08-22-task-012-acceptance-review.md) — preserves the product/runtime `PASS WITH FOLLOW-UPS` on candidate `D4E87CB...FE3983`. The current documentation re-review supersedes only its documentation-currentness conclusion after two later reported Minors; its implementation and runtime evidence remains unchanged.
 - [2026-08-21 TASK-012 milestone review](./2026-08-21-task-012-milestone-review.md) — preserves historical `REVISE` on candidate `78AEC4BA...25F237` and appends closure-permitting finding-specific `PASS WITH FOLLOW-UPS` on corrected candidate `D4E87CB...FE3983`. The prior Major is closed, the single stale-header Minor is resolved, Milestone 1 is accepted, and the downstream authoritative closure packet passes.
 - [2026-08-21 TASK-011 documentation re-review](./2026-08-21-task-011-documentation-re-review.md) — records `PASS` after resolving both independently reported post-closure documentation-currentness Minors. The accepted product candidate remains `2108E6AF...37D42D`, TASK-011 and AC-003 through AC-005 remain complete, and readiness remains `Fail` at 10/12.

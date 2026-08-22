@@ -27,6 +27,7 @@ The project owner separately authorized execution of this exact registered plan 
 - [x] (2026-08-22) Accepted the fresh integrated `PASS WITH FOLLOW-UPS` with zero Blocker, zero Major, and one documentation-only Minor; the verdict permits coordinator-owned documentation closure without product, test, dependency, or lint-config correction.
 - [x] (2026-08-22) Resolved the documentation-only current-status/verification-guidance follow-up, synchronized every materially affected owner, passed the active-location documentation/ADR/diff gates, and marked TASK-013 `Complete` while keeping TASK-014 `Pending`.
 - [x] (2026-08-22) Moved this completed plan to `docs/plans/completed/` through exact-path validation, repaired every inbound/internal link, and passed completed-location documentation/ADR/diff validation.
+- [x] (2026-08-22) Resolved the post-commit independent review's two documentation-only Minors: the current-candidate fingerprint command now includes `eslint.config.mjs`, and README reports the merged TASK-012 history plus local TASK-013 commit and completed-location gate accurately.
 
 ## Surprises & Discoveries
 
@@ -63,6 +64,9 @@ The project owner separately authorized execution of this exact registered plan 
 
 - Observation: The successful Chromium run left one ignored Playwright trace directory created during this closure run. It was task-owned disposable test output, not candidate evidence, and was removed through its exact resolved path before review.
   Evidence: `.artifacts/playwright/.playwright-artifacts-0` contained only closure-time trace resources; exact-path removal succeeded and `git status --ignored --short .artifacts` is empty.
+
+- Observation: The completed plan's first fingerprint reproduction command preserved the 137-path planning projection but did not identify itself as historical and omitted the new `eslint.config.mjs`, so it could not reproduce the documented 138-path implementation candidate from the committed tree.
+  Evidence: the incomplete command returns 137 paths at `ED5628BCCF44B118E23A09BB2053163217931FCF6251D9EEB141E1678D45B5F9`; the corrected command below includes `eslint.config.mjs` and returns 138 paths at exact candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`.
 
 ## Decision Log
 
@@ -108,7 +112,7 @@ This task is not consequential architecture decision work, so a Decision Review 
 ## Outcomes & Retrospective
 
 
-TASK-013 achieved the planned typed lint boundary and portfolio audit without a test change or new product behavior. Exact-pinned ESLint tooling, calculated typed-rule activation, CI ordering, affected and full joins, semantic relevance, lifecycle recovery, and exact cleanup pass on candidate `024F1415...4B3D`; the S1 reviewer returned `PASS` with no finding and the fresh integrated reviewer returned closure-permitting `PASS WITH FOLLOW-UPS`. Two pre-existing Promise-callback lint findings required exact-path behavior-preserving wrappers after persistent test-worker `EXISTING_AND_COVERED` classification. The sole documentation-only Minor is resolved, both documentation gates pass, TASK-013 is `Complete`, TASK-014 remains `Pending`, and the plan is archived with no remaining TASK-013 work.
+TASK-013 achieved the planned typed lint boundary and portfolio audit without a test change or new product behavior. Exact-pinned ESLint tooling, calculated typed-rule activation, CI ordering, affected and full joins, semantic relevance, lifecycle recovery, and exact cleanup pass on candidate `024F1415...4B3D`; the S1 reviewer returned `PASS` with no finding and the fresh integrated reviewer returned closure-permitting `PASS WITH FOLLOW-UPS`. Two pre-existing Promise-callback lint findings required exact-path behavior-preserving wrappers after persistent test-worker `EXISTING_AND_COVERED` classification. The original documentation Minor and both post-commit documentation Minors are resolved, both documentation gates pass, TASK-013 is `Complete`, TASK-014 remains `Pending`, and the plan is archived with no remaining TASK-013 work.
 
 ## Purpose / Big Picture
 
@@ -377,9 +381,9 @@ Planning baseline:
 - Hash contract: sort paths ordinally; calculate uppercase SHA-256 over each file's materialized bytes; create lines `<path><TAB><hash>` joined with LF and no final LF; SHA-256 that UTF-8 manifest.
 - Root projection files: `.env.example`, `.gitattributes`, `.gitignore`, `.node-version`, `compose.yaml`, `package.json`, `package-lock.json`, `playwright.config.ts`, `tsconfig.base.json`, `tsconfig.tools.json`, and `vitest.config.ts`, plus `.github/workflows/`, `apps/`, `packages/`, `scripts/`, and `tests/`.
 
-Reproduction command:
+Current 138-path candidate reproduction command. The 137-path planning projection above predates `eslint.config.mjs` and remains historical baseline evidence.
 
-    $paths = @(git ls-files -- '.env.example' '.gitattributes' '.gitignore' '.node-version' '.github/workflows' 'compose.yaml' 'package.json' 'package-lock.json' 'playwright.config.ts' 'tsconfig.base.json' 'tsconfig.tools.json' 'vitest.config.ts' 'apps' 'packages' 'scripts' 'tests') | Sort-Object -Unique
+    $paths = @(git ls-files -- '.env.example' '.gitattributes' '.gitignore' '.node-version' '.github/workflows' 'compose.yaml' 'eslint.config.mjs' 'package.json' 'package-lock.json' 'playwright.config.ts' 'tsconfig.base.json' 'tsconfig.tools.json' 'vitest.config.ts' 'apps' 'packages' 'scripts' 'tests') | Sort-Object -Unique
     $entries = foreach ($path in $paths) { "$path`t$((Get-FileHash -Algorithm SHA256 -LiteralPath $path).Hash)" }
     $payload = [string]::Join("`n", $entries)
     [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($payload)))
@@ -435,3 +439,5 @@ Do not add `@typescript-eslint/parser`, `@typescript-eslint/eslint-plugin`, `@es
 2026-08-22: Moved this completed ExecPlan through exact source/destination validation, repaired every internal and inbound link, and advanced to completed-location validation. The active path is absent and completed path is present. No task state, requirement, ADR, authorization, candidate byte, commit, or external publication changed.
 
 2026-08-22: Passed completed-location documentation validation for 82 Markdown files and 123 scenarios, ADR validation for 18 ADRs and 38 requirements with only the established NFR-006 warning, and `git diff --check`. The active plan path is absent, completed path is present, all links resolve, and TASK-013 has no remaining work. No commit, push, pull request, publication, or deployment was authorized or performed.
+
+2026-08-22: After local TASK-013 commit `a7819f85c3eb0318b1488ab47beababf31f5b09e`, a supplied independent review returned `PASS WITH FOLLOW-UPS` with zero Blocker, zero Major, and two documentation-only Minors. The primary corrected the incomplete 137-path fingerprint command to include `eslint.config.mjs` and reproduce exact 138-path candidate `024F1415...4B3D`, updated README to record TASK-012's merged PR #21 history plus TASK-013's local commit and completed-location validation, linked the resulting [documentation re-review](../../reviews/2026-08-22-task-013-documentation-re-review.md), and repeated documentation/ADR/diff validation. Product/test/configuration candidate bytes, TASK-013, TASK-014, and 11/12 readiness remain unchanged; the documentation correction is uncommitted and no push, pull request, publication, or deployment is claimed.
