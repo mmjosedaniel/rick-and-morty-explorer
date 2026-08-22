@@ -1,6 +1,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -48,7 +49,10 @@ async function resolveRequestPath(pathname: string): Promise<string> {
   return resolve(webRoot, "index.html");
 }
 
-const server = createServer(async (request, response) => {
+async function serveRequest(
+  request: IncomingMessage,
+  response: ServerResponse,
+): Promise<void> {
   const pathname = new URL(request.url ?? "/", `http://${host}:${port}`).pathname;
   const filePath = await resolveRequestPath(pathname);
   const contentType = contentTypes[extname(filePath)] ?? "application/octet-stream";
@@ -58,6 +62,10 @@ const server = createServer(async (request, response) => {
     "Content-Type": contentType,
   });
   createReadStream(filePath).pipe(response);
+}
+
+const server = createServer((request, response) => {
+  void serveRequest(request, response);
 });
 
 server.listen(port, host, () => {

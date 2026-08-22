@@ -1,16 +1,16 @@
 # Close TASK-013 Code-Quality and Adopted Test Commitments
 
 
-- Status: Implementation-ready; awaiting separate project-owner execution authorization
-- Task: [TASK-013](../IMPLEMENTATION_PLAN.md#task-013---close-code-quality-and-adopted-test-commitments)
+- Status: Complete under project-owner-authorized workflow `TASK-013-20260822-01`; archived and completed-location validation passed
+- Task: [TASK-013](../../IMPLEMENTATION_PLAN.md#task-013---close-code-quality-and-adopted-test-commitments)
 - Plan ID and prospective workflow ID: `TASK-013-20260822-01`
 - Created: 2026-08-22
 - Last updated: 2026-08-22
-- Governing convention: [PLANS.md](../../PLANS.md)
+- Governing convention: [PLANS.md](../../../PLANS.md)
 
 This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` as work proceeds. This document must be maintained in accordance with `PLANS.md`.
 
-This planning artifact does not authorize implementation. TASK-013 remains `Pending`; no worker lease, dependency installation, source change, test change, infrastructure start, commit, push, pull request, publication, or deployment may begin until the project owner separately authorizes execution and the primary coordinator records the transition to `In progress`.
+The project owner separately authorized execution of this exact registered plan under workflow `TASK-013-20260822-01` on 2026-08-22. That authorization permits the bounded worker-first implementation, validation, and documentation closure recorded here; it does not authorize a materially revised plan, additional dependencies, commit, push, pull request, publication, or deployment.
 
 ## Progress
 
@@ -18,13 +18,15 @@ This planning artifact does not authorize implementation. TASK-013 remains `Pend
 - [x] (2026-08-22) Read TASK-013, NFR-004, adopted OR-001/OR-004/OR-007/OR-008, ADR-0002/0006/0007/0014/0016/0018, HS-006/HS-007/HS-017/HS-019, the current harness, manifests, CI workflow, source ownership, test projects, and task-closure rules.
 - [x] (2026-08-22) Completed planning reuse audit `TASK-013-REUSE-20260822-01` on clean `main` HEAD `7a3cab06257931424968d818cff7506c9b819a44`, using the 137-path implementation/test/configuration aggregate `3EF957D74D8686081DADE51FAA3D406A0D376EF89432CFD41DE9E168C2200EC2`.
 - [x] (2026-08-22) Verified that the accepted TASK-012 product/test/configuration projection is unchanged from commit `312d462318e5d1be5ddcab41a4d3f3788806908d`, while the current root manifest, lockfile, CI workflow, and installed top-level graph contain no ESLint boundary.
-- [x] (2026-08-22) Recorded the proportional reuse and lint-boundary choice in [DPL-DEC-053](../execution/decision-and-progress-log.md#decision-log).
+- [x] (2026-08-22) Recorded the proportional reuse and lint-boundary choice in [DPL-DEC-053](../../execution/decision-and-progress-log.md#decision-log).
 - [x] (2026-08-22) Registered this implementation-ready plan while keeping TASK-013 `Pending`.
 - [x] (2026-08-22) Passed planning documentation validation, task/index/link readback, and `git diff --check`; no ADR validation is required because this plan changes no architecture, optional disposition, or gate.
-- [ ] Receive separate project-owner execution authorization, refresh the baseline and dependency compatibility evidence, and transition TASK-013 to `In progress` under `TASK-013-20260822-01`.
-- [ ] Complete Milestone 1: establish the smallest lint boundary, resolve only proven lint findings, complete the portfolio relevance/ownership audit, pass the affected join, and accept one S1 milestone review.
-- [ ] Complete Milestone 2: pass the full local authoritative quality/lifecycle packet, exact cleanup, fresh integrated review, and the task-closure documentation gate.
-- [ ] Mark TASK-013 `Complete`, update dependent current-state owners, and move this plan to `docs/plans/completed/` only after the closure documentation gate passes.
+- [x] (2026-08-22 15:04Z) Received separate project-owner execution authorization; confirmed TASK-007/TASK-012 Complete, TASK-013 Pending, all DG gates Resolved, and AUTH-001 Authorized; reconciled a clean `codex/execplan-013` worktree at `e72310fd7a1a651ce1ecf1c8496f0d5a4e50e138`; reproduced the exact 137-path aggregate `3EF957D74D8686081DADE51FAA3D406A0D376EF89432CFD41DE9E168C2200EC2`; selected compatible stable `eslint` 10.9.0 and `typescript-eslint` 8.67.0 from authoritative npm metadata; and transitioned TASK-013 to `In progress` under `TASK-013-20260822-01`.
+- [x] (2026-08-22 15:35Z) Completed Milestone 1 on candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`: binding preflight, exact two-package lint setup, calculated-rule proof, relevance/ownership audit, two exact-path behavior-preserving corrections with compliant receipts, the affected join, and fresh S1 `PASS` with zero finding all passed.
+- [x] (2026-08-22 15:48Z) Passed the Milestone 2 local quality/lifecycle packet on unchanged candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`: exact infrastructure, lint/type/build/Tailwind, root test, permission-qualified lifecycle recovery, documentation/ADR/relevance/diff checks, identity reconciliation, generated-artifact cleanup, and exact Compose teardown all passed.
+- [x] (2026-08-22) Accepted the fresh integrated `PASS WITH FOLLOW-UPS` with zero Blocker, zero Major, and one documentation-only Minor; the verdict permits coordinator-owned documentation closure without product, test, dependency, or lint-config correction.
+- [x] (2026-08-22) Resolved the documentation-only current-status/verification-guidance follow-up, synchronized every materially affected owner, passed the active-location documentation/ADR/diff gates, and marked TASK-013 `Complete` while keeping TASK-014 `Pending`.
+- [x] (2026-08-22) Moved this completed plan to `docs/plans/completed/` through exact-path validation, repaired every inbound/internal link, and passed completed-location documentation/ADR/diff validation.
 
 ## Surprises & Discoveries
 
@@ -46,6 +48,21 @@ This planning artifact does not authorize implementation. TASK-013 remains `Pend
 
 - Observation: Handwritten production comments are already sparse and explain non-obvious cleanup or failure-precedence constraints; generated GraphQL comments are generator-owned. TASK-013 needs a relevance review, not a comment-count target or comment rewrite campaign.
   Evidence: comment inventory under `apps/web/src`, `apps/api/src`, and `scripts`.
+
+- Observation: Typed project-service coverage required mapping the repository's existing explicit tools/test file set through `tsconfig.tools.json`; no new TypeScript project or ignored source subtree was needed. Once coverage was complete, lint found exactly two existing Promise-callback mismatches.
+  Evidence: calculated configuration returned severity `2` for all three rules across API, web, tooling, and smoke representatives; the frozen lint findings were `apps/web/server.ts:51:29` and `apps/web/src/character-detail-route.tsx:310:59`.
+
+- Observation: The guard rejects tracked directory names such as `apps` when the directory endpoint itself is treated as ignored, even though unleased file changes remain observable from the repository baseline. The first proposed setup lease therefore failed before creation and its ID was not reused; the replacement lease used the same four allowed files plus exact forbidden files and relied on unleased-path detection for every other path.
+  Evidence: rejected start `TASK-013-M1-SETUP-01-LEASE-01` returned `Lease scope 'apps' is ignored by Git and cannot be verified`; replacement lease `TASK-013-M1-SETUP-01-LEASE-02` started and closed compliant.
+
+- Observation: The default Compose host port `5432` was unavailable after Redis had started, so that first environment attempt did not establish the required PostgreSQL boundary. The exact `rick-and-morty-dev` project was immediately torn down with volumes, then the unchanged project passed on host ports `55432` and `56400` without a repository configuration change.
+  Evidence: the first `infra:up` failed only at the PostgreSQL bind; both exact `infra:down` operations removed the named containers, volumes, and network; the replacement `infra:config`, `infra:up`, and `infra:ps` reported healthy PostgreSQL 18.6 and Redis 8.8.1 services at `127.0.0.1:55432` and `127.0.0.1:56400`.
+
+- Observation: The first seven-case lifecycle command was invalidated only because the restricted shell could not terminate the two exact task-owned fixture PIDs during forced cancellation/interruption. Both PIDs and listeners were absent after that attempt, and the single permission-qualified replacement passed the complete unchanged lifecycle scope.
+  Evidence: the restricted attempt passed five cases and reported `Access denied` only for PIDs `17540` and `49912`; the replacement `npm run test:smoke:lifecycle` passed 7/7 and emitted exact cleanup for every run identity.
+
+- Observation: The successful Chromium run left one ignored Playwright trace directory created during this closure run. It was task-owned disposable test output, not candidate evidence, and was removed through its exact resolved path before review.
+  Evidence: `.artifacts/playwright/.playwright-artifacts-0` contained only closure-time trace resources; exact-path removal succeeded and `git status --ignored --short .artifacts` is empty.
 
 ## Decision Log
 
@@ -74,30 +91,42 @@ This planning artifact does not authorize implementation. TASK-013 remains `Pend
   Rationale: ADR-0016 requires `EXISTING_AND_COVERED` evidence to be reused and prohibits artificial Reds. `EXISTING_BUT_UNCOVERED` may add only passing characterization, while `CONFLICTING` or `UNKNOWN` stops dependent work.
   Date/Author: 2026-08-22 / primary coordinator.
 
+- Decision: Pin `eslint` 10.9.0 and `typescript-eslint` 8.67.0 for the authorized two-package lint boundary.
+  Rationale: Authoritative npm registry metadata reports ESLint 10.9.0 supports Node `^20.19.0 || ^22.13.0 || >=24`, while typescript-eslint 8.67.0 supports Node `^18.18.0 || ^20.9.0 || >=21.1.0`, ESLint `^8.57.0 || ^9.0.0 || ^10.0.0`, and TypeScript `>=4.8.4 <6.1.0`. The repository's Node 24.18.0 and TypeScript 6.0.3 satisfy those ranges, so the exact two-package boundary is compatible without adapters or baseline relaxation.
+  Date/Author: 2026-08-22 / primary coordinator.
+
+- Decision: Accept two exact-path behavior-preserving lint corrections without a Red.
+  Rationale: Persistent test-worker follow-up `TASK-013-M1-CORRECTION-PREFLIGHT-01` classified both findings `EXISTING_AND_COVERED`. The Node server correction moves the unchanged async request body behind a synchronous callback that explicitly discards the same promise, while the React form wrapper immediately invokes the unchanged async submit handler and preserves synchronous `preventDefault()`. Existing smoke and detail-application tests own the observable contracts; no error handling or other behavior was added.
+  Date/Author: 2026-08-22 / primary coordinator.
+
+- Decision: Use environment-only host ports `55432` and `56400` for the one replacement infrastructure attempt, and replace only the lifecycle scope invalidated by restricted process-control permissions.
+  Rationale: The default-port failure did not exercise PostgreSQL, while the restricted lifecycle failure did not test the two termination cases. The same Compose project, images, internal ports, candidate bytes, commands, fixtures, and seven-case contract remained unchanged. Repeating `npm test` would duplicate already-valid evidence and violate the closure packet's reuse rule.
+  Date/Author: 2026-08-22 / primary coordinator.
+
 This task is not consequential architecture decision work, so a Decision Review Contract is not applicable. DPL-DEC-053 records only reversible execution choices inside accepted architecture.
 
 ## Outcomes & Retrospective
 
 
-No execution outcome exists yet. The implementation-ready target is a passing root `lint` command enforced in CI, a portfolio relevance/ownership audit with no unjustified residue, unchanged product contracts, passing affected and full quality boundaries, exact external cleanup, fresh independent acceptance, and synchronized task documentation. Replace this paragraph with measured outcomes, deviations, evidence identities, and remaining follow-ups at closure.
+TASK-013 achieved the planned typed lint boundary and portfolio audit without a test change or new product behavior. Exact-pinned ESLint tooling, calculated typed-rule activation, CI ordering, affected and full joins, semantic relevance, lifecycle recovery, and exact cleanup pass on candidate `024F1415...4B3D`; the S1 reviewer returned `PASS` with no finding and the fresh integrated reviewer returned closure-permitting `PASS WITH FOLLOW-UPS`. Two pre-existing Promise-callback lint findings required exact-path behavior-preserving wrappers after persistent test-worker `EXISTING_AND_COVERED` classification. The sole documentation-only Minor is resolved, both documentation gates pass, TASK-013 is `Complete`, TASK-014 remains `Pending`, and the plan is archived with no remaining TASK-013 work.
 
 ## Purpose / Big Picture
 
 
-After separately authorized execution, a reviewer will be able to verify that the completed application remains strict TypeScript, preserves the accepted web/API/application/persistence/cache boundaries, uses relevant comments, and has a risk-focused test portfolio with no skipped/focused shortcuts or abandoned scaffolding.
+The completed evidence lets a reviewer verify that the application remains strict TypeScript, preserves the accepted web/API/application/persistence/cache boundaries, uses relevant comments, and has a risk-focused test portfolio with no skipped/focused shortcuts or abandoned scaffolding.
 
-The task does not add product behavior. Its only known automation addition is a narrowly scoped typed lint boundary for the explicit ADR-0002 rules that the TypeScript compiler does not enforce. Existing frontend, backend-search, real-infrastructure, application, and browser tests are reused as portfolio evidence. Any source or test edit must be justified by a concrete audit finding and stay inside its existing owner.
+The task adds no product behavior. Its only automation addition is a narrowly scoped typed lint boundary for the explicit ADR-0002 rules that the TypeScript compiler does not enforce. Existing frontend, backend-search, real-infrastructure, application, and browser tests are reused as portfolio evidence. The only source edits are the two accepted behavior-preserving Promise wrappers.
 
 TASK-013 completion advances the repository-baseline portfolio sequence but does not complete AC-012 or the minimum-assessment delivery view. TASK-014 still owns clean public-clone delivery, the ERD, and complete run/API documentation; TASK-015 still owns final acceptance.
 
 ## Context and Orientation
 
 
-TASK-013 owns mandatory [NFR-004](../REQUIREMENTS.md#nfr-004---code-quality) and portfolio closure for adopted optional [OR-001](../REQUIREMENTS.md#or-001---typescript), [OR-004](../REQUIREMENTS.md#or-004---frontend-tests), [OR-007](../REQUIREMENTS.md#or-007---backend-tests), and [OR-008](../REQUIREMENTS.md#or-008---design-patterns). Their source classifications do not change.
+TASK-013 owns mandatory [NFR-004](../../REQUIREMENTS.md#nfr-004---code-quality) and portfolio closure for adopted optional [OR-001](../../REQUIREMENTS.md#or-001---typescript), [OR-004](../../REQUIREMENTS.md#or-004---frontend-tests), [OR-007](../../REQUIREMENTS.md#or-007---backend-tests), and [OR-008](../../REQUIREMENTS.md#or-008---design-patterns). Their source classifications do not change.
 
-The governing decisions are [ADR-0002](../adrs/0002-use-typescript-across-the-stack.md), [ADR-0006](../adrs/0006-define-a-use-case-oriented-graphql-contract.md), [ADR-0007](../adrs/0007-use-cache-aside-for-character-searches.md), [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md), and [ADR-0016](../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md). Accepted [ADR-0018](../adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md) owns the current executable harness and is therefore binding even though the TASK-013 entry does not repeat it.
+The governing decisions are [ADR-0002](../../adrs/0002-use-typescript-across-the-stack.md), [ADR-0006](../../adrs/0006-define-a-use-case-oriented-graphql-contract.md), [ADR-0007](../../adrs/0007-use-cache-aside-for-character-searches.md), [ADR-0014](../../adrs/0014-persist-and-deliver-character-image-urls-directly.md), and [ADR-0016](../../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md). Accepted [ADR-0018](../../adrs/0018-define-the-typescript-test-harness-with-repository-owned-smoke-orchestration.md) owns the current executable harness and is therefore binding even though the TASK-013 entry does not repeat it.
 
-The routed closure rules are [HS-006, HS-007, HS-017, and HS-019](../specs/HARD_SPEC.feature). TASK-007 and TASK-012 are `Complete`, all current implementation decision gates in their dependency paths are resolved, and TASK-013 is `Pending` only because execution has not been authorized or performed.
+The routed closure rules are [HS-006, HS-007, HS-017, and HS-019](../../specs/HARD_SPEC.feature). TASK-007, TASK-012, and TASK-013 are `Complete`, all current implementation decision gates in their dependency paths are resolved, AUTH-001 remains `Authorized`, and TASK-014 remains `Pending`.
 
 The root `package.json` is the command owner. `vitest.config.ts` owns five named non-browser projects; `playwright.config.ts` owns one Chromium project; `scripts/run-smoke.ts` and `scripts/verify-smoke-lifecycle.ts` own browser orchestration and recovery; `.github/workflows/ci.yml` owns hosted command sequencing. Do not create parallel owners.
 
@@ -208,7 +237,7 @@ Risk tier: `S1`, standard closure profile. The primary coordinator owns evidence
 ## Concrete Steps
 
 
-Run from the repository root in PowerShell. Commands below are planned, not executed by this planning turn.
+Commands below were executed from the repository root in PowerShell as recorded under `Artifacts and Notes`; environment-qualified replacements and invalidated evidence are preserved there rather than hidden.
 
 Activation/readback:
 
@@ -299,6 +328,45 @@ The task does not require a numeric code-coverage threshold. Test count alone is
 ## Artifacts and Notes
 
 
+Activated Milestone 1 evidence:
+
+- Binding preflight `TASK-013-M1-PREFLIGHT-01`: strict TypeScript/build, frontend owners, backend character search, real boundaries, and semantic relevance are `EXISTING_AND_COVERED`; root lint is `MISSING` declarative setup; no `CONFLICTING` or unresolved `UNKNOWN` remains.
+- Guard self-test: 26/26 checks passed before the first valid write lease.
+- Setup assignment `TASK-013-M1-SETUP-01`, lease `TASK-013-M1-SETUP-01-LEASE-02`, contract digest `4085eab6...7b2e`, compliant receipt `d35741c...81c5`: changed only `package.json`, `package-lock.json`, `.github/workflows/ci.yml`, and new `eslint.config.mjs`.
+- Calculated configuration: `no-var`, `@typescript-eslint/no-floating-promises`, and `@typescript-eslint/no-misused-promises` each resolved to severity `2` for representative API, web, tooling, and smoke-test files. The first lint with complete typed coverage froze exactly two source findings.
+- Correction preflight `TASK-013-M1-CORRECTION-PREFLIGHT-01`: both exact findings are `EXISTING_AND_COVERED`; no Red or test write applies.
+- Attempt-2 correction assignment `TASK-013-M1-SETUP-02`, lease `TASK-013-M1-SETUP-02-LEASE-01`, contract digest `0717db3d...ce2a`, compliant receipt `2e0b1f1d...5d40`: changed only `apps/web/server.ts` and `apps/web/src/character-detail-route.tsx`. Lint passed; web application passed 24/24; web build and GraphQL drift passed; no test changed.
+- Affected join on the same candidate: `npm run lint`, `npm run typecheck`, `npm run build`, `npm run validate:tailwind`, and `npm run test:unit` all passed; unit evidence is 32 files and 182/182 tests. Both GraphQL drift checks passed inside the root build.
+- Current 138-path implementation/test/configuration/lint candidate aggregate: `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`; Milestone 1 is accepted on these exact bytes.
+- Fresh S1 review `TASK-013-M1-REVIEW-01`: `PASS`, zero Blocker, Major, or Minor; reviewer recomputed the exact aggregate, reran calculated-rule readback and lint, inspected both compliant receipts and the actual diff, and accepted the relevance matrix and reused affected-join evidence. Milestone 1 is accepted.
+
+Milestone 2 closure evidence accepted for integrated review:
+
+- Candidate and relevance readback: the implementation/test/configuration/lint projection remains 138 paths at `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`; the relevance and dependency-direction scans reproduce the Milestone 1 matrix with no new finding.
+- Infrastructure: `npm run infra:config` passed for exact project `rick-and-morty-dev`. The default-port startup failed to bind PostgreSQL `5432` after Redis started and was fully torn down. The one environment-only replacement passed `infra:config`, `infra:up`, and `infra:ps` with healthy `postgres:18.6-alpine` at `127.0.0.1:55432` and `redis:8.8.1-alpine` at `127.0.0.1:56400`.
+- Static closure: `npm run lint`, `npm run typecheck`, `npm run build`, and `npm run validate:tailwind` passed. Both GraphQL generated-output drift checks passed inside the root build.
+- Root aggregate: one `npm test` passed unit 182/182, integration 77/77, application 37/37, Chromium 1/1, and smoke run `11c042954b7b2d93`. READY and CLEANUP match schema `t010_smoke_11c042954b7b2d93` and namespace `character-app:test:t010-smoke-11c042954b7b2d93` on ports 55432/56400; browser diagnostics are `pageErrors=0`, three deliberate allowed GraphQL failures/503 responses, and `unexpectedConsoleErrors=0`. The deterministic local fixture made no public Rick and Morty request.
+- Lifecycle recovery: the restricted-shell attempt was invalidated only for denied termination of exact fixture PIDs in the final two cases. The single permission-qualified replacement passed 7/7 with exact CLEANUP identities `799fea47388b6700`, `82e7c6562058e43e`, `1d43735e66a69a66`, `36cc797534f955a6`, `ea86c266789fe515`, `84d7fb113f91e443`, and `af13945d3baa983c`; each used schema `t010_smoke_<run-id>` and namespace `character-app:test:t010-smoke-<run-id>` on ports 55432/56400.
+- Repository validation: documentation validation passed for 81 Markdown files, 41 requirements, one authorization, 18 tasks, 17 specifications, 20 hard-specification IDs, and 123 scenarios. ADR validation passed for 18 ADRs and 38 requirements with only the established NFR-006 warning. Relevance, dependency-direction, calculated-config, candidate, and `git diff --check` evidence pass.
+- State and cleanup: pre-teardown SQL and Redis scans returned no task-owned schema or matching namespace and Redis `DBSIZE` was `0`; ports 4173/4174 had no listeners. The exact task-owned Playwright trace directory was removed and the ignored artifact scan is empty. Final `npm run infra:down` removed only `rick-and-morty-dev` containers, named volumes, and network; post-down project, volume, network, and 4173/4174/55432/56400 listener readbacks are empty.
+- Fresh integrated review: `PASS WITH FOLLOW-UPS`, zero Blocker, zero Major, one documentation-only Minor. The reviewer independently reproduced the aggregate, calculated-rule coverage for all representatives and generated TypeScript, lint, dependency/lock/config/CI scope, lease receipts, relevance consumers, validators, and exact teardown. The only follow-up is to add `npm run lint` to README verification guidance and replace the stale TASK-013 current-status summary before completion; no candidate evidence is invalidated.
+
+Candidate relevance matrix:
+
+| Artifact or boundary | Current consumer and evidence | Traceability and disposition |
+|---|---|---|
+| 52 suite-owned tests plus one imported sandbox helper | Five named Vitest projects and one Playwright project own every suite path; `migration-artifact-sandbox.test.ts` is imported by six migration-artifact unit tests rather than registered as a duplicate suite | NFR-004, OR-004, OR-007, ADR-0016, ADR-0018, HS-017; retain all current owners and add no count-only test |
+| `apps/web/src/test/setup.ts` | Registered by both `web-unit` and `web-application` in `vitest.config.ts` | OR-004, ADR-0018, HS-017; retain shared jsdom setup |
+| `tests/smoke/fixtures/never-ready-api.ts` | Resolved and launched only by `scripts/run-smoke.ts` for the readiness-timeout lifecycle case | ADR-0018, HS-017; retain exact failure fixture |
+| `tests/smoke/fixtures/task-010-runtime.ts` | Used by `scripts/run-smoke.ts` for exact fixture setup/cleanup and by `scripts/verify-smoke-lifecycle.ts` for forced-recovery cleanup | ADR-0018, HS-017; retain exact isolated lifecycle owner |
+| `apps/web/src/data/generated/graphql.ts` | Generated by `apps/web/codegen.ts`; consumed by list/detail routes, query/executor code, and executor tests; checked by web `graphql:check` | OR-001, ADR-0006, ADR-0018, HS-006/HS-017; retain and continue linting generated TypeScript |
+| `apps/api/src/transport/graphql/generated/resolver-types.ts` | Generated by API GraphQL codegen and consumed by `resolvers.ts`; checked by API `graphql:check` | OR-001, ADR-0006, ADR-0018, HS-006/HS-017; retain and continue linting generated TypeScript |
+| Snapshots and skip/focus/pending markers | No tracked `.snap` file, snapshot matcher, focused/skipped/pending-test API, or disabled-suite alias exists; Vitest `allowOnly: false` and Playwright `forbidOnly: true` remain | ADR-0016, ADR-0018, HS-017; no residual artifact or disabled required scope |
+| Production test branches and suppressions | No `NODE_ENV`/Vitest test-mode production branch, TypeScript suppression, `var`, or obsolete placeholder marker from the audited forbidden set exists | ADR-0002, ADR-0018, HS-006/HS-017/HS-019; no correction required |
+| Handwritten comments | Sparse comments explain browser-route fallback, Redis close-after-failure tolerance, migration failure precedence, deliberate dynamic-import handling, or tool directives; generated GraphQL comments remain generator-owned | NFR-004, HS-019; retain rationale-bearing comments and do not impose a quota |
+| Module direction | No web/shared production import reaches API or infrastructure; transport-to-infrastructure matches only three real GraphQL integration tests importing `pg` plus the migration artifact; production resolvers remain typed transport delegates | NFR-004, OR-008, ADR-0006, ADR-0007, HS-007/HS-019; retain current boundaries |
+| `packages/shared` | Intentionally empty TypeScript structural workspace remains an explicit root typecheck target and has no dummy export | OR-001, OR-008, HS-006/HS-007; retain without scaffolding |
+
 Planning baseline:
 
 - Branch and commit: clean `main` at `7a3cab06257931424968d818cff7506c9b819a44`.
@@ -353,3 +421,17 @@ Do not add `@typescript-eslint/parser`, `@typescript-eslint/eslint-plugin`, `@es
 
 
 2026-08-22: Created the implementation-ready TASK-013 plan after an authority and reuse audit. The plan reuses the complete current product/test harness, identifies lint automation as the sole known setup gap, limits new tooling to two exact-pinned development dependencies plus one root config/command/CI step, requires finding-driven rather than speculative cleanup, and keeps TASK-013 `Pending` until separate execution authorization. No implementation was performed.
+
+2026-08-22: Activated owner-authorized workflow `TASK-013-20260822-01`, pinned compatible ESLint versions from authoritative npm metadata, accepted the binding read-only preflight, added the guarded four-file typed lint boundary, and accepted two guarded exact-path behavior-preserving Promise-callback corrections after persistent test-worker classification. The affected join and fresh S1 review remain before Milestone 1 acceptance; no commit or external publication was authorized.
+
+2026-08-22: Accepted Milestone 1 after the affected join and fresh S1 review passed with no finding on exact candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`. Milestone 2 full validation, cleanup, integrated review, and documentation closure remain; no commit or external publication was authorized.
+
+2026-08-22: Passed the Milestone 2 local closure packet on unchanged candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`. The environment-only alternate-port infrastructure attempt, root aggregate, permission-qualified lifecycle replacement, static/documentation/ADR/relevance checks, exact identity reconciliation, generated Playwright artifact cleanup, and exact Compose teardown all pass. Fresh integrated review and coordinator-owned documentation closure remain; no commit or external publication was authorized.
+
+2026-08-22: Accepted the fresh integrated `PASS WITH FOLLOW-UPS` with no Blocker or Major and one documentation-only currentness Minor. The candidate and all runtime evidence remain accepted; the primary added the missing root lint guidance, synchronized the authoritative task summary, and advanced only to the active-location documentation gate. No product, test, dependency, lint-config, commit, or external-publication change was authorized.
+
+2026-08-22: Passed the coordinator-owned task-closure documentation gate in the active plan location, marked TASK-013 `Complete`, kept TASK-014 `Pending`, and synchronized root verification/current status, task and traceability owners, SPEC/HS routing, ADR implementation annotation, review/index navigation, plan/index state, and execution chronology. Documentation, ADR, and diff validation pass; archival and completed-location validation remain the final lifecycle operation. No requirement meaning, ADR, authorization, product/test candidate, commit, or external publication changed.
+
+2026-08-22: Moved this completed ExecPlan through exact source/destination validation, repaired every internal and inbound link, and advanced to completed-location validation. The active path is absent and completed path is present. No task state, requirement, ADR, authorization, candidate byte, commit, or external publication changed.
+
+2026-08-22: Passed completed-location documentation validation for 82 Markdown files and 123 scenarios, ADR validation for 18 ADRs and 38 requirements with only the established NFR-006 warning, and `git diff --check`. The active plan path is absent, completed path is present, all links resolve, and TASK-013 has no remaining work. No commit, push, pull request, publication, or deployment was authorized or performed.

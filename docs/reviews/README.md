@@ -4,6 +4,7 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
+- [2026-08-22 TASK-013 acceptance review](./2026-08-22-task-013-acceptance-review.md) — records closure-permitting `PASS WITH FOLLOW-UPS` on candidate `024F1415...4B3D`, with zero Blocker, zero Major, and one documentation-only currentness Minor resolved during the coordinator-owned gate. TASK-014 retains AC-012 and clean-clone delivery.
 - [2026-08-22 TASK-012 documentation re-review](./2026-08-22-task-012-documentation-re-review.md) — records `PASS` after resolving two independently reported post-commit documentation-currentness Minors. Candidate `D4E87CB...FE3983`, TASK-012, AC-006, and readiness at 11/12 remain unchanged; local commit `312d462` is now reported accurately.
 
 ## Historical Records
