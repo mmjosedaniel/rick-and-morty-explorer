@@ -135,7 +135,7 @@ Every future implementation work item inherits the repository [task-closure docu
 
 ### DG-006 - Character-image URL successor boundary
 
-- **Status:** Resolved by accepted [ADR-0014](./adrs/0014-persist-and-deliver-character-image-urls-directly.md) after fresh final IR-B `PASS` and exact project-owner approval; ADR-0001 and ADR-0013 are Superseded, and no image-delivery implementation exists.
+- **Status:** Resolved by accepted [ADR-0014](./adrs/0014-persist-and-deliver-character-image-urls-directly.md) after fresh final IR-B `PASS` and exact project-owner approval; ADR-0001 and ADR-0013 are Superseded. Completed TASK-005 through TASK-007 and TASK-010 through TASK-012 implement the accepted exact-URL ingestion, PostgreSQL/GraphQL/Redis projection, native list/detail delivery, and layout-safe failure boundary without application-owned image bytes or a proxy.
 - The successor compares direct use of the official upstream `Character.image` URL, a fixed-target runtime application proxy, and retained ingestion-owned byte materialization against identical source-first criteria.
 - It distinguishes `Character.image` from the character resource's `url`, states the exact persisted `characters.image_url` meaning, and defines GraphQL, Redis, browser, CSP/referrer/credential, failure, fallback, rights, testing, and reversal behavior.
 - It counts total schema, code, dependency, infrastructure, operational, test, and documentation surface when judging proportionality rather than treating stored byte volume as the complete cost.
