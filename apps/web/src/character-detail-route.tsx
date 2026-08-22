@@ -81,6 +81,7 @@ export function CharacterDetailRoute() {
     "favorite" | "comment" | null
   >(null);
   const [feedback, setFeedback] = useState<InteractionFeedback>(null);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
 
   if (query.isPending) {
     return (
@@ -218,6 +219,7 @@ export function CharacterDetailRoute() {
   const canRetryDetails =
     feedback === "favorite-persisted-but-not-refreshed" ||
     feedback === "comment-persisted-but-not-refreshed";
+  const imageHasFailed = failedImageUrl === character.imageUrl;
 
   return (
     <article className="character-detail-route">
@@ -225,15 +227,28 @@ export function CharacterDetailRoute() {
         Back to characters
       </Link>
       <div className="character-detail">
-        <img
-          className="character-detail__image"
-          src={character.imageUrl}
-          alt={character.name}
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-          width="300"
-          height="300"
-        />
+        {imageHasFailed ? (
+          <div
+            className="character-detail__image character-detail__image--fallback"
+            role="img"
+            aria-label={character.name}
+          >
+            Image unavailable
+          </div>
+        ) : (
+          <img
+            className="character-detail__image"
+            src={character.imageUrl}
+            alt={character.name}
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+            width="300"
+            height="300"
+            onError={() => {
+              setFailedImageUrl(character.imageUrl);
+            }}
+          />
+        )}
         <div className="character-detail__content">
           <h2>{character.name}</h2>
           <dl className="character-detail__metadata">

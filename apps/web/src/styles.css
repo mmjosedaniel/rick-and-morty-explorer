@@ -182,12 +182,22 @@ h1.text-3xl {
   text-underline-offset: 0.2em;
 }
 
-.character-card img {
+.character-card img,
+.character-card__image-fallback {
   display: block;
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
   background: #17243a;
+}
+
+.character-card__image-fallback,
+.character-detail__image--fallback {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  color: #b8c4cc;
+  text-align: center;
 }
 
 .character-card__content {

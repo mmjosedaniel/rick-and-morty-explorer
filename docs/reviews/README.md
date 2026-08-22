@@ -4,10 +4,12 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
-- [2026-08-21 TASK-011 documentation re-review](./2026-08-21-task-011-documentation-re-review.md) — records `PASS` after resolving both independently reported post-closure documentation-currentness Minors. The accepted product candidate remains `2108E6AF...37D42D`, TASK-011 and AC-003 through AC-005 remain complete, and readiness remains `Fail` at 10/12.
+- [2026-08-22 TASK-012 acceptance review](./2026-08-22-task-012-acceptance-review.md) — records fresh closure-permitting integrated `PASS WITH FOLLOW-UPS` on corrected candidate `D4E87CB...FE3983`, with zero Blocker, zero Major, and one documentation-only Minor whose two stale statements are corrected. The task-closure documentation gate passes, TASK-012 and AC-006 are complete, and readiness is `Fail` at 11/12 only because AC-012 remains incomplete.
 
 ## Historical Records
 
+- [2026-08-21 TASK-012 milestone review](./2026-08-21-task-012-milestone-review.md) — preserves historical `REVISE` on candidate `78AEC4BA...25F237` and appends closure-permitting finding-specific `PASS WITH FOLLOW-UPS` on corrected candidate `D4E87CB...FE3983`. The prior Major is closed, the single stale-header Minor is resolved, Milestone 1 is accepted, and the downstream authoritative closure packet passes.
+- [2026-08-21 TASK-011 documentation re-review](./2026-08-21-task-011-documentation-re-review.md) — records `PASS` after resolving both independently reported post-closure documentation-currentness Minors. The accepted product candidate remains `2108E6AF...37D42D`, TASK-011 and AC-003 through AC-005 remain complete, and readiness remains `Fail` at 10/12.
 - [2026-08-21 TASK-011 acceptance review](./2026-08-21-task-011-acceptance-review.md) — preserved product/runtime `PASS WITH FOLLOW-UPS` on candidate `2108E6AF...37D42D`. The current documentation re-review supersedes only its documentation-currentness conclusion after two later reported Minors; its implementation and runtime evidence remains unchanged.
 - [2026-08-21 TASK-008 documentation re-review](./2026-08-21-task-008-documentation-re-review.md) — remains the current TASK-008 record and historical predecessor to readiness advanced by TASK-011; it returns `PASS` after correcting the README mutation example and leaves readiness at 7/12.
 - [2026-08-21 TASK-008 acceptance review](./2026-08-21-task-008-acceptance-review.md) — preserved implementation/runtime `PASS` on candidate `58A88087...`. The current documentation re-review supersedes only its documentation-closure conclusion for the invalid README comment selection and confirms the narrow correction.

@@ -34,6 +34,7 @@ function detail(
   id: string,
   options: {
     readonly empty?: boolean;
+    readonly imageUrl?: string;
     readonly isFavorite?: boolean;
     readonly comments?: readonly { readonly id: string; readonly body: string }[];
   } = {},
@@ -41,7 +42,9 @@ function detail(
   return {
     id,
     name: `Requested Character ${id}`,
-    imageUrl: `https://rickandmortyapi.com/api/character/avatar/${id}.jpeg`,
+    imageUrl:
+      options.imageUrl ??
+      `https://rickandmortyapi.com/api/character/avatar/${id}.jpeg`,
     species: "Human",
     status: "Alive",
     gender: "Unknown",
@@ -156,6 +159,49 @@ describe("the TASK-011 addressable character detail", () => {
       { id: "7" },
       { id: "7" },
     ]);
+  });
+
+  it("keeps one accessible fallback until a detail refetch changes the image URL", async () => {
+    const initialImageUrl =
+      "https://rickandmortyapi.com/api/character/avatar/7.jpeg";
+    const nextImageUrl =
+      "https://rickandmortyapi.com/api/character/avatar/107.jpeg";
+    let detailRequests = 0;
+    fetchResponse = async (request) => {
+      if (/mutation\s+SetCharacterFavorite/u.test(request.query)) {
+        return graphqlResponse({ data: { setCharacterFavorite: { id: "7" } } });
+      }
+
+      detailRequests += 1;
+      return graphqlResponse({
+        data: {
+          character: detail("7", {
+            comments: [],
+            imageUrl: detailRequests === 1 ? initialImageUrl : nextImageUrl,
+            isFavorite: detailRequests === 1,
+          }),
+        },
+      });
+    };
+
+    renderDetail("7");
+    const characterName = "Requested Character 7";
+    fireEvent.error(await screen.findByRole("img", { name: characterName }));
+
+    const fallback = screen.getByRole("img", { name: characterName });
+    expect(within(fallback).getByText("Image unavailable")).toBeVisible();
+    expect(fallback).not.toHaveAttribute("src");
+    expect(requests).toHaveLength(1);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Remove from favorites" }),
+    );
+
+    await waitFor(() => expect(requests).toHaveLength(3));
+    expect(
+      await screen.findByRole("img", { name: characterName }),
+    ).toHaveAttribute("src", nextImageUrl);
+    expect(screen.queryByText("Image unavailable")).not.toBeInTheDocument();
   });
 
   it("awaits one exact detail refetch before favorite state converges", async () => {
