@@ -1,7 +1,12 @@
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { print } from "graphql";
 
-import type { CharactersQuery } from "./generated/graphql";
+import type {
+  AddCharacterCommentMutation,
+  CharacterDetailQuery,
+  CharactersQuery,
+  SetCharacterFavoriteMutation,
+} from "./generated/graphql";
 
 type GraphqlFailureCategory = "network" | "graphql" | "decode" | "http";
 
@@ -198,4 +203,72 @@ export function decodeCharactersData(data: unknown): CharactersQuery {
   }
 
   return data as CharactersQuery;
+}
+
+export function decodeCharacterDetailData(data: unknown): CharacterDetailQuery {
+  if (!isRecord(data) || !("character" in data)) {
+    throw new TypeError("Invalid character-detail operation data.");
+  }
+
+  if (data.character === null) {
+    return data as CharacterDetailQuery;
+  }
+
+  const character = data.character;
+  const isOrigin = (value: unknown) =>
+    isRecord(value) && typeof value.name === "string";
+  const isComment = (value: unknown) =>
+    isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.body === "string";
+
+  if (
+    !isRecord(character) ||
+    typeof character.id !== "string" ||
+    typeof character.name !== "string" ||
+    typeof character.imageUrl !== "string" ||
+    typeof character.species !== "string" ||
+    typeof character.status !== "string" ||
+    typeof character.gender !== "string" ||
+    typeof character.type !== "string" ||
+    !isOrigin(character.origin) ||
+    typeof character.isFavorite !== "boolean" ||
+    !Array.isArray(character.comments) ||
+    !character.comments.every(isComment)
+  ) {
+    throw new TypeError("Invalid character-detail operation data.");
+  }
+
+  return data as CharacterDetailQuery;
+}
+
+export function decodeSetCharacterFavoriteData(
+  data: unknown,
+): SetCharacterFavoriteMutation {
+  if (
+    !isRecord(data) ||
+    !isRecord(data.setCharacterFavorite) ||
+    typeof data.setCharacterFavorite.id !== "string"
+  ) {
+    throw new TypeError("Invalid favorite mutation data.");
+  }
+
+  return data as SetCharacterFavoriteMutation;
+}
+
+export function decodeAddCharacterCommentData(
+  data: unknown,
+): AddCharacterCommentMutation {
+  if (!isRecord(data) || !isRecord(data.addCharacterComment)) {
+    throw new TypeError("Invalid comment mutation data.");
+  }
+
+  if (
+    typeof data.addCharacterComment.id !== "string" ||
+    typeof data.addCharacterComment.body !== "string"
+  ) {
+    throw new TypeError("Invalid comment mutation data.");
+  }
+
+  return data as AddCharacterCommentMutation;
 }

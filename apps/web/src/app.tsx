@@ -2,6 +2,7 @@ import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { createCharactersQueryClient } from "./data/characters-query";
+import { CharacterDetailRoute } from "./character-detail-route";
 import { CharacterListRoute } from "./character-list-route";
 import { Shell } from "./shell";
 
@@ -21,6 +22,14 @@ export function App({ queryClient = applicationQueryClient }: AppProps = {}) {
             element={
               <Shell>
                 <CharacterListRoute />
+              </Shell>
+            }
+          />
+          <Route
+            path="/characters/:id"
+            element={
+              <Shell>
+                <CharacterDetailRoute />
               </Shell>
             }
           />

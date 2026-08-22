@@ -6,3 +6,36 @@ query Characters($status: String, $species: String, $gender: String) {
     species
   }
 }
+
+query CharacterDetail($id: ID!) {
+  character(id: $id) {
+    id
+    name
+    imageUrl
+    species
+    status
+    gender
+    type
+    origin {
+      name
+    }
+    isFavorite
+    comments {
+      id
+      body
+    }
+  }
+}
+
+mutation SetCharacterFavorite($id: ID!, $isFavorite: Boolean!) {
+  setCharacterFavorite(id: $id, isFavorite: $isFavorite) {
+    id
+  }
+}
+
+mutation AddCharacterComment($characterId: ID!, $body: String!) {
+  addCharacterComment(characterId: $characterId, body: $body) {
+    id
+    body
+  }
+}

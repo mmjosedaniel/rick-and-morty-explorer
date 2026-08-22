@@ -39,6 +39,11 @@ interface CapturedConsoleError {
   };
 }
 
+interface GraphqlOperation {
+  readonly query: string;
+  readonly variables: Readonly<Record<string, unknown>>;
+}
+
 const deliberateGraphql503Pattern =
   /^Failed to load resource: the server responded with a status of 503(?: \([^\r\n]*\))?$/u;
 
@@ -57,6 +62,26 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isNullableString(value: unknown): value is string | null {
   return value === null || typeof value === "string";
+}
+
+function graphqlOperation(request: BrowserRequest): GraphqlOperation {
+  const payload = request.postDataJSON() as unknown;
+  if (
+    !isRecord(payload) ||
+    typeof payload["query"] !== "string" ||
+    !isRecord(payload["variables"])
+  ) {
+    throw new Error("TASK_011_GRAPHQL_OPERATION_INVALID");
+  }
+  return { query: payload["query"], variables: payload["variables"] };
+}
+
+function operationName(operation: GraphqlOperation) {
+  const name = /(?:query|mutation)\s+(\w+)/u.exec(operation.query)?.[1];
+  if (name === undefined) {
+    throw new Error("TASK_011_GRAPHQL_OPERATION_NAME_MISSING");
+  }
+  return name;
 }
 
 function visualVariables(request: BrowserRequest): VisualVariables {
@@ -149,6 +174,63 @@ async function expectNextKeyboardFocus(page: Page, locator: Locator) {
   await expectVisibleFocus(locator);
 }
 
+async function expectPaintableFocusIndicator(locator: Locator) {
+  const paintability = await locator.evaluate((element) => {
+    const focusedStyle = getComputedStyle(element);
+    const outlineWidth = Number.parseFloat(focusedStyle.outlineWidth);
+    const outlineOffset = Number.parseFloat(focusedStyle.outlineOffset);
+    const outerExtent = Math.max(0, outlineWidth + outlineOffset);
+    const focusedRect = element.getBoundingClientRect();
+    const paintedBounds = {
+      top: focusedRect.top - outerExtent,
+      right: focusedRect.right + outerExtent,
+      bottom: focusedRect.bottom + outerExtent,
+      left: focusedRect.left - outerExtent,
+    };
+
+    for (let ancestor = element.parentElement; ancestor !== null; ancestor = ancestor.parentElement) {
+      const ancestorStyle = getComputedStyle(ancestor);
+      const clipsX = ancestorStyle.overflowX !== "visible";
+      const clipsY = ancestorStyle.overflowY !== "visible";
+      if (!clipsX && !clipsY) {
+        continue;
+      }
+
+      const ancestorBounds = ancestor.getBoundingClientRect();
+      const clipped =
+        (clipsX &&
+          (paintedBounds.left < ancestorBounds.left ||
+            paintedBounds.right > ancestorBounds.right)) ||
+        (clipsY &&
+          (paintedBounds.top < ancestorBounds.top ||
+            paintedBounds.bottom > ancestorBounds.bottom));
+      if (clipped) {
+        return {
+          paintedBounds,
+          clippedBy: {
+            element: `${ancestor.tagName.toLowerCase()}.${ancestor.className}`,
+            overflowX: ancestorStyle.overflowX,
+            overflowY: ancestorStyle.overflowY,
+            bounds: {
+              top: ancestorBounds.top,
+              right: ancestorBounds.right,
+              bottom: ancestorBounds.bottom,
+              left: ancestorBounds.left,
+            },
+          },
+        };
+      }
+    }
+
+    return { paintedBounds, clippedBy: null };
+  });
+
+  expect(
+    paintability.clippedBy,
+    `Focused outline is clipped: ${JSON.stringify(paintability)}`,
+  ).toBeNull();
+}
+
 async function expectControlFocusSequence(page: Page) {
   await page.evaluate(() => {
     if (document.activeElement instanceof HTMLElement) {
@@ -235,6 +317,64 @@ async function expectVisualResult(page: Page, variables: VisualVariables) {
   ).toBeVisible();
 }
 
+async function expectLoadedCharacterDetail(
+  page: Page,
+  id: string,
+  options: {
+    readonly isFavorite?: boolean;
+    readonly comments?: readonly string[];
+  } = {},
+) {
+  const name = `TASK-010 Character ${id.padStart(2, "0")}`;
+  const numericId = Number(id);
+
+  await expect(
+    page.getByRole("heading", { level: 2, name }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(numericId % 2 === 0 ? "Alien" : "Human"),
+  ).toBeVisible();
+  await expect(
+    page.getByText(numericId % 3 === 0 ? "Dead" : "Alive"),
+  ).toBeVisible();
+  await expect(
+    page.getByText(numericId % 2 === 0 ? "Female" : "Male"),
+  ).toBeVisible();
+  await expect(page.getByText("TASK-010 Test Origin")).toBeVisible();
+  const expectedComments = options.comments ?? [];
+  if (expectedComments.length === 0) {
+    await expect(page.getByText("No comments yet.")).toBeVisible();
+  } else {
+    for (const comment of expectedComments) {
+      await expect(page.getByText(comment, { exact: true })).toBeVisible();
+    }
+  }
+  await expect(page.getByRole("heading", { name: "Comments" })).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: options.isFavorite === true ? "Remove from favorites" : "Add to favorites",
+    }),
+  ).toHaveAttribute("aria-pressed", options.isFavorite === true ? "true" : "false");
+  await expect(page.getByText("Type", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/example\.invalid\/origin/u)).toHaveCount(0);
+
+  const image = page.getByRole("img", { name });
+  await expect(image).toHaveAttribute(
+    "src",
+    `https://rickandmortyapi.com/api/character/avatar/${id}.jpeg`,
+  );
+  expect(
+    await image.evaluate((element) => {
+      const detailImage = element as HTMLImageElement;
+      return {
+        crossOrigin: detailImage.crossOrigin,
+        referrerPolicy: detailImage.referrerPolicy,
+      };
+    }),
+  ).toEqual({ crossOrigin: "anonymous", referrerPolicy: "no-referrer" });
+  await expectNoHorizontalOverflow(page);
+}
+
 test("shows the walking skeleton and reports API health", async ({
   page,
   request,
@@ -247,7 +387,7 @@ test("shows the walking skeleton and reports API health", async ({
   const graphqlRequests: Array<{
     readonly url: string;
     readonly headers: Readonly<Record<string, string>>;
-  }> = [];
+  } & GraphqlOperation> = [];
   const graphqlResponses: BrowserResponse[] = [];
   const pageErrors: Array<{
     readonly name: string;
@@ -299,6 +439,7 @@ test("shows the walking skeleton and reports API health", async ({
       graphqlRequests.push({
         url: browserRequest.url(),
         headers: browserRequest.headers(),
+        ...graphqlOperation(browserRequest),
       });
     }
   });
@@ -439,6 +580,178 @@ test("shows the walking skeleton and reports API health", async ({
     expect(avatarRequest.headers["authorization"]).toBeUndefined();
     expect(avatarRequest.headers["cookie"]).toBeUndefined();
   }
+
+  const firstCardLink = cards.first().getByRole("link", {
+    name: /TASK-010 Character 01/u,
+  });
+  await expectNextKeyboardFocus(page, firstCardLink);
+  await expectPaintableFocusIndicator(firstCardLink);
+  const requestsBeforeDetailNavigation = graphqlRequests.length;
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(`${applicationUrl}/characters/1`);
+  await expectLoadedCharacterDetail(page, "1");
+  expect(graphqlRequests).toHaveLength(requestsBeforeDetailNavigation + 1);
+
+  const favorite = page.getByRole("button", { name: "Add to favorites" });
+  await favorite.focus();
+  await expectVisibleFocus(favorite);
+  const requestsBeforeFavorite = graphqlRequests.length;
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("button", { name: "Remove from favorites" }),
+  ).toHaveAttribute("aria-pressed", "true");
+  expect(graphqlRequests.slice(requestsBeforeFavorite).map(operationName)).toEqual([
+    "SetCharacterFavorite",
+    "CharacterDetail",
+  ]);
+  expect(graphqlRequests[requestsBeforeFavorite]?.variables).toEqual({
+    id: "1",
+    isFavorite: true,
+  });
+
+  const markupComment = '<script data-smoke="inert">alert("unsafe")</script>';
+  const requestsBeforeComment = graphqlRequests.length;
+  await page.getByRole("textbox", { name: "Comment" }).fill(`  ${markupComment}  `);
+  await page.getByRole("button", { name: "Add comment" }).click();
+  await expect(page.getByText(markupComment, { exact: true })).toBeVisible();
+  expect(await page.locator('script[data-smoke="inert"]').count()).toBe(0);
+  expect(graphqlRequests.slice(requestsBeforeComment).map(operationName)).toEqual([
+    "AddCharacterComment",
+    "CharacterDetail",
+  ]);
+  expect(graphqlRequests[requestsBeforeComment]?.variables).toEqual({
+    characterId: "1",
+    body: markupComment,
+  });
+
+  let interceptedFailure: "mutation" | "refetch" | undefined;
+  await page.route(graphqlUrl, async (route) => {
+    if (route.request().method() === "OPTIONS") {
+      await route.continue();
+      return;
+    }
+    const name = operationName(graphqlOperation(route.request()));
+    if (interceptedFailure === "mutation" && name === "SetCharacterFavorite") {
+      interceptedFailure = undefined;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/graphql-response+json",
+        body: JSON.stringify({ errors: [{ message: "deliberate mutation failure" }] }),
+      });
+      return;
+    }
+    if (interceptedFailure === "refetch" && name === "CharacterDetail") {
+      interceptedFailure = undefined;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/graphql-response+json",
+        body: JSON.stringify({ errors: [{ message: "deliberate refetch failure" }] }),
+      });
+      return;
+    }
+    await route.continue();
+  });
+
+  interceptedFailure = "mutation";
+  const requestsBeforeMutationFailure = graphqlRequests.length;
+  await page.getByRole("button", { name: "Remove from favorites" }).click();
+  await expect(page.getByText("Favorite could not be updated.")).toBeVisible();
+  expect(graphqlRequests.slice(requestsBeforeMutationFailure).map(operationName)).toEqual([
+    "SetCharacterFavorite",
+  ]);
+  await expect(
+    page.getByRole("button", { name: "Remove from favorites" }),
+  ).toHaveAttribute("aria-pressed", "true");
+
+  const savedWithoutRefresh = "Persisted without refresh";
+  interceptedFailure = "refetch";
+  const requestsBeforeRefetchFailure = graphqlRequests.length;
+  await page.getByRole("textbox", { name: "Comment" }).fill(savedWithoutRefresh);
+  await page.getByRole("button", { name: "Add comment" }).click();
+  await expect(
+    page.getByText("Comment was saved, but details could not be refreshed."),
+  ).toBeVisible();
+  expect(graphqlRequests.slice(requestsBeforeRefetchFailure).map(operationName)).toEqual([
+    "AddCharacterComment",
+    "CharacterDetail",
+  ]);
+  await expect(page.getByText(savedWithoutRefresh, { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Retry details" }).click();
+  await expect(page.getByText(savedWithoutRefresh, { exact: true })).toBeVisible();
+  expect(operationName(graphqlRequests.at(-1)!)).toBe("CharacterDetail");
+  await page.unroute(graphqlUrl);
+
+  await page.goto(`${applicationUrl}/characters/1`);
+  await expectLoadedCharacterDetail(page, "1", {
+    isFavorite: true,
+    comments: [markupComment, savedWithoutRefresh],
+  });
+
+  await page.reload();
+  await expectLoadedCharacterDetail(page, "1", {
+    isFavorite: true,
+    comments: [markupComment, savedWithoutRefresh],
+  });
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  });
+  const backToCharacters = page.getByRole("link", {
+    name: "Back to characters",
+  });
+  await expectNextKeyboardFocus(page, backToCharacters);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(applicationUrl + "/");
+  await expect(page.getByRole("article")).toHaveCount(15);
+
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page
+    .getByRole("article")
+    .first()
+    .getByRole("link", { name: /TASK-010 Character 01/u })
+    .click();
+  await expectLoadedCharacterDetail(page, "1", {
+    isFavorite: true,
+    comments: [markupComment, savedWithoutRefresh],
+  });
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  });
+  await expectNextKeyboardFocus(
+    page,
+    page.getByRole("link", { name: "Back to characters" }),
+  );
+  const mobileFavorite = page.getByRole("button", { name: "Remove from favorites" });
+  await expectNextKeyboardFocus(page, mobileFavorite);
+  const requestsBeforeMobileFavorite = graphqlRequests.length;
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: "Add to favorites" })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+  expect(graphqlRequests.slice(requestsBeforeMobileFavorite).map(operationName)).toEqual([
+    "SetCharacterFavorite",
+    "CharacterDetail",
+  ]);
+  const mobileComment = "Mobile viewport comment";
+  const requestsBeforeMobileComment = graphqlRequests.length;
+  await page.getByRole("textbox", { name: "Comment" }).fill(mobileComment);
+  await page.getByRole("button", { name: "Add comment" }).click();
+  await expect(page.getByText(mobileComment, { exact: true })).toBeVisible();
+  expect(graphqlRequests.slice(requestsBeforeMobileComment).map(operationName)).toEqual([
+    "AddCharacterComment",
+    "CharacterDetail",
+  ]);
+  await page.reload();
+  await expectLoadedCharacterDetail(page, "1", {
+    comments: [markupComment, savedWithoutRefresh, mobileComment],
+  });
+  await page.getByRole("link", { name: "Back to characters" }).click();
+  await expect(page.getByRole("article")).toHaveCount(15);
+  await page.setViewportSize({ width: 1280, height: 800 });
 
   const visualRequests: VisualVariables[] = [];
   const pendingResolvers = new Map<string, () => void>();

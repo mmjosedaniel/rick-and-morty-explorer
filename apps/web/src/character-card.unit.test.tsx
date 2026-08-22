@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { CharacterCard } from "./character-card";
@@ -17,7 +18,11 @@ describe("CharacterCard", () => {
       origin: "ORIGIN_MUST_NOT_RENDER",
     };
 
-    render(<CharacterCard character={character} />);
+    render(
+      <MemoryRouter>
+        <CharacterCard character={character} />
+      </MemoryRouter>,
+    );
 
     const card = screen.getByRole("article");
     expect(
@@ -38,6 +43,8 @@ describe("CharacterCard", () => {
     expect(card).not.toHaveTextContent("GENDER_MUST_NOT_RENDER");
     expect(card).not.toHaveTextContent("TYPE_MUST_NOT_RENDER");
     expect(card).not.toHaveTextContent("ORIGIN_MUST_NOT_RENDER");
-    expect(within(card).queryByRole("link")).not.toBeInTheDocument();
+    expect(
+      within(card).getByRole("link", { name: /Rick Sanchez/u }),
+    ).toHaveAttribute("href", "/characters/101");
   });
 });

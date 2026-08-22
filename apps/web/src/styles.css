@@ -25,7 +25,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -36,7 +37,9 @@ select {
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
   outline: 2px solid #38e8d2;
   outline-offset: 3px;
 }
@@ -158,10 +161,25 @@ h1.text-3xl {
 }
 
 .character-card {
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid #263a55;
   border-radius: 0.75rem;
   background: #0e1625;
+}
+
+.character-card > a {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  color: inherit;
+  text-decoration: none;
+}
+
+.character-card > a:hover h3 {
+  text-decoration: underline;
+  text-decoration-color: #38e8d2;
+  text-underline-offset: 0.2em;
 }
 
 .character-card img {
@@ -181,6 +199,195 @@ h1.text-3xl {
 .character-card h3,
 .character-card p {
   margin: 0;
+}
+
+.text-link {
+  width: fit-content;
+  color: #38e8d2;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.character-detail-route {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.character-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.character-detail__image {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+  aspect-ratio: 1;
+  border: 1px solid #263a55;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  background: #17243a;
+}
+
+.character-detail__content,
+.character-comments {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.character-detail__content h2,
+.character-comments h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+
+.character-detail__content h2 {
+  font-size: clamp(2.25rem, 7vw, 3rem);
+  line-height: 1.17;
+}
+
+.character-comments h3 {
+  font-size: 1.375rem;
+  line-height: 1.27;
+}
+
+.character-detail__metadata {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.character-detail__metadata > div {
+  display: grid;
+  grid-template-columns: minmax(5rem, 0.35fr) minmax(0, 1fr);
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #263a55;
+}
+
+.character-detail__metadata dt {
+  color: #b8c4cc;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.character-detail__metadata dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.favorite-state {
+  width: fit-content;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid #537596;
+  border-radius: 0.5rem;
+  color: #f4f8f7;
+  background: #17243a;
+  font-weight: 500;
+}
+
+.favorite-state[aria-pressed="true"] {
+  border-color: #a8ff60;
+  color: #081009;
+  background: #a8ff60;
+}
+
+.favorite-state:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.character-comments {
+  padding-top: 1.5rem;
+  border-top: 1px solid #263a55;
+}
+
+.character-comment-form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 42rem;
+}
+
+.character-comment-form label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.character-comment-form textarea {
+  width: 100%;
+  min-height: 7.5rem;
+  padding: 0.75rem;
+  resize: vertical;
+  border: 1px solid #537596;
+  border-radius: 0.5rem;
+  color: #f4f8f7;
+  background: #17243a;
+  line-height: 1.5;
+}
+
+.character-comment-form button,
+.interaction-feedback button {
+  width: fit-content;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  border: 1px solid #a8ff60;
+  border-radius: 0.5rem;
+  color: #081009;
+  background: #a8ff60;
+  font-weight: 500;
+}
+
+.character-comment-form button:hover,
+.interaction-feedback button:hover {
+  background: #8fe64c;
+}
+
+.character-comment-form button:disabled,
+.favorite-state:disabled {
+  cursor: wait;
+}
+
+.character-comment-form__validation,
+.interaction-feedback p {
+  margin: 0;
+}
+
+.character-comment-form__validation,
+.interaction-feedback--error {
+  color: #ff6b7a;
+}
+
+.interaction-feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  color: #ffd166;
+}
+
+.character-comments ul {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.character-comments li {
+  padding: 1rem;
+  overflow-wrap: anywhere;
+  border: 1px solid #263a55;
+  border-radius: 0.75rem;
+  background: #0e1625;
+  line-height: 1.5;
 }
 
 .character-card h3 {
