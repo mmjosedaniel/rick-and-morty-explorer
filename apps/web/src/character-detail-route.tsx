@@ -307,7 +307,10 @@ export function CharacterDetailRoute() {
       </div>
       <section className="character-comments" aria-labelledby="comments-heading">
         <h3 id="comments-heading">Comments</h3>
-        <form className="character-comment-form" onSubmit={submitComment}>
+        <form
+          className="character-comment-form"
+          onSubmit={(event) => void submitComment(event)}
+        >
           <label htmlFor="character-comment">Comment</label>
           <textarea
             id="character-comment"
