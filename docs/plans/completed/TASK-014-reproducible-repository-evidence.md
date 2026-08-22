@@ -1,16 +1,16 @@
 # Deliver TASK-014 Reproducible Repository Evidence
 
-- Status: In progress; exact workflow authorized and activation barrier passed
-- Task: [TASK-014](../IMPLEMENTATION_PLAN.md#task-014---deliver-reproducible-repository-evidence)
+- Status: Complete; public delivery, clean-clone validation, review, and active-location documentation gate passed
+- Task: [TASK-014](../../IMPLEMENTATION_PLAN.md#task-014---deliver-reproducible-repository-evidence)
 - Plan and workflow ID: `TASK-014-20260822-01`
 - Created: 2026-08-22
 - Last updated: 2026-08-22
 - Planning baseline: clean `main` at `2e126b3265905309f974bdadf373ed2e74cdf360`
-- Governing convention: [PLANS.md](../../PLANS.md)
+- Governing convention: [PLANS.md](../../../PLANS.md)
 
 This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` as work proceeds. This document must be maintained in accordance with `PLANS.md`.
 
-Creating and registering this plan did not authorize TASK-014 execution. The project owner's separate 2026-08-22 request authorized this exact plan and workflow ID, and TASK-014 is now `In progress`. That execution authorization does not authorize a materially revised plan, a new dependency, commit, push, pull request, publication, or deployment. The public-candidate checkpoint below still requires either a project-owner-supplied public commit or separate explicit authorization for the exact external action.
+Creating and registering this plan did not authorize TASK-014 execution. The project owner's separate 2026-08-22 request authorized this exact plan and workflow ID; a later exact authorization permitted only the six-path commit and branch push recorded below. TASK-014 is now `Complete`. No authorization was given for a materially revised plan, new dependency, pull request, merge, deployment, or additional stage, commit, push, or publication action.
 
 ## Progress
 
@@ -27,9 +27,12 @@ Creating and registering this plan did not authorize TASK-014 execution. The pro
 - [x] (2026-08-22 17:36Z) Accepted the persistent `test_worker` binding preflight: runtime commands, schema inventory, four GraphQL operations, avatar behavior, public/clean-clone owners, and validation owners are `EXISTING_AND_COVERED`; the ERD is `MISSING` declarative setup; README consolidation and the GraphiQL correction are `PARTIAL`; no characterization or product Red is required.
 - [x] (2026-08-22 17:36Z) Transitioned TASK-014 to `In progress` and recorded activation identities without changing product, test, configuration, dependency, or deliverable bytes.
 - [x] (2026-08-22 17:56Z) Completed Milestone 1: two terminally compliant exact-path leases produced and corrected the README/ERD candidate; affected validation froze 140 paths at `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B`; fresh S1 review returned `PASS` with zero findings.
-- [ ] Pass the owner-controlled public-candidate checkpoint with an anonymously accessible commit containing the accepted README/ERD candidate.
-- [ ] Complete Milestone 2 once from an anonymous clean clone: documented commands, four GraphQL use cases, fresh-schema ERD comparison, full validation, exact cleanup, and fresh integrated independent review.
-- [ ] Pass the coordinator-owned task-closure documentation gate, mark TASK-014 `Complete`, keep TASK-015 `Pending`, archive this plan, repair links, and validate the completed location.
+- [x] (2026-08-22 18:23Z) Passed the owner-controlled public-candidate checkpoint: separately authorized commit `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c` was pushed to `refs/heads/codex/execplan-014`, and anonymous HTTPS readback resolved that exact SHA. No pull request was opened.
+- [x] (2026-08-22 18:58Z) Completed the Milestone 2 clean-clone command ledger, four GraphQL operations with mutation readback, fresh-schema ERD comparison, quality/closure packet, exact runtime cleanup, and validated temporary-clone removal on public SHA `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c`.
+- [x] (2026-08-22 19:04Z) Accepted Milestone 2 after the fresh integrated independent reviewer returned closure-permitting `PASS WITH FOLLOW-UPS`: zero Blocker, zero Major, and one coordinator-owned living-plan-currentness Minor dispositioned in this closure update.
+- [x] (2026-08-22 19:12Z) Added the dated [TASK-014 acceptance review](../../reviews/2026-08-22-task-014-acceptance-review.md), recorded the review's sole resolved follow-up, and synchronized pre-gate current-state, plan, ADR-implementation, review-index, and chronology owners without changing public candidate bytes.
+- [x] (2026-08-22 19:14Z) Passed the active-location task-closure documentation gate for 86 Markdown files/123 scenarios, ADR validation for 18 ADRs/38 requirements with only the established NFR-006 warning, and diff checking; marked TASK-014 and AC-012 `Complete` while keeping TASK-015 `Pending`.
+- [x] (2026-08-22 19:17Z) Archived this plan at its stable completed path, repaired every inbound/internal link, confirmed the active path absent/completed path present, and passed completed-location documentation validation for 86 Markdown files/123 scenarios, ADR validation for 18 ADRs/38 requirements with only the established NFR-006 warning, and diff checking.
 
 ## Surprises & Discoveries
 
@@ -56,6 +59,18 @@ Creating and registering this plan did not authorize TASK-014 execution. The pro
 
 - Observation: The first documentation candidate exposed a command-ledger duplication: running focused unit, integration, application, and smoke commands before `npm test` would repeat every constituent scope, and `npm run build` appeared twice. The sole allowed same-contract correction removed those duplicate executions while retaining one aggregate test, one lifecycle run, and one production build/start sequence.
   Evidence: attempt-2 receipt `6526f919edb8c15ac229a84999ba678d4b4113a4446cf034c918476321367e63`; the final README has one executable build, one aggregate test, one lifecycle command, and zero focused constituent test commands.
+
+- Observation: A fresh anonymous Windows checkout materializes the committed README and ERD consistently as CRLF, so its per-file and 140-path byte hashes differ from the mixed/LF Milestone 1 worktree hashes while the Git blobs and logical content are exact. The public clone identity is 140 paths at `6C9AAD2D5AD7A93742DCD0365A9914E3AC1F6F6A1DA42239625314FF66D96424`, README `3DC3FE2EE06C18741E465D469D3C6E451EE95C285DFA244FCE6972DF8F5D79DD`, ERD `07342854D128F05441477EFB52AE2140AFA99AFEE4795F0B9B3229E0AAD6835A`, and unchanged implementation/test/configuration `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`.
+  Evidence: clean detached checkout, clean `git status --short`, Git blobs `5866e476cbaa459a0e2baa5cff2110eaa4cbacd3` and `cf899ccd1c1cf797ecb2ed762115984bb70d2be4`, EOL-insensitive zero diffs, exact aggregate recomputation, and a fresh S1-equivalent public-candidate re-review `PASS` with zero findings.
+
+- Observation: The planned non-default `POSTGRES_SCHEMA=task_014_20260822_01` substitution was not an admitted first migration target because that schema did not yet exist; the first read-only status command stopped safely with `MIGRATION_NAMESPACE_BIND_FAILED`. The README's literal `public` schema is isolated inside the newly created TASK-014-owned Compose volume and is the supported clean-clone path.
+  Evidence: the failed status returned before mutation; after restoring the documented literal `public`, status reported the one migration pending, `migrate:up` applied it, applied status and `migrate:validate-emitted` passed, and teardown removed the exact volume. The command-ledger substitution is corrected below without changing the public candidate.
+
+- Observation: The first aggregate test attempt inherited a Redis search key created by the earlier manual `SearchCharacters` example and correctly failed its empty-namespace precondition; its own cleanup removed that exact key. The authorized full-scope retry then encountered a transient Windows `EPERM` rename in a self-removed Vitest cache directory, with no task process holding the clone. A final risk-recorded aggregate rerun passed every scope.
+  Evidence: the first failure named only `character-app:task-014-20260822-01:characters:search:v1:...`; exact prefix scan was empty afterward. The second failure was limited to temporary path `C:\Users\mmjos\AppData\Local\Temp\dgq5dnF6m6p8ea1qNvPMl`, which no longer existed, and an elevated read-only process scan found no orphaned TASK-014 process. The final aggregate passed unit 182/182, integration 77/77, application 37/37, and smoke 1/1.
+
+- Observation: Immutable installation remains reproducible but npm audit metadata reports one moderate and one high transitive advisory, plus established deprecation/install-script warnings. TASK-014 does not authorize a dependency change.
+  Evidence: `npm ci` exited zero with 640 packages on the exact lockfile and reported two vulnerabilities; all lint, type, build, test, smoke, and lifecycle gates subsequently passed.
 
 ## Decision Log
 
@@ -99,31 +114,39 @@ Creating and registering this plan did not authorize TASK-014 execution. The pro
   Rationale: Milestone 2 must execute the README ledger without rerunning constituent suites merely to duplicate `npm test`. Correcting the guide was within the unchanged contract and exact two-path scope; adding orchestration or accepting duplicated evidence would violate the plan's KISS and evidence-reuse rules.
   Date/Author: 2026-08-22 / primary coordinator.
 
+- Decision: Treat clean-clone CRLF hashes as the public execution identity while retaining the earlier Milestone 1 hashes as historical local materialization evidence.
+  Rationale: The public SHA and Git blobs are exact, the implementation aggregate is unchanged, and EOL-insensitive comparisons prove identical document content. Adding `.gitattributes` or changing public bytes solely to force one platform hash would exceed TASK-014 scope. A fresh public-candidate reviewer accepted this reconciliation with `PASS` and no findings.
+  Date/Author: 2026-08-22 / primary coordinator.
+
+- Decision: Execute migrations in the documented `public` schema inside the unique TASK-014 Compose volume and correct only the ledger's stale non-default-schema substitution.
+  Rationale: Existing migration admission binds an already existing schema; the documented `public` target is supported and isolated because the entire database volume belongs only to this run. No README, migration, runtime behavior, or schema contract changes, and exact volume teardown supplies cleanup.
+  Date/Author: 2026-08-22 / primary coordinator.
+
 This task makes no new architectural choice, so a Decision Review Contract is not applicable. DPL-DEC-054 records reversible delivery-document choices inside accepted ADR-0003, ADR-0006, ADR-0008, ADR-0014, ADR-0015, and ADR-0016.
 
 ## Outcomes & Retrospective
 
-Execution is active under owner-authorized workflow `TASK-014-20260822-01`. The activation barrier and binding documentation-only preflight passed. Milestone 1 accepted the guarded local README/ERD candidate `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B` after affected validation and fresh S1 `PASS` with no findings. The 138-path implementation/test/configuration projection remains unchanged. TASK-014 is `In progress` and stopped at the owner-controlled public-candidate checkpoint: no accepted candidate commit is anonymously accessible, so no clean-clone/runtime evidence, deliverable acceptance, AC-012 result, or task completion is claimed.
+TASK-014 is `Complete` under owner-authorized workflow `TASK-014-20260822-01`. The activation barrier, binding documentation-only preflight, guarded Milestone 1 candidate, affected validation, fresh S1 `PASS`, exact public checkpoint, Milestone 2 anonymous clean-clone runtime/quality/cleanup packet, fresh integrated `PASS WITH FOLLOW-UPS`, resolved documentation Minor, active-location documentation gate, archival, link repair, and completed-location gate all pass. Public ref `refs/heads/codex/execplan-014` resolves anonymously to `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c`; its public Windows materialization is `6C9AAD2D5AD7A93742DCD0365A9914E3AC1F6F6A1DA42239625314FF66D96424` with unchanged implementation/test/configuration aggregate `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`. DEL-001 through DEL-003, SPEC-015 through SPEC-017, HS-018, and AC-012 pass. Exact runtime resources and the validated temporary clone are absent. TASK-015 remains `Pending`; TASK-014 has no remaining work.
 
 ## Purpose / Big Picture
 
 TASK-014 turns the implemented repository into a reproducible public deliverable. A reviewer starting without local repository state should be able to access the source anonymously, clone one recorded commit, understand the relational schema, configure the supported local environment, install exact dependencies, initialize PostgreSQL, import the deterministic 15-character baseline, run the API and web application, execute all four GraphQL use cases, build and test the repository, and understand the official third-party avatar boundary.
 
-The observable result is documentation plus public and runtime evidence, not new application behavior. Completion makes DEL-001, DEL-002, DEL-003, SPEC-015 through SPEC-017, HS-018, and AC-012 eligible to pass. TASK-015 remains the separate final acceptance and repository-baseline review.
+The observable result is documentation plus public and runtime evidence, not new application behavior. Completion makes DEL-001, DEL-002, DEL-003, SPEC-015 through SPEC-017, HS-018, and AC-012 pass. TASK-015 remains the separate final acceptance and repository-baseline review.
 
 ## Context and Orientation
 
-Read the [documentation map](../../README.md#documentation-map) first, then use these owners:
+Read the [documentation map](../../../README.md#documentation-map) first, then use these owners:
 
-- [TASK-014](../IMPLEMENTATION_PLAN.md#task-014---deliver-reproducible-repository-evidence) owns scope, dependencies, status, validation intent, and closure.
-- [DEL-001 through DEL-003 and AC-012](../REQUIREMENTS.md#7-required-deliverables) own the required delivery outcomes.
-- [SPEC-015 through SPEC-017 and HS-018](../specs/README.md#codex-rule-routing) own derived source, ERD, run/API, and clean-clone evidence rules.
-- [ADR-0003](../adrs/0003-use-postgresql-for-relational-persistence.md) owns the relational persistence direction.
-- [ADR-0006](../adrs/0006-define-a-use-case-oriented-graphql-contract.md) owns the four GraphQL use cases.
-- [ADR-0008](../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns explicit deterministic import.
-- [ADR-0014](../adrs/0014-persist-and-deliver-character-image-urls-directly.md) and AUTH-001 own the exact direct avatar URL and rights boundary.
-- [ADR-0015](../adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) is the current migration-lifecycle authority; [ADR-0012](../adrs/superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md) is historical Superseded context only.
-- [ADR-0016](../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md), the [worker-first workflow](../../.codex/execplan-implementation-workflow.md), and the [write-lease guard](../../.codex/write-lease-guard.md) own execution mechanics.
+- [TASK-014](../../IMPLEMENTATION_PLAN.md#task-014---deliver-reproducible-repository-evidence) owns scope, dependencies, status, validation intent, and closure.
+- [DEL-001 through DEL-003 and AC-012](../../REQUIREMENTS.md#7-required-deliverables) own the required delivery outcomes.
+- [SPEC-015 through SPEC-017 and HS-018](../../specs/README.md#codex-rule-routing) own derived source, ERD, run/API, and clean-clone evidence rules.
+- [ADR-0003](../../adrs/0003-use-postgresql-for-relational-persistence.md) owns the relational persistence direction.
+- [ADR-0006](../../adrs/0006-define-a-use-case-oriented-graphql-contract.md) owns the four GraphQL use cases.
+- [ADR-0008](../../adrs/0008-use-deterministic-bootstrap-and-idempotent-sync.md) owns explicit deterministic import.
+- [ADR-0014](../../adrs/0014-persist-and-deliver-character-image-urls-directly.md) and AUTH-001 own the exact direct avatar URL and rights boundary.
+- [ADR-0015](../../adrs/0015-use-a-build-first-migration-lifecycle-with-exact-catalog-byte-lock-identity.md) is the current migration-lifecycle authority; [ADR-0012](../../adrs/superseded/0012-use-a-build-first-programmatic-migration-lifecycle.md) is historical Superseded context only.
+- [ADR-0016](../../adrs/0016-use-milestone-slice-tdd-with-independent-test-and-implementation-ownership.md), the [worker-first workflow](../../../.codex/execplan-implementation-workflow.md), and the [write-lease guard](../../../.codex/write-lease-guard.md) own execution mechanics.
 
 Repository evidence to reuse:
 
@@ -395,13 +418,14 @@ Execution evidence checklist:
 - [x] Activation identity and binding preflight classifications.
 - [x] Full setup/correction packets, lease digests/receipts, actual diff, and S1 review verdict.
 - [x] Accepted local 140-path candidate plus README/ERD hashes.
-- [ ] Public repository/ref/full SHA and anonymous candidate readback.
-- [ ] Clean-clone path, executed toolchain/environment identities, and command results.
-- [ ] Four GraphQL request/response summaries and mutation readback.
-- [x] Source-to-ERD comparison matrix; fresh runtime comparison remains Milestone 2.
-- [ ] Aggregate test counts, smoke/lifecycle identities, clean-clone documentation/ADR results, and diff result.
-- [ ] Exact runtime cleanup and temporary clone removal.
-- [ ] Integrated verdict, closure follow-up dispositions, documentation impact, task state, and completed-plan validation.
+- [x] Public repository/ref/full SHA and anonymous candidate readback.
+- [x] Clean-clone path, executed toolchain/environment identities, and command results.
+- [x] Four GraphQL request/response summaries and mutation readback.
+- [x] Source-to-ERD comparison matrix and fresh runtime comparison.
+- [x] Aggregate test counts, smoke/lifecycle identities, clean-clone documentation/ADR results, and diff result.
+- [x] Exact runtime cleanup and temporary clone removal.
+- [x] Integrated verdict, closure follow-up dispositions, documentation impact, and authoritative task/acceptance state.
+- [x] Completed-plan move, link repair, and completed-location validation.
 
 ### Accepted Milestone 1 evidence
 
@@ -422,10 +446,10 @@ The rows below are the complete execution contract for the README's executable c
 | CL-02 | `git clone https://github.com/mmjosedaniel/rick-and-morty-explorer.git`; `Set-Location rick-and-morty-explorer` | Unique TASK-014 temporary parent; owner-supplied anonymous public candidate | Exact public URL; detach/read back the separately recorded full SHA after clone | Anonymous clone succeeds and current directory is the clean candidate checkout | Creates only the child clone; remove it only after absolute-path proof and cleanup |
 | CL-03 | `npm ci` | Clone root; exact Node/npm and lockfile | None | Exit zero with immutable dependency graph | Creates `node_modules`; temporary-clone removal cleans it |
 | CL-04 | `npm run browser:install` | Clone root after install; Chromium required for aggregate/lifecycle evidence | None | Pinned Chromium is available | May populate the Playwright browser cache; it is an intentional prerequisite, while unexpected repository artifacts must be absent at cleanup |
-| CL-05 | README environment blocks | Current PowerShell session | Record free loopback ports; use task-owned `POSTGRES_SCHEMA=task_014_20260822_01` and `REDIS_NAMESPACE=character-app:task-014-20260822-01` instead of shared defaults | Process environment contains valid exact values | Process-local state only; discard with the task shell |
+| CL-05 | README environment blocks | Current PowerShell session | Record free loopback ports; keep documented `POSTGRES_SCHEMA=public` inside the unique task-owned PostgreSQL volume and use `REDIS_NAMESPACE=character-app:task-014-20260822-01` | Process environment contains valid exact values | Process-local state only; discard with the task shell; CL-18 removes the isolated database volume |
 | CL-06 | `npm run infra:config`; `npm run infra:up`; `npm run infra:ps` | Clone root; environment and Linux Docker ready | Recorded free ports only | Exact `rick-and-morty-dev` model validates and PostgreSQL/Redis are healthy | Creates only that project's containers, network, and volumes; CL-18 removes them |
-| CL-07 | `npm run migrate:build`; `npm run migrate:status`; `npm run migrate:up`; `npm run migrate:status`; `npm run migrate:validate-emitted` | Clone root; healthy PostgreSQL and task schema | CL-05 task schema | Authenticated artifact; empty then applied task schema; isolated emitted lifecycle passes | Applies task schema; emitted validation removes its namespace; CL-18 removes the volume |
-| CL-08 | `npm run import:characters` | Clone root; migrated task schema and internet access | IDs 1 through 15 are fixed | Exit zero with deterministic 15-character baseline | Sole live public character-JSON request; writes task schema/cache namespace; CL-18 cleans state |
+| CL-07 | `npm run migrate:build`; `npm run migrate:status`; `npm run migrate:up`; `npm run migrate:status`; `npm run migrate:validate-emitted` | Clone root; healthy PostgreSQL and isolated documented schema | CL-05 `public` schema in the task-owned volume | Authenticated artifact; empty then applied isolated schema; isolated emitted lifecycle passes | Applies the isolated schema; emitted validation removes its namespace; CL-18 removes the volume |
+| CL-08 | `npm run import:characters` | Clone root; migrated isolated schema and internet access | IDs 1 through 15 are fixed | Exit zero with deterministic 15-character baseline | Sole live public character-JSON request; writes isolated schema/cache namespace; CL-18 cleans state |
 | CL-09 | `npm run dev:apps`, then `Ctrl+C` | Clone root; initialized infrastructure | Documented ports | API 3000/web 5173 and `/` plus `/characters/1` are addressable | Exact foreground API/web owners; stop and verify their listeners/children |
 | CL-10 | `npm run dev`, then `Ctrl+C` | Clone root; retained initialized volumes | Documented ports | Idempotent exact-project start plus API/web | Exact foreground owners; stop and verify before the next mode |
 | CL-11 | `npm run build`; `npm start`, then `Ctrl+C` | Clone root; installed dependencies and initialized services | Documented ports | Build exits zero; API 3000/web 4173 run | Creates ignored build output and foreground owners; stop processes, then temporary-clone removal cleans output |
@@ -450,7 +474,36 @@ The rows below are the complete execution contract for the README's executable c
 | Migration-history purpose | Storage records migration ID, authenticated source hash, and applied time | Inventory lines 534-536 and history-row readback | Lines 62-68 |
 | Image boundary and deliberate absence | `image_url` is one `characters.text` column; exact migration/storage table set has no image table | Inventory lines 496-536 prove the exact three-table/column set | Lines 53 and 70 record the attribute and absence of any image relation/byte/proxy/cache/lifecycle table |
 
-Public-candidate checkpoint status: `BLOCKED BY OWNER-CONTROLLED INPUT`, not a task failure. No anonymously accessible commit containing candidate `827F378C...2FF6B` has been supplied, and commit/push/PR/publication actions remain unauthorized. Do not start Milestone 2 until one of the plan's two owner conditions is satisfied.
+Public-candidate checkpoint status: `PASS`.
+
+- Repository: `https://github.com/mmjosedaniel/rick-and-morty-explorer.git`.
+- Public ref: `refs/heads/codex/execplan-014`.
+- Full SHA: `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c`.
+- Parent: `89d2977896987313b28febbd56800e404a4020c7`; its history contains merged TASK-013 and the previously accepted application baseline.
+- Provenance: the project owner explicitly authorized staging only the six current TASK-014 files, one commit with message `docs: add reproducible repository evidence`, and one push to the current branch. The coordinator verified the index contained exactly those six paths, created the commit, pushed the branch, opened no pull request, and reproduced the full SHA with anonymous `git ls-remote` over HTTPS.
+- Candidate relationship: the commit contains 140-path delivery candidate `827F378C...2FF6B`, README `DA3EBECB...D33B5`, ERD `C6C30E2A...EA822C`, and unchanged implementation/test/configuration projection `2D138DA1...84524` on the Windows materialization baseline. A fresh anonymous clone must reproduce its own environment-specific implementation aggregate plus the exact README/ERD bytes before evidence can advance.
+
+### Milestone 2 clean-clone evidence
+
+- Clone: anonymous HTTPS checkout detached at exact public SHA `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c` under `C:\Users\mmjos\AppData\Local\Temp\TASK-014-9bca7ef8c9d8481489666240677af0d6`; worktree remained clean after all commands.
+- Environment: Git `2.53.0.windows.1`; Node `24.18.0`; npm `11.16.0`; Windows `10.0.26200` x64; Docker client/server `29.7.2`, Docker Desktop `4.86.0`, Linux `amd64`; PostgreSQL `18.6-alpine`; Redis `8.8.1-alpine`.
+- Public clone identities: 140 paths `6C9AAD2D5AD7A93742DCD0365A9914E3AC1F6F6A1DA42239625314FF66D96424`; README `3DC3FE2EE06C18741E465D469D3C6E451EE95C285DFA244FCE6972DF8F5D79DD`; ERD `07342854D128F05441477EFB52AE2140AFA99AFEE4795F0B9B3229E0AAD6835A`; unchanged 138-path implementation/test/configuration `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`.
+- Migration artifact: build ID `206c246684c3a877d259f37b5d10b11f1f3fe91967b21c9cd55b7708da79a9a5`; manifest SHA-256 `a44771369812e06981962d0e05acb224242528e914194bdebade58fea1ec8a18`; empty status, first up, applied status, no-op up, default down, and reapply validation passed.
+- GraphQL results: `SearchCharacters` returned only ID `1`, Rick Sanchez, the official avatar URL, and Human; `SetCharacterFavorite` returned ID `1` with `true`; `AddCharacterComment` returned ID `1` with body `Documented API example`; the final `CharacterDetail` returned the full character, `isFavorite: true`, and that comment. All four requests were JSON `POST /graphql`, status `200`, with zero GraphQL errors.
+- ERD comparison: the passing integration suite exercised `inspectMigratedSchema` against fresh isolated namespaces and matched exactly three tables, 20 columns with type/nullability/default/identity, five named constraints, `RESTRICT` actions, four indexes including the B-tree character-ID index, and the authenticated history row. The static ERD matrix maps these one-to-one and confirms no image table.
+- Validation: immutable install and Chromium prerequisite passed; infrastructure config/up/health passed; import was the sole live public character-JSON request; both development modes and production mode served liveness plus list/detail routes; lint, strict typecheck, build/GraphQL drift, and Tailwind passed; final aggregate passed unit 182/182, integration 77/77, application 37/37, and browser smoke 1/1; lifecycle passed 7/7; documentation passed 85 files/123 scenarios; ADR validation passed 18 ADRs/38 requirements with only the established NFR-006 warning; 19 PowerShell blocks parsed with zero errors; 17 README `npm run` owners had zero gaps; four executable GraphQL examples, 20 ERD columns, candidate fingerprint, and `git diff --check` passed.
+- Cleanup: smoke READY/CLEANUP identity `a7b9e0721a2de358` matched in the passing aggregate; each lifecycle case reported its exact cleanup identity. Before Compose teardown only the isolated `public` schema remained and no `character-app:*` Redis key remained. Exact project labels were `rick-and-morty-dev`; `npm run infra:down` removed its two containers, two volumes, and network. Final project/container/volume/network scans were empty; ports 3000, 4173, 4174, 5173, 55432, and 56400 had zero listeners; no Playwright report artifact remained; the task shell exited. The clone resolved as the unique direct TASK-014 child of the OS temporary root, was clean at the exact public SHA, and was removed; post-removal existence is false.
+
+Executed command-ledger disposition:
+
+| IDs | Executed result, external identity, and cleanup |
+|---|---|
+| CL-01 through CL-04 | Exact tool identities recorded; anonymous clone/detach clean; `npm ci` installed 640 packages from the lockfile; pinned Chromium was available. npm audit metadata reported one moderate and one high transitive advisory, with no dependency change authorized. |
+| CL-05 through CL-08 | Free ports 3000/4173/5173/55432/56400 were recorded; the isolated Compose project was healthy; documented `public` migration lifecycle and deterministic IDs 1-15 import passed. The rejected non-existent-schema diagnostic was read-only; only the import contacted public character JSON. |
+| CL-09 through CL-12 | `dev:apps`, combined `dev`, build, compiled start, lint, typecheck, and Tailwind passed. Development and production list/detail routes plus API liveness returned `200`; every foreground owner was stopped and its listeners were absent before the next mode. |
+| CL-13 | Final aggregate counts and lifecycle 7/7 passed. One full retry followed manual-key evidence invalidation and one followed a self-cleared transient Windows cache `EPERM`; no constituent suite was run separately for duplication. All test-owned schemas, keys, processes, and artifacts self-cleaned. |
+| CL-14 through CL-17 | The four exact PowerShell POST blocks passed once with the literal variables; the final detail operation proved favorite/comment persistence. Exact task namespace cleanup and later Compose-volume teardown removed their state. |
+| CL-18 and CL-19 | Exact project label verified; pre/post `infra:ps`, `infra:down --volumes`, documentation/ADR validation, candidate/ledger/ERD reconciliation, clean Git status, and diff check passed. All Docker and listener scans are empty; the clean exact-SHA temporary clone was removed after path proof. Only fresh integrated review remains. |
 
 ## Interfaces and Dependencies
 
@@ -474,3 +527,11 @@ The existing external/runtime interfaces remain:
 2026-08-22: The project owner separately authorized exact workflow `TASK-014-20260822-01`. The coordinator passed the activation barrier, refreshed the platform-specific 138-path materialization identity without changing logical implementation/test/configuration content, accepted the binding documentation-only preflight, transitioned TASK-014 to `In progress`, and recorded the exact local/public baselines. No deliverable, product, test, configuration, dependency, runtime behavior, acceptance result, commit, push, pull request, publication, or deployment changed during activation.
 
 2026-08-22: Completed and accepted Milestone 1 on local candidate `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B`. Two exact-path leases closed compliant; the sole same-contract correction removed duplicate build/test execution; implementation/test/configuration bytes remained unchanged; affected validation passed; and fresh S1 review returned `PASS` with zero findings. Execution stops at the owner-controlled public-candidate checkpoint. No staging, commit, push, pull request, publication, deployment, public-candidate claim, runtime evidence, DEL-001/002/003 acceptance, AC-012 result, or task completion occurred.
+
+2026-08-22: The project owner separately authorized staging only the six TASK-014 paths, one exact commit, and one push to `origin/codex/execplan-014`, with no pull request. Commit `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c` was created with the authorized message, pushed, and reproduced anonymously at the exact public ref. The public checkpoint passes and Milestone 2 may begin; no deliverable acceptance, AC-012 result, runtime evidence, task completion, merge, pull request, or deployment is yet claimed.
+
+2026-08-22: Completed Milestone 2 command execution, exact runtime cleanup, and validated temporary-clone removal on the anonymous detached public clone. Clean-clone hashes were refreshed for CRLF materialization with fresh public-candidate review `PASS`; the documented schema path, migrations, sole live import, both development modes, production mode, four JSON GraphQL operations, mutation readback, quality/test/lifecycle packet, ERD comparison, and documentation/ADR/diff gates passed. The aggregate required two fully recorded retries: one after manual Redis-key evidence invalidation and one after a self-cleared transient Windows cache `EPERM`; the final complete scope is green. The exact Compose project, all task listeners/artifacts, and the clone are absent. Fresh integrated review returned closure-permitting `PASS WITH FOLLOW-UPS`, zero Blocker/Major and one living-plan-currentness Minor; the coordinator accepts that follow-up and corrects the stale checklist/outcome markers in this closure update. Only coordinator-owned documentation closure remains; TASK-014 stays `In progress`, TASK-015 stays `Pending`, and no additional staging, commit, push, pull request, publication, or deployment is authorized or claimed.
+
+2026-08-22: Passed the active-location task-closure documentation gate for 86 Markdown files/123 scenarios, ADR validation for 18 ADRs/38 requirements with only the established NFR-006 warning, and diff checking. Synchronized README delivery/readiness status, AC-012, TASK-014, SPEC/HS routing, the ADR implementation annotation, review/plan indexes, chronology, and this living record; the system diagram is not materially affected because no module or data flow changed. TASK-014 and AC-012 are `Complete`, TASK-015 remains `Pending`, and only the required completed-plan move/link validation remains. These closure records are local-only after public commit `62aa3fa7...af9c`; no additional stage, commit, push, pull request, publication, merge, or deployment is authorized or claimed.
+
+2026-08-22: Moved this stable plan to `docs/plans/completed/` only after TASK-014 became `Complete`, repaired every inbound and internal link, and passed the completed-location gate for 86 Markdown files/123 scenarios, ADR validation for 18 ADRs/38 requirements with only the established NFR-006 warning, and diff checking. The active path is absent and completed path present. TASK-014 has no remaining work; TASK-015 remains `Pending`. The public evidence remains exact commit `62aa3fa7...af9c`; this archival bookkeeping is local-only and no additional stage, commit, push, pull request, publication, merge, or deployment occurred.

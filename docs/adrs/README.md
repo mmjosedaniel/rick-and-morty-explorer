@@ -99,6 +99,8 @@ ADR-0014 was accepted on 2026-08-11 after a source-first reassessment scored dir
 
 Completed TASK-013 supplies portfolio implementation evidence for ADR-0002, ADR-0006, ADR-0007, ADR-0014, ADR-0016, and ADR-0018: exact-pinned typed lint enforces the three accepted static rules; strict compilation and generated-output drift pass; dependency/comment/scaffolding review preserves the selected module boundaries; existing frontend, backend-search, PostgreSQL, Redis, GraphQL, migration, and Chromium owners remain relevant; and the complete closure/lifecycle packet passes with exact cleanup. This is an implementation-status annotation only and changes no ADR, optional-scope disposition, or authorization.
 
+Completed TASK-014 public commit `62aa3fa7c794e17a52218c0b3fcb4f01e331af9c` supplies delivery implementation evidence for ADR-0003, ADR-0006, ADR-0008, ADR-0014, ADR-0015, and ADR-0016: its migration-derived ERD matches the fresh PostgreSQL catalog/history contract; its README documents the existing JSON GraphQL, migration, import, avatar, test, and lifecycle boundaries; and one anonymous clean clone passes the complete command ledger and exact cleanup. This is an implementation-status annotation only and changes no ADR meaning/status, optional-scope disposition, or authorization.
+
 No decision conflicts with a mandatory requirement. ADR-0005 is accepted with an explicit follow-up because the requirements omit identity and authentication. Its single-user assumption must be superseded before user accounts enter scope; before anonymous public writes are deployed, the deployment-control follow-up defined by ADR-0005 must be completed through a new or superseding decision as appropriate.
 
 ## Architecture coverage

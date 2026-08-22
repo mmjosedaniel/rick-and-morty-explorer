@@ -4,6 +4,7 @@ Start from the repository [documentation map](../../README.md#documentation-map)
 
 ## Current Review
 
+- [2026-08-22 TASK-014 acceptance review](./2026-08-22-task-014-acceptance-review.md) — records `PASS WITH FOLLOW-UPS` on public commit `62aa3fa7...af9c`: zero Blocker/Major and one resolved living-plan-currentness Minor. DEL-001 through DEL-003, AC-012, the documentation gate, and TASK-014 completion pass; TASK-015 retains final repository-baseline review.
 - [2026-08-22 TASK-013 documentation re-review](./2026-08-22-task-013-documentation-re-review.md) — records `PASS` after resolving two independently reported post-commit documentation/evidence Minors. Candidate `024F1415...4B3D`, TASK-013, TASK-014, and readiness at 11/12 remain unchanged; local commit `a7819f8` and TASK-012's merged PR #21 history are now reported accurately.
 - [2026-08-22 TASK-012 documentation re-review](./2026-08-22-task-012-documentation-re-review.md) — records `PASS` after resolving two independently reported post-commit documentation-currentness Minors. Candidate `D4E87CB...FE3983`, TASK-012, AC-006, and readiness at 11/12 remain unchanged; local commit `312d462` is now reported accurately.
 
