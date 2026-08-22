@@ -12,7 +12,7 @@ An accepted ADR records approved implementation direction only. Requirements, AD
 
 TASK-009 is `Complete` after exact project-owner approval, DG-003 resolution, and its documentation gate; its [completed ExecPlan](./docs/plans/completed/TASK-009-frontend-graphql-client-decision.md) preserves the decision chronology. [Accepted ADR-0017](./docs/adrs/0017-use-tanstack-query-with-a-project-owned-typed-graphql-executor.md) selects TanStack Query with a project-owned typed GraphQL executor. TASK-008, TASK-010, TASK-011, and TASK-012 are also `Complete`. The current [TASK-012 documentation re-review](./docs/reviews/2026-08-22-task-012-documentation-re-review.md) records `PASS` after resolving two post-commit currentness findings; its predecessor [acceptance review](./docs/reviews/2026-08-22-task-012-acceptance-review.md) preserves the product/runtime assessment on unchanged candidate `D4E87CBED378F8C60A97714F46194D68E1515BB999968D00C49CE903A3FE3983`. Local Git history records TASK-012 merged into `main` through PR #21 at merge commit `7a3cab06257931424968d818cff7506c9b819a44`, including source-branch tip `e42835dd456b5fdb77221b53873e5ef04cd643ae` and implementation commit `312d462318e5d1be5ddcab41a4d3f3788806908d`.
 
-TASK-013 is `Complete` under owner-authorized workflow `TASK-013-20260822-01`. Candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D` passes the typed lint, complete quality/test/relevance, exact cleanup, fresh milestone review, integrated [`PASS WITH FOLLOW-UPS`](./docs/reviews/2026-08-22-task-013-acceptance-review.md), and both active- and completed-location documentation gates. TASK-013 is committed locally at `a7819f85c3eb0318b1488ab47beababf31f5b09e` on `codex/execplan-013`; the branch has no configured upstream. The current [documentation re-review](./docs/reviews/2026-08-22-task-013-documentation-re-review.md) resolves the incomplete fingerprint command and stale Git-state summary. TASK-014 remains `Pending`; no push, pull request, publication, or deployment is claimed.
+TASK-013 is `Complete` under owner-authorized workflow `TASK-013-20260822-01`. Candidate `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D` passes the typed lint, complete quality/test/relevance, exact cleanup, fresh milestone review, integrated [`PASS WITH FOLLOW-UPS`](./docs/reviews/2026-08-22-task-013-acceptance-review.md), and both active- and completed-location documentation gates. TASK-013 is committed locally at `a7819f85c3eb0318b1488ab47beababf31f5b09e` on `codex/execplan-013`; the branch has no configured upstream. The current [documentation re-review](./docs/reviews/2026-08-22-task-013-documentation-re-review.md) resolves the incomplete fingerprint command and stale Git-state summary. TASK-014 is `In progress`; its README/ERD candidate remains local and has not passed public clean-clone validation or acceptance. No push, pull request, publication, or deployment is claimed.
 
 ## Documentation map
 
@@ -90,39 +90,49 @@ The current evidence-based [TASK-013 acceptance review](./docs/reviews/2026-08-2
 | Required deliverable | Current evidence |
 |---|---|
 | [DEL-001](./docs/REQUIREMENTS.md#del-001---public-source-repository) - Public source repository | Partially demonstrated: anonymous read access to the configured [GitHub repository](https://github.com/mmjosedaniel/rick-and-morty-explorer) and committed TASK-003 skeleton source on public `main` through [merged PR #8](https://github.com/mmjosedaniel/rick-and-morty-explorer/pull/8) were verified on 2026-08-14. Complete application delivery remains pending through TASK-014, so the deliverable and AC-012 do not pass. |
-| [DEL-002](./docs/REQUIREMENTS.md#del-002---entity-relationship-diagram) - Entity-relationship diagram | Not yet available. TASK-004 supplies an executable migration and exact migrated-schema inventory, but TASK-014 owns derivation and comparison of the delivered ERD; DEL-002 and AC-012 do not yet pass. |
-| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | Partially demonstrated: operational, migration, character-import, and GraphQL list/detail/filter/pagination/error/logging guidance now exists. The complete end-to-end application guide remains pending, so DEL-003 and AC-012 do not yet pass. |
+| [DEL-002](./docs/REQUIREMENTS.md#del-002---entity-relationship-diagram) - Entity-relationship diagram | A local migration-derived [ERD candidate](./docs/ERD.md) now exists. Public-candidate comparison, clean-clone validation, and acceptance remain pending, so DEL-002 and AC-012 do not yet pass. |
+| [DEL-003](./docs/REQUIREMENTS.md#del-003---run-and-api-usage-documentation) - Run and API usage documentation | This README now contains the local end-to-end setup, operation, validation, cleanup, and four-operation GraphQL candidate. Public clean-clone execution and acceptance remain pending, so DEL-003 and AC-012 do not yet pass. |
 
-This status section must be updated and supplemented with links to reproducible prerequisites, configuration, installation, infrastructure, migration, character-import, development, test, build, and GraphQL usage instructions as the corresponding executable artifacts are added.
+The instructions below describe the checked-in commands but do not claim that the current local TASK-014 candidate is publicly available or has passed its clean-clone acceptance run.
 
-## Repository operation and migration workflow
+## Clean-clone setup, operation, and API usage
 
-### Start the project locally
-
-The repository targets Node.js `24.18.0` and npm `11.16.0`. Local PostgreSQL and Redis run through Docker Desktop using Linux containers. Before continuing, start Docker Desktop and verify that both the client and server are available and that the server reports `linux`:
+Run the commands in this section from PowerShell. The supported environment is Git, Node.js `24.18.0`, npm `11.16.0`, and Docker Desktop using Linux containers. Start Docker Desktop before cloning, choose a parent directory for the checkout, and verify the toolchain and Docker client/server:
 
 ```powershell
+git --version
 node --version
 npm --version
 docker version
 docker info --format '{{.OSType}}'
 ```
 
-If a Docker command reports a missing `dockerDesktopLinuxEngine` pipe or cannot connect to the Docker API, wait for Docker Desktop to finish starting or restart it. Do not run migrations, imports, or the applications until Docker is available.
+The last command must print `linux`. A missing `dockerDesktopLinuxEngine` pipe or Docker API connection means Docker Desktop is not ready; stop and repair that prerequisite before infrastructure, migrations, imports, or applications.
 
-Install the immutable dependency graph once from the repository root:
+### Clone and install
+
+From the chosen parent directory, clone the configured public repository and enter its root:
+
+```powershell
+git clone https://github.com/mmjosedaniel/rick-and-morty-explorer.git
+Set-Location rick-and-morty-explorer
+```
+
+Install exactly the dependency graph in `package-lock.json`:
 
 ```powershell
 npm ci
 ```
 
-Install Playwright's Chromium only when you intend to run the browser smoke tests:
+The immutable install populates local `node_modules`. Install Playwright's Chromium only before the aggregate `npm test` or `npm run test:smoke:lifecycle` path on a machine that does not already have the pinned browser:
 
 ```powershell
 npm run browser:install
 ```
 
-The supported local values are recorded in [`.env.example`](./.env.example). Export them in every new PowerShell session because the API and command-line tools read the current process environment:
+### Configure the local environment
+
+All remaining commands run from the repository root. Export the supported [`.env.example`](./.env.example) values in every new PowerShell session because the API and command-line tools read the current process environment:
 
 ```powershell
 $env:API_HOST = '127.0.0.1'
@@ -140,154 +150,158 @@ $env:REDIS_SEARCH_TTL_SECONDS = '300'
 $env:REDIS_OPERATION_TIMEOUT_MS = '250'
 ```
 
-If another service already owns PostgreSQL port `5432` or Redis port `6379`, select free loopback ports before starting infrastructure. For example:
+These values are loopback-only local defaults. If ports `5432` or `6379` are already occupied, substitute unused loopback ports before the first infrastructure command, for example:
 
 ```powershell
 $env:POSTGRES_PORT = '55432'
 $env:REDIS_PORT = '56400'
 ```
 
-On the first run, start and inspect the scoped infrastructure, apply the schema, import the deterministic 15-character baseline, and only then start the foreground applications:
+### Start infrastructure, migrate, and import
+
+Validate the resolved Compose model, create the named `rick-and-morty-dev` containers/network/volumes, and confirm both services are healthy:
 
 ```powershell
+npm run infra:config
 npm run infra:up
 npm run infra:ps
+```
+
+`infra:config` must render without an error; `infra:up` must complete; `infra:ps` must show PostgreSQL and Redis healthy. Do not continue if any signal is absent. The created volumes retain local PostgreSQL and Redis data until the exact teardown command below.
+
+Build and authenticate the migration artifact, inspect the pre-apply state, apply the schema, confirm its applied state, and exercise the isolated emitted-artifact lifecycle validation:
+
+```powershell
+npm run migrate:build
+npm run migrate:status
 npm run migrate:up
+npm run migrate:status
+npm run migrate:validate-emitted
+```
+
+The migration commands accept only the configured loopback PostgreSQL profile. `migrate:up` creates or advances the selected `POSTGRES_SCHEMA`; `migrate:status` is read-only; `migrate:validate-emitted` owns and removes its temporary namespace while preserving the authenticated artifact. The resulting application schema is documented in the migration-derived [entity-relationship diagram](./docs/ERD.md).
+
+Import the deterministic character IDs 1 through 15 after migration succeeds:
+
+```powershell
 npm run import:characters
+```
+
+This is the one live public Rick and Morty character-JSON request boundary in the setup. It requires internet access, validates the complete upstream batch and exact avatar mapping, then transactionally inserts or refreshes source-owned fields without resetting favorites or comments. A successful command exits zero; failures return a non-zero safe diagnostic.
+
+### Run the applications
+
+Start the development API and Vite web application as foreground processes after infrastructure, migration, and import:
+
+```powershell
 npm run dev:apps
 ```
 
-Do not continue past `infra:up` or `infra:ps` if either command fails. `infra:ps` must show both PostgreSQL and Redis as healthy. The import requires internet access to the public Rick and Morty API.
-
-Open the development web application at `http://127.0.0.1:5173`; its `/` route lists imported characters, applies A-Z/Z-A sorting and status/species/gender filters, and keeps applied state in the URL. Select a card to open `/characters/:id`, where the exact character detail can be favorited and validated plain-text comments can be added; successful changes are confirmed through a fresh detail request and persist across reload. API liveness is `http://127.0.0.1:3000/healthz`.
-
-For later runs with the initialized Docker volumes, export the same environment values and use the combined entry point:
+Open `http://127.0.0.1:5173/`; the detail route is `/characters/<positive-character-id>`, and API liveness is `http://127.0.0.1:3000/healthz`. Press `Ctrl+C` to stop both foreground processes. On later runs with the environment exported and initialized volumes retained, this combined command starts infrastructure and then the development applications:
 
 ```powershell
 npm run dev
 ```
 
-Press `Ctrl+C` to stop the foreground web and API processes. Infrastructure remains under the named `rick-and-morty-dev` Compose project. Inspect it with `npm run infra:ps`. The `npm run infra:down` command removes that project's containers, network, and volumes, including local PostgreSQL and Redis data; use it only when that data loss is intended.
+For the compiled mode, build first and then start both built servers in the foreground:
 
-For compiled application processes, run `npm run build` followed by `npm start`. This starts the built web server on `127.0.0.1:4173` and the API on `127.0.0.1:3000`; both remain foreground-owned. `GET /healthz` is liveness-only and remains independent of PostgreSQL and Redis. `POST /graphql` is the query API described below; the first character-list query initializes PostgreSQL and, when configuration is valid, Redis on demand. Detail and comment queries do not acquire Redis.
-
-The migration CLI accepts only the loopback PostgreSQL profile recorded in [`.env.example`](./.env.example). Export those `POSTGRES_*` values in the current shell, start the scoped infrastructure, and use the root commands below. Every lifecycle command builds and authenticates one immutable native-ESM artifact before operating; `down` is selector-free by default, one step is explicit, and larger rollbacks require acknowledgement.
-
-```text
-npm run migrate:build
-npm run migrate:status
-npm run migrate:up
-npm run migrate:down
-npm run migrate:down -- --step 1
-npm run migrate:down -- --keep-through <migration-id>
-npm run migrate:down -- --step <count> --confirm-multiple
-npm run migrate:validate-emitted
+```powershell
+npm run build
+npm start
 ```
 
-`npm run migrate:validate-emitted` owns a temporary namespace and proves empty status, first apply, applied status, no-op apply, default down, and reapply without deleting the authenticated publication. `npm run verify:task-004` is the destructive task-level verification controller: it performs an immutable install, owns isolated PostgreSQL/Redis ports and a scoped Compose project, runs the 34 leaf checks without re-running their aggregate `npm test` alias, and tears down its owned infrastructure. Historical clean-checkout evidence remains a 35/35 record for the controller version executed at that commit.
+The built web server listens on `http://127.0.0.1:4173` and the API uses `http://127.0.0.1:3000`. Press `Ctrl+C` to stop them.
 
-After `npm run migrate:up` succeeds, initialize or refresh the deterministic character baseline with the same exported `POSTGRES_*` profile:
+### Verify the repository
 
-```text
-npm run import:characters
-```
+With dependencies installed and the configured healthy infrastructure available, reuse the production build completed above and run the remaining static gates before tests:
 
-The root command builds the API workspace and then runs its emitted zero-argument CLI. It requests public Rick and Morty character IDs 1 through 15 with finite timeouts and bounded retries, validates the complete batch and exact avatar association, and publishes the source-owned fields in one transaction. Repeating the command refreshes those fields without resetting favorites or comments. After commit, the production command iteratively scans only the configured versioned character-search namespace and unlinks exact canonical cache keys in bounded batches. A fetch, validation, persistence, configuration, or close failure returns a non-zero result with a stable safe diagnostic; a post-commit Redis invalidation failure emits a warning without rolling back PostgreSQL, and finite TTL bounds any stale cached projection.
-
-### GraphQL read API
-
-Send JSON GraphQL requests to `POST http://127.0.0.1:3000/graphql`. The process and `/healthz` can start without database readiness, but the first character query requires valid `POSTGRES_*` configuration, a schema applied through the migration workflow, and the explicit baseline import above when product rows are required. GraphiQL is available only when explicitly enabled by the development composition; it is disabled by default, in tests, and in production.
-
-Search characters with any subset of the five optional filters:
-
-```graphql
-query SearchCharacters($filter: CharacterFilter) {
-  characters(filter: $filter) {
-    id
-    name
-    imageUrl
-    species
-  }
-}
-```
-
-```json
-{
-  "filter": {
-    "status": "alive",
-    "species": "human",
-    "gender": "male",
-    "name": "rick",
-    "origin": "earth"
-  }
-}
-```
-
-Blank filter values are omitted and supplied filters combine with `AND`. `status` and `gender` use case-insensitive exact matching; `name`, `species`, and `origin` use case-insensitive literal substring matching, including literal `%` and `_`. The API promises no default list order.
-
-Read one character and a bounded comment page with:
-
-```graphql
-query CharacterDetail($id: ID!, $limit: Int, $offset: Int) {
-  character(id: $id) {
-    id
-    name
-    imageUrl
-    species
-    status
-    gender
-    type
-    origin {
-      name
-      url
-    }
-    isFavorite
-    comments(limit: $limit, offset: $offset) {
-      id
-      body
-    }
-  }
-}
-```
-
-Persist the exact ADR-0006 interactions with:
-
-```graphql
-mutation SetCharacterFavorite($id: ID!, $isFavorite: Boolean!) {
-  setCharacterFavorite(id: $id, isFavorite: $isFavorite) {
-    id
-    isFavorite
-  }
-}
-
-mutation AddCharacterComment($characterId: ID!, $body: String!) {
-  addCharacterComment(characterId: $characterId, body: $body) {
-    id
-    body
-  }
-}
-```
-
-Character IDs must be positive base-10 safe integers. Comment pagination defaults to `limit: 20` and `offset: 0`; limits must be 1 through 50 and offsets must be non-negative. Comments are returned newest first by stored creation time and then descending comment ID. The exact stored `image_url` is projected as `imageUrl`; the API does not fetch upstream character JSON, proxy image bytes, or transform the URL.
-
-Invalid input returns `BAD_USER_INPUT`, a valid missing character returns `NOT_FOUND`, and unexpected failures return redacted `INTERNAL_SERVER_ERROR`. Comment bodies are trimmed and must contain 1 through 1,000 Unicode code points; their validated value is stored as plain text. The mutations use ADR-0005's global single-user model, persist only in PostgreSQL, and do not invalidate the list-search Redis cache. Original unexpected failures are written only to the server diagnostic sink. Every completed Express response writes one bounded JSON record to standard output with `requestId`, `method`, query-free `path`, `status`, `durationMs`, `errorCount`, and a bounded `operationName` or `null`; request bodies, GraphQL variables/documents, credentials, comments, stacks, SQL, and diagnostics are excluded. Anonymous public deployment of the write surface remains blocked by ADR-0005 and HS-005.
-
-Authoritative verification commands are:
-
-```text
+```powershell
 npm run lint
 npm run typecheck
-npm run build
-npm run test:unit
-npm run test:integration
-npm run test:application
-npm run test:smoke
-npm test
 npm run validate:tailwind
+```
+
+The aggregate test command runs unit, PostgreSQL/Redis integration, application, and Chromium smoke scopes once in canonical order. Focused scripts remain discoverable in `package.json` for diagnosis, but they are not additional clean-clone execution steps:
+
+```powershell
+npm test
 npm run test:smoke:lifecycle
 ```
 
-Build before the aggregate test command: inherited TASK-004 CLI integration tests execute the compiled `apps/api/dist` migration artifact. Root `npm test` then runs unit, PostgreSQL/Redis integration, application, and Chromium smoke in canonical order. Integration tests require the closed local PostgreSQL profile and a test-only Redis namespace. The TASK-010 smoke also requires loopback PostgreSQL and Redis ports; it owns a unique `t010_smoke_<runId>` schema, exact `character-app:test:t010-smoke-<runId>` namespace, and app ports 4173/4174, then cleans only those identities.
+The production build completed above must precede the aggregate tests because inherited migration CLI integration checks execute the compiled `apps/api/dist` artifact. Integration and smoke use task-owned schemas, Redis namespaces, processes, and ports; lifecycle validation reports its own readiness and cleanup result.
+
+### GraphQL JSON API
+
+The checked-in server accepts JSON GraphQL only at `POST http://127.0.0.1:3000/graphql` and keeps GraphiQL disabled. The following four PowerShell examples require a running API, an applied schema, and the imported baseline. Each command constructs JSON with documented variables and prints the parsed response.
+
+Character list/search (omit any unused filter entries; supplied filters combine with `AND`):
+
+```powershell
+$graphqlEndpoint = 'http://127.0.0.1:3000/graphql'
+$request = @{
+  operationName = 'SearchCharacters'
+  query = 'query SearchCharacters($filter: CharacterFilter) { characters(filter: $filter) { id name imageUrl species } }'
+  variables = @{ filter = @{ status = 'alive'; species = 'human'; gender = 'male'; name = 'rick'; origin = 'earth' } }
+}
+Invoke-RestMethod -Method Post -Uri $graphqlEndpoint -ContentType 'application/json' -Body ($request | ConvertTo-Json -Depth 10)
+```
+
+Character detail with a bounded comment page:
+
+```powershell
+$graphqlEndpoint = 'http://127.0.0.1:3000/graphql'
+$request = @{
+  operationName = 'CharacterDetail'
+  query = 'query CharacterDetail($id: ID!, $limit: Int, $offset: Int) { character(id: $id) { id name imageUrl species status gender type origin { name url } isFavorite comments(limit: $limit, offset: $offset) { id body } } }'
+  variables = @{ id = '1'; limit = 20; offset = 0 }
+}
+Invoke-RestMethod -Method Post -Uri $graphqlEndpoint -ContentType 'application/json' -Body ($request | ConvertTo-Json -Depth 10)
+```
+
+Set favorite and read the persisted value from the mutation response:
+
+```powershell
+$graphqlEndpoint = 'http://127.0.0.1:3000/graphql'
+$request = @{
+  operationName = 'SetCharacterFavorite'
+  query = 'mutation SetCharacterFavorite($id: ID!, $isFavorite: Boolean!) { setCharacterFavorite(id: $id, isFavorite: $isFavorite) { id isFavorite } }'
+  variables = @{ id = '1'; isFavorite = $true }
+}
+Invoke-RestMethod -Method Post -Uri $graphqlEndpoint -ContentType 'application/json' -Body ($request | ConvertTo-Json -Depth 10)
+```
+
+Add one validated plain-text comment:
+
+```powershell
+$graphqlEndpoint = 'http://127.0.0.1:3000/graphql'
+$request = @{
+  operationName = 'AddCharacterComment'
+  query = 'mutation AddCharacterComment($characterId: ID!, $body: String!) { addCharacterComment(characterId: $characterId, body: $body) { id body } }'
+  variables = @{ characterId = '1'; body = 'Documented API example' }
+}
+Invoke-RestMethod -Method Post -Uri $graphqlEndpoint -ContentType 'application/json' -Body ($request | ConvertTo-Json -Depth 10)
+```
+
+Character IDs must be positive base-10 safe integers. Comment pagination defaults to `limit: 20` and `offset: 0`; limits are 1 through 50 and offsets are non-negative. Comments are newest first by stored creation time and then descending comment ID. Comment bodies are trimmed, stored as plain text, and must contain 1 through 1,000 Unicode code points. Invalid input returns `BAD_USER_INPUT`, a valid missing character returns `NOT_FOUND`, and unexpected failures return redacted `INTERNAL_SERVER_ERROR`.
+
+### Third-party avatar boundary
+
+The importer accepts only each character's validated official `https://rickandmortyapi.com/api/character/avatar/<id>.jpeg` URL, and the application persists and projects that URL as the character's `image_url`/`imageUrl` text attribute. The application owns no image bytes, proxy, image relation, or image lifecycle. The browser requests the official URL directly with anonymous cross-origin mode and `Referrer-Policy: no-referrer`; the web server's fixed CSP permits only `'self'` and `https://rickandmortyapi.com/api/character/avatar/` for images. Browser and intermediary caching is outside application control.
+
+Avatar delivery therefore depends on the provider's availability, terms, authorization, and path policy. A failed image switches once to the layout-safe `Image unavailable` fallback; it uses no alternate source and performs no application retry. [AUTH-001](./docs/IMPLEMENTATION_PLAN.md#auth-001---character-image-content-rights-authorization) authorizes this exact direct-URL and ordinary browser/intermediary-caching boundary only for the personal, educational, non-commercial portfolio. A change to the provider/content source, host/path/character mapping, project or commercial scope, provider terms/authorization/objection/takedown status, delivery or redistribution mechanism, or recorded disposition reopens AUTH-001 before dependent image work.
+
+### Exact teardown
+
+Stop any foreground application command with `Ctrl+C`, verify that the target is the named `rick-and-morty-dev` project, then remove only its containers, network, and volumes:
+
+```powershell
+npm run infra:ps
+npm run infra:down
+npm run infra:ps
+```
+
+`infra:down` irreversibly removes this project's local PostgreSQL and Redis volume data. The final `infra:ps` must show no project services. Do not substitute broad Docker, schema, Redis, or process cleanup commands.
 
 ## Codex quick start
 

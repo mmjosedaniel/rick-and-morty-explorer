@@ -1,8 +1,8 @@
 # Deliver TASK-014 Reproducible Repository Evidence
 
-- Status: Pending; implementation-ready planning only, awaiting separate project-owner execution authorization
+- Status: In progress; exact workflow authorized and activation barrier passed
 - Task: [TASK-014](../IMPLEMENTATION_PLAN.md#task-014---deliver-reproducible-repository-evidence)
-- Plan ID and prospective workflow ID: `TASK-014-20260822-01`
+- Plan and workflow ID: `TASK-014-20260822-01`
 - Created: 2026-08-22
 - Last updated: 2026-08-22
 - Planning baseline: clean `main` at `2e126b3265905309f974bdadf373ed2e74cdf360`
@@ -10,7 +10,7 @@
 
 This ExecPlan is a living document. Maintain `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` as work proceeds. This document must be maintained in accordance with `PLANS.md`.
 
-Creating and registering this plan does not authorize TASK-014 execution or change the task from `Pending`. A separate project-owner request must authorize this exact plan and workflow ID before activation. Execution authorization alone will not authorize a materially revised plan, a new dependency, commit, push, pull request, publication, or deployment. The public-candidate checkpoint below requires either a project-owner-supplied public commit or separate explicit authorization for the exact external action.
+Creating and registering this plan did not authorize TASK-014 execution. The project owner's separate 2026-08-22 request authorized this exact plan and workflow ID, and TASK-014 is now `In progress`. That execution authorization does not authorize a materially revised plan, a new dependency, commit, push, pull request, publication, or deployment. The public-candidate checkpoint below still requires either a project-owner-supplied public commit or separate explicit authorization for the exact external action.
 
 ## Progress
 
@@ -21,8 +21,12 @@ Creating and registering this plan does not authorize TASK-014 execution or chan
 - [x] (2026-08-22) Selected the smallest complete delivery surface: extend the existing root README and add one migration-derived `docs/ERD.md`; add no product/test/configuration code, dependency, helper, generator, test project, component, function, or abstraction.
 - [x] (2026-08-22) Registered the proportional planning decision as DPL-DEC-054 and linked this active ExecPlan while preserving TASK-014 as `Pending`.
 - [x] (2026-08-22) Passed planning documentation validation for 84 Markdown files and 123 scenarios, ADR validation for 18 ADRs and 38 requirements with only the established NFR-006 warning, exact fingerprint reproduction, link/readback checks, and `git diff --check`.
-- [ ] Receive separate project-owner authorization for exact workflow `TASK-014-20260822-01`, pass the activation barrier, and transition TASK-014 to `In progress`.
-- [ ] Complete Milestone 1: guarded README/ERD delivery documentation, affected validation, frozen candidate, and fresh S1 milestone review.
+- [x] (2026-08-22 17:36Z) Received separate project-owner authorization for exact workflow `TASK-014-20260822-01`; confirmed TASK-013 `Complete`, TASK-014/TASK-015 `Pending` before activation, all decision gates `Resolved`, AUTH-001 unchanged, and a clean unstaged/untracked worktree on `codex/execplan-014` at `89d2977896987313b28febbd56800e404a4020c7`.
+- [x] (2026-08-22 17:36Z) Reproduced the 139-path delivery projection at `D90C47825B9F16C9307401AA1BD9705A5EAA18FA9E634ABCFE862BC3C5E67237`; reconciled the historical 138-path accepted identity `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D` to the current Windows materialization identity `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524` with no logical Git diff across the projection.
+- [x] (2026-08-22 17:36Z) Rechecked the public baseline anonymously: `refs/heads/main` resolves to `2e126b3265905309f974bdadf373ed2e74cdf360`; this remains activation evidence only.
+- [x] (2026-08-22 17:36Z) Accepted the persistent `test_worker` binding preflight: runtime commands, schema inventory, four GraphQL operations, avatar behavior, public/clean-clone owners, and validation owners are `EXISTING_AND_COVERED`; the ERD is `MISSING` declarative setup; README consolidation and the GraphiQL correction are `PARTIAL`; no characterization or product Red is required.
+- [x] (2026-08-22 17:36Z) Transitioned TASK-014 to `In progress` and recorded activation identities without changing product, test, configuration, dependency, or deliverable bytes.
+- [x] (2026-08-22 17:56Z) Completed Milestone 1: two terminally compliant exact-path leases produced and corrected the README/ERD candidate; affected validation froze 140 paths at `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B`; fresh S1 review returned `PASS` with zero findings.
 - [ ] Pass the owner-controlled public-candidate checkpoint with an anonymously accessible commit containing the accepted README/ERD candidate.
 - [ ] Complete Milestone 2 once from an anonymous clean clone: documented commands, four GraphQL use cases, fresh-schema ERD comparison, full validation, exact cleanup, and fresh integrated independent review.
 - [ ] Pass the coordinator-owned task-closure documentation gate, mark TASK-014 `Complete`, keep TASK-015 `Pending`, archive this plan, repair links, and validate the completed location.
@@ -46,6 +50,12 @@ Creating and registering this plan does not authorize TASK-014 execution or chan
 
 - Observation: Anonymous Git readback currently resolves public `main` to the same planning baseline. That is planning evidence only. The future README/ERD candidate must itself be present in an anonymously accessible commit before clean-clone acceptance can pass.
   Evidence: local `git rev-parse HEAD` and anonymous `git ls-remote https://github.com/mmjosedaniel/rick-and-morty-explorer.git refs/heads/main` both returned `2e126b3265905309f974bdadf373ed2e74cdf360` on 2026-08-22.
+
+- Observation: The historical accepted 138-path aggregate does not reproduce from the current Windows materialized worktree even though the 139-path aggregate does. The current materialized 138-path aggregate is `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`; 129 projected worktree blobs differ byte-for-byte from their index blobs under `core.autocrlf=true`, while Git reports no logical diff from the accepted TASK-013 candidate across all 138 paths.
+  Evidence: exact projection recomputation, worktree/index blob comparison, `git diff a7819f85c3eb0318b1488ab47beababf31f5b09e..HEAD -- <138-path projection>`, and clean `git status --short`. The reuse classification and command/evidence mappings remain valid, but subsequent local candidate checks use the refreshed materialization identity.
+
+- Observation: The first documentation candidate exposed a command-ledger duplication: running focused unit, integration, application, and smoke commands before `npm test` would repeat every constituent scope, and `npm run build` appeared twice. The sole allowed same-contract correction removed those duplicate executions while retaining one aggregate test, one lifecycle run, and one production build/start sequence.
+  Evidence: attempt-2 receipt `6526f919edb8c15ac229a84999ba678d4b4113a4446cf034c918476321367e63`; the final README has one executable build, one aggregate test, one lifecycle command, and zero focused constituent test commands.
 
 ## Decision Log
 
@@ -81,11 +91,19 @@ Creating and registering this plan does not authorize TASK-014 execution or chan
   Rationale: Plan execution is not commit/push/publication authority. DEL-001 cannot pass from a dirty worktree, local-only commit, authenticated session, or stated intent.
   Date/Author: 2026-08-22 / primary coordinator.
 
+- Decision: Preserve `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D` as the historical accepted TASK-013 aggregate and use `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524` as TASK-014's refreshed current Windows materialization baseline.
+  Rationale: The activation barrier explicitly requires refreshing the reuse audit when relevant materialized bytes drift. The accepted Git tree has no logical implementation/test/configuration diff, all preflight contracts remain covered, and changing product bytes merely to reproduce a platform-specific materialization hash would be outside scope.
+  Date/Author: 2026-08-22 / primary coordinator.
+
+- Decision: Use the single attempt-2 documentation correction to remove duplicate full-scope validation commands before freezing Milestone 1.
+  Rationale: Milestone 2 must execute the README ledger without rerunning constituent suites merely to duplicate `npm test`. Correcting the guide was within the unchanged contract and exact two-path scope; adding orchestration or accepting duplicated evidence would violate the plan's KISS and evidence-reuse rules.
+  Date/Author: 2026-08-22 / primary coordinator.
+
 This task makes no new architectural choice, so a Decision Review Contract is not applicable. DPL-DEC-054 records reversible delivery-document choices inside accepted ADR-0003, ADR-0006, ADR-0008, ADR-0014, ADR-0015, and ADR-0016.
 
 ## Outcomes & Retrospective
 
-Planning is complete. TASK-014 remains `Pending`; no delivery artifact or acceptance result is claimed. The reuse audit found that the entire implementation, root command surface, GraphQL contract, migration inventory, avatar boundary, and automated portfolio can be reused unchanged. The only planned deliverable writes are an extension of `README.md` and one new `docs/ERD.md`. Populate this section with exact public commit identity, clean-clone results, command ledger, ERD comparison, review verdict, cleanup evidence, documentation impact, and residual risk during execution.
+Execution is active under owner-authorized workflow `TASK-014-20260822-01`. The activation barrier and binding documentation-only preflight passed. Milestone 1 accepted the guarded local README/ERD candidate `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B` after affected validation and fresh S1 `PASS` with no findings. The 138-path implementation/test/configuration projection remains unchanged. TASK-014 is `In progress` and stopped at the owner-controlled public-candidate checkpoint: no accepted candidate commit is anonymously accessible, so no clean-clone/runtime evidence, deliverable acceptance, AC-012 result, or task completion is claimed.
 
 ## Purpose / Big Picture
 
@@ -161,7 +179,7 @@ Repository evidence to reuse:
 1. Receive a separate project-owner request authorizing the exact registered plan under `TASK-014-20260822-01`. If the requested scope, dependency, public target, avatar boundary, or acceptance contract materially differs, keep TASK-014 `Pending` and revise/review the plan before execution.
 2. Read this plan completely and confirm TASK-013 remains `Complete`, TASK-014 remains `Pending`, TASK-015 remains `Pending`, all applicable decision gates remain `Resolved`, and no AUTH-001 reopen trigger has occurred.
 3. Inspect and reconcile the worktree without reverting, absorbing, staging, or overwriting unrelated user changes. Record branch, HEAD, index state, and every pre-existing modification.
-4. Recompute the 139-path planning projection and require exact aggregate `D90C47825B9F16C9307401AA1BD9705A5EAA18FA9E634ABCFE862BC3C5E67237`. Separately recompute the accepted 138-path implementation/test/configuration projection and require `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`. If relevant bytes drift, refresh this reuse audit and dependent command/evidence mappings before any write.
+4. Recompute the 139-path planning projection and require exact aggregate `D90C47825B9F16C9307401AA1BD9705A5EAA18FA9E634ABCFE862BC3C5E67237`. Separately recompute the historical accepted 138-path implementation/test/configuration projection. Activation found platform-materialization drift from historical `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`, refreshed the current Windows identity to `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`, and confirmed no logical Git diff across the projection. Subsequent local unchanged-scope checks require the refreshed identity; a clean-clone candidate must record its own environment-specific materialization identity.
 5. Recheck the configured public remote and anonymous `main` identity. This readback establishes the activation baseline only; it does not satisfy the later accepted-candidate checkpoint.
 6. Have one persistent `test_worker` perform a binding read-only preflight. It must use ADR-0016's exact classifications: `EXISTING_AND_COVERED`, `EXISTING_BUT_UNCOVERED`, `MISSING`, `REGRESSION`, `PARTIAL`, `CONFLICTING`, or `UNKNOWN`.
 7. Require preflight to classify runtime setup/commands, schema inventory, all four GraphQL operations, avatar boundary, public Git evidence, and clean-clone/test owners individually. Expected results are runtime contracts `EXISTING_AND_COVERED`, ERD artifact `MISSING`, and README delivery consolidation/execution detail `PARTIAL`; they must be verified, not assumed. `CONFLICTING` or unresolved `UNKNOWN` stops dependent writes.
@@ -365,24 +383,74 @@ Planning evidence:
 
 - Worktree: clean `main` at `2e126b3265905309f974bdadf373ed2e74cdf360` before planning writes.
 - Public baseline: anonymous public `main` resolved to the same full SHA on 2026-08-22. This is not accepted-candidate publication evidence.
-- Implementation/test/configuration projection: 138 paths at `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D`.
+- Historical accepted implementation/test/configuration projection: 138 paths at `024F1415C4ADA8AD56233C77500434D0218AE5CC188522FB2E70770027704B3D` on the TASK-013 evidence environment.
+- Refreshed TASK-014 Windows materialization projection: the same 138 logical paths at `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524` under `core.autocrlf=true`, with no logical Git diff from the accepted TASK-013 candidate.
 - Delivery reuse projection: the same projection plus `README.md`, 139 paths at `D90C47825B9F16C9307401AA1BD9705A5EAA18FA9E634ABCFE862BC3C5E67237`.
 - Hash contract: sort repository-relative paths ordinally; hash each materialized file with uppercase SHA-256; create `<path><TAB><hash>` lines joined with LF and no final LF; hash the UTF-8 manifest.
 - ERD inventory: zero tracked path names matched ERD/entity-relationship naming before plan creation.
 - Planning validation intentionally does not run product tests, install dependencies, start Docker, contact the public character API, create a clone, or change delivery artifacts. Those actions belong to separately authorized execution.
 
-Execution must add:
+Execution evidence checklist:
 
-- activation identity and preflight classifications;
-- full packet, lease digest/receipt, actual diff, and review verdict;
-- accepted 140-path candidate plus README/ERD hashes;
-- public repository/ref/full SHA and anonymous readback;
-- clean-clone path, toolchain, environment, and command ledger;
-- four GraphQL request/response summaries;
-- fresh-schema ERD comparison matrix;
-- aggregate test counts, smoke/lifecycle identities, documentation/ADR results, and diff result;
-- exact cleanup and temporary clone removal;
-- integrated verdict, follow-up dispositions, documentation impact, task state, and completed-plan validation.
+- [x] Activation identity and binding preflight classifications.
+- [x] Full setup/correction packets, lease digests/receipts, actual diff, and S1 review verdict.
+- [x] Accepted local 140-path candidate plus README/ERD hashes.
+- [ ] Public repository/ref/full SHA and anonymous candidate readback.
+- [ ] Clean-clone path, executed toolchain/environment identities, and command results.
+- [ ] Four GraphQL request/response summaries and mutation readback.
+- [x] Source-to-ERD comparison matrix; fresh runtime comparison remains Milestone 2.
+- [ ] Aggregate test counts, smoke/lifecycle identities, clean-clone documentation/ADR results, and diff result.
+- [ ] Exact runtime cleanup and temporary clone removal.
+- [ ] Integrated verdict, closure follow-up dispositions, documentation impact, task state, and completed-plan validation.
+
+### Accepted Milestone 1 evidence
+
+- Attempt-1 lease `TASK-014-20260822-01-cycle-01-setup-02`, contract digest `319677974b004a60b990fb66c272e9a8b7971a25b9201f8d5221725b6f5a7c42`, closed compliant with receipt `d4cc6e75ebe12d699cb2a4218d19370132ccff3809e11982f4fd6c8086eb2c02`; it modified `README.md`, created `docs/ERD.md`, and recorded no unleased, forbidden, index, HEAD, or control change. Immediate pinned status reported no post-close drift.
+- The unused setup-01 lease ID was rejected before creation because its proposed owner spelling was invalid; it returned no contract digest and was never reused.
+- Same-contract attempt-2 lease `TASK-014-20260822-01-cycle-01-setup-03`, contract digest `fd501e4bd47b3c40647855e0eb69d7f30f1e68fc1e3e7c8a1eb75607e33f9f2f`, closed compliant with receipt `6526f919edb8c15ac229a84999ba678d4b4113a4446cf034c918476321367e63`; it modified only `README.md`, preserved the ERD hash, and recorded no unleased, forbidden, index, HEAD, or control change. Immediate pinned status reported no post-close drift. The correction budget is exhausted.
+- Final local candidate: 140 paths at `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B`; `README.md` at `DA3EBECB9080F4FE07650758A30A020929B9EDBE7DFC6296F8E16CF7676D33B5`; `docs/ERD.md` at `C6C30E2AB4096CE90CE1E5757576076184367A5D574AB137F0F6E51811EA822C`; unchanged 138-path implementation/test/configuration aggregate `2D138DA10B0DF73FC894A6BA246E847B0925F49BE2CA22C41D894F8E4AA84524`.
+- Affected validation: documentation 85 Markdown files/123 scenarios `PASS`; ADR 18 ADRs/38 requirements `PASS` with only the established NFR-006 warning; `git diff --check` `PASS`; 19 PowerShell blocks with zero parse errors; 17 documented `npm run` scripts with zero missing root owners; one ERD path; 20/20 ERD column rows; one build, one aggregate test, one lifecycle command, zero focused test duplicates, and four `Invoke-RestMethod` operations.
+- Fresh S1 milestone review: `PASS`, zero Blocker, zero Major, zero Minor. The reviewer independently reproduced the candidate/document hashes and unchanged implementation aggregate, inspected the actual diff and owners, accepted the receipts and static evidence, and reserved public/network/Docker/test evidence for Milestone 2.
+
+### Frozen command ledger
+
+The rows below are the complete execution contract for the README's executable commands. Milestone 2 must record the selected public SHA, free ports, exact outputs, process identities, and cleanup against this ledger without adding a helper.
+
+| ID | Command or block | Working directory and prerequisite | Literal or recorded substitution | Expected result | Side effect and cleanup |
+|---|---|---|---|---|---|
+| CL-01 | `git --version`; `node --version`; `npm --version`; `docker version`; `docker info --format '{{.OSType}}'` | Unique TASK-014 temporary parent; tools and Docker Desktop available | None | Record Git, Node 24.18.0, npm 11.16.0, Docker client/server, and `linux` | Read-only; none |
+| CL-02 | `git clone https://github.com/mmjosedaniel/rick-and-morty-explorer.git`; `Set-Location rick-and-morty-explorer` | Unique TASK-014 temporary parent; owner-supplied anonymous public candidate | Exact public URL; detach/read back the separately recorded full SHA after clone | Anonymous clone succeeds and current directory is the clean candidate checkout | Creates only the child clone; remove it only after absolute-path proof and cleanup |
+| CL-03 | `npm ci` | Clone root; exact Node/npm and lockfile | None | Exit zero with immutable dependency graph | Creates `node_modules`; temporary-clone removal cleans it |
+| CL-04 | `npm run browser:install` | Clone root after install; Chromium required for aggregate/lifecycle evidence | None | Pinned Chromium is available | May populate the Playwright browser cache; it is an intentional prerequisite, while unexpected repository artifacts must be absent at cleanup |
+| CL-05 | README environment blocks | Current PowerShell session | Record free loopback ports; use task-owned `POSTGRES_SCHEMA=task_014_20260822_01` and `REDIS_NAMESPACE=character-app:task-014-20260822-01` instead of shared defaults | Process environment contains valid exact values | Process-local state only; discard with the task shell |
+| CL-06 | `npm run infra:config`; `npm run infra:up`; `npm run infra:ps` | Clone root; environment and Linux Docker ready | Recorded free ports only | Exact `rick-and-morty-dev` model validates and PostgreSQL/Redis are healthy | Creates only that project's containers, network, and volumes; CL-18 removes them |
+| CL-07 | `npm run migrate:build`; `npm run migrate:status`; `npm run migrate:up`; `npm run migrate:status`; `npm run migrate:validate-emitted` | Clone root; healthy PostgreSQL and task schema | CL-05 task schema | Authenticated artifact; empty then applied task schema; isolated emitted lifecycle passes | Applies task schema; emitted validation removes its namespace; CL-18 removes the volume |
+| CL-08 | `npm run import:characters` | Clone root; migrated task schema and internet access | IDs 1 through 15 are fixed | Exit zero with deterministic 15-character baseline | Sole live public character-JSON request; writes task schema/cache namespace; CL-18 cleans state |
+| CL-09 | `npm run dev:apps`, then `Ctrl+C` | Clone root; initialized infrastructure | Documented ports | API 3000/web 5173 and `/` plus `/characters/1` are addressable | Exact foreground API/web owners; stop and verify their listeners/children |
+| CL-10 | `npm run dev`, then `Ctrl+C` | Clone root; retained initialized volumes | Documented ports | Idempotent exact-project start plus API/web | Exact foreground owners; stop and verify before the next mode |
+| CL-11 | `npm run build`; `npm start`, then `Ctrl+C` | Clone root; installed dependencies and initialized services | Documented ports | Build exits zero; API 3000/web 4173 run | Creates ignored build output and foreground owners; stop processes, then temporary-clone removal cleans output |
+| CL-12 | `npm run lint`; `npm run typecheck`; `npm run validate:tailwind` | Clone root after CL-11 build | None | Each command exits zero | No persistent external state |
+| CL-13 | `npm test`; `npm run test:smoke:lifecycle` | Clone root; browser, healthy services, and CL-11 build | Existing task-owned test namespaces/ports | Aggregate executes unit/integration/application/smoke once; lifecycle reports exact READY/CLEANUP once | Test-owned ephemeral schemas, Redis keys, processes, and artifacts self-clean; reconcile exact identities |
+| CL-14 | `SearchCharacters` `Invoke-RestMethod` block | PowerShell with documented API running and imported task schema | Literal filter values | Parsed response contains the matching deterministic character list | Read-only GraphQL; later process/infra cleanup |
+| CL-15 | `SetCharacterFavorite` `Invoke-RestMethod` block | Same | Character ID `1`, `true` | Response is ID 1 with `isFavorite: true` | Writes task schema; CL-17 reads back and CL-18 removes state |
+| CL-16 | `AddCharacterComment` `Invoke-RestMethod` block | Same | Character ID `1`, body `Documented API example` | Response contains the new comment ID/body | Writes task schema; CL-17 reads back and CL-18 removes state |
+| CL-17 | `CharacterDetail` `Invoke-RestMethod` block, executed after CL-15/CL-16 | Same | ID `1`, limit `20`, offset `0` | Exact detail returns `isFavorite: true` and the added comment, proving mutation readback | Read-only GraphQL; later process/infra cleanup |
+| CL-18 | `npm run infra:ps`; `npm run infra:down`; `npm run infra:ps` | Clone root after foreground owner cleanup and exact project-label verification | Exact project is fixed by root scripts | Expected project is identified, teardown succeeds, final service list is empty | Irreversibly removes only `rick-and-morty-dev` containers/network/volumes |
+| CL-19 | `python .agents/skills/verify-repository/scripts/validate_docs.py --repo .` | Clone root with Python | None | Documentation validation passes | Read-only |
+
+### ERD source comparison
+
+| ERD fact | Migration/storage owner | Existing inventory evidence | Candidate evidence |
+|---|---|---|---|
+| Exact three tables | Relational migration creates `characters` and `comments`; storage creates `sequelize_migration_history` | Fresh inventory expects exactly those three tables at lines 496-499 | Mermaid contains exactly those three entities at lines 7-36 |
+| All 20 columns, types, nullability, defaults, and identity | Migration lines 11-40; storage lines 14-18 | Inventory lines 524-536 | Twenty column rows and all-`NOT NULL` statement at lines 41-64 |
+| Three primary keys, comment check, and foreign key | Migration lines 24 and 35-40; storage line 18 | Inventory lines 561-578 | Exact names and semantics at lines 45 and 57-66 |
+| `comments_character_id_idx` B-tree | Migration lines 45-46 | Inventory lines 588-595 | Line 66 |
+| Character-to-comments cardinality and `RESTRICT` actions | Migration lines 38-40 | Foreign-key readback lines 575-578 | Mermaid line 7 and prose line 66 |
+| Migration-history purpose | Storage records migration ID, authenticated source hash, and applied time | Inventory lines 534-536 and history-row readback | Lines 62-68 |
+| Image boundary and deliberate absence | `image_url` is one `characters.text` column; exact migration/storage table set has no image table | Inventory lines 496-536 prove the exact three-table/column set | Lines 53 and 70 record the attribute and absence of any image relation/byte/proxy/cache/lifecycle table |
+
+Public-candidate checkpoint status: `BLOCKED BY OWNER-CONTROLLED INPUT`, not a task failure. No anonymously accessible commit containing candidate `827F378C...2FF6B` has been supplied, and commit/push/PR/publication actions remain unauthorized. Do not start Milestone 2 until one of the plan's two owner conditions is satisfied.
 
 ## Interfaces and Dependencies
 
@@ -401,4 +469,8 @@ The existing external/runtime interfaces remain:
 
 ## Revision Note
 
-2026-08-22: Created and registered the planning-only TASK-014 ExecPlan after a clean-worktree, authority, public-baseline, schema, API, avatar, command, and test-owner reuse audit. Selected one README extension and one Mermaid ERD as the smallest complete change. Documentation/ADR validation, exact fingerprint reproduction, link/readback checks, and diff checking pass. TASK-014 and AC-012 remain pending; no delivery artifact, code, dependency, test, runtime behavior, task activation, commit, push, pull request, publication, or deployment was performed.
+2026-08-22: Created and registered the planning-only TASK-014 ExecPlan after a clean-worktree, authority, public-baseline, schema, API, avatar, command, and test-owner reuse audit. Selected one README extension and one Mermaid ERD as the smallest complete change. Documentation/ADR validation, exact fingerprint reproduction, link/readback checks, and diff checking pass. TASK-014 and AC-012 remained pending; no delivery artifact, code, dependency, test, runtime behavior, task activation, commit, push, pull request, publication, or deployment was performed.
+
+2026-08-22: The project owner separately authorized exact workflow `TASK-014-20260822-01`. The coordinator passed the activation barrier, refreshed the platform-specific 138-path materialization identity without changing logical implementation/test/configuration content, accepted the binding documentation-only preflight, transitioned TASK-014 to `In progress`, and recorded the exact local/public baselines. No deliverable, product, test, configuration, dependency, runtime behavior, acceptance result, commit, push, pull request, publication, or deployment changed during activation.
+
+2026-08-22: Completed and accepted Milestone 1 on local candidate `827F378CBE2D603ED70FA532A67EAC1C79FF0012DCB147B662BF38CCB1D2FF6B`. Two exact-path leases closed compliant; the sole same-contract correction removed duplicate build/test execution; implementation/test/configuration bytes remained unchanged; affected validation passed; and fresh S1 review returned `PASS` with zero findings. Execution stops at the owner-controlled public-candidate checkpoint. No staging, commit, push, pull request, publication, deployment, public-candidate claim, runtime evidence, DEL-001/002/003 acceptance, AC-012 result, or task completion occurred.
