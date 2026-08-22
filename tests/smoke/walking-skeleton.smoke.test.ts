@@ -149,6 +149,15 @@ async function expectNoHorizontalOverflow(page: Page) {
   ).toBe(true);
 }
 
+async function expectSquareImageRegion(locator: Locator) {
+  const box = await locator.boundingBox();
+  expect(box).not.toBeNull();
+  if (box === null) {
+    throw new Error("TASK_012_IMAGE_REGION_MISSING");
+  }
+  expect(Math.abs(box.width - box.height)).toBeLessThanOrEqual(1);
+}
+
 async function expectVisibleFocus(locator: Locator) {
   await expect(locator).toBeFocused();
   expect(
@@ -294,6 +303,9 @@ async function expectPopulatedLayout(page: Page) {
   expect(headingBox.y + headingBox.height).toBeLessThan(controlsBox.y);
   expect(controlsBox.y + controlsBox.height).toBeLessThan(gridBox.y);
   await expectNoHorizontalOverflow(page);
+  await expectSquareImageRegion(
+    page.getByRole("img", { name: "TASK-010 Character 01" }),
+  );
 }
 
 async function applyControls(page: Page, values: ControlValues) {
@@ -372,6 +384,7 @@ async function expectLoadedCharacterDetail(
       };
     }),
   ).toEqual({ crossOrigin: "anonymous", referrerPolicy: "no-referrer" });
+  await expectSquareImageRegion(image);
   await expectNoHorizontalOverflow(page);
 }
 
@@ -384,6 +397,7 @@ test("shows the walking skeleton and reports API health", async ({
     readonly url: string;
     readonly headers: Readonly<Record<string, string>>;
   }> = [];
+  const failingAvatarUrls = new Set<string>();
   const graphqlRequests: Array<{
     readonly url: string;
     readonly headers: Readonly<Record<string, string>>;
@@ -420,6 +434,7 @@ test("shows the walking skeleton and reports API health", async ({
     /^https:\/\/rickandmortyapi\.com\/api\/character\/avatar\/(?:[1-9]|1[0-5])\.jpeg$/u,
     async (route) => {
       const avatarRequest = route.request();
+      const shouldFail = failingAvatarUrls.has(avatarRequest.url());
       avatarRequests.push({
         url: avatarRequest.url(),
         headers: await avatarRequest.allHeaders(),
@@ -429,8 +444,11 @@ test("shows the walking skeleton and reports API health", async ({
         contentType: "image/svg+xml",
         headers: {
           "access-control-allow-origin": "http://127.0.0.1:4173",
+          "cache-control": "no-store",
         },
-        body: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="#0E1625"/></svg>',
+        body: shouldFail
+          ? "not-an-image"
+          : '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="#0E1625"/></svg>',
       });
     },
   );
@@ -923,7 +941,9 @@ test("shows the walking skeleton and reports API health", async ({
   await expect(page.getByLabel("Species")).toHaveValue("alien");
   await expect(page.getByLabel("Gender")).toHaveValue("female");
 
-  async function exerciseRequiredStates(viewport: "1280x800" | "375x812") {
+  async function exerciseRequiredStates(
+    viewport: "1280x800" | "768x1024" | "375x812",
+  ) {
     const loadingSpecies = `loading-${viewport}`;
     const loadingVariables: VisualVariables = {
       status: null,
@@ -1008,6 +1028,14 @@ test("shows the walking skeleton and reports API health", async ({
 
   await exerciseRequiredStates("1280x800");
 
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto(applicationUrl);
+  await expect(page.getByRole("article")).toHaveCount(15);
+  await expect(page.getByRole("img")).toHaveCount(15);
+  await expectPopulatedLayout(page);
+  await expectControlFocusSequence(page);
+  await exerciseRequiredStates("768x1024");
+
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto(applicationUrl);
   await expect(page.getByRole("article")).toHaveCount(15);
@@ -1019,6 +1047,182 @@ test("shows the walking skeleton and reports API health", async ({
   await expectControlFocusSequence(page);
   await exerciseRequiredStates("375x812");
 
+  await page.unroute(graphqlUrl);
+  let detailEvidenceMode: "loading" | "not-found" | "error" | "populated" =
+    "populated";
+  let detailEvidenceKey = "";
+  let detailErrorAttempts = 0;
+  const pendingDetailResolvers = new Map<string, () => void>();
+
+  await page.route(graphqlUrl, async (route) => {
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({
+        status: 204,
+        headers: {
+          ...applicationCorsHeaders,
+          "access-control-allow-headers": "content-type",
+          "access-control-allow-methods": "POST",
+        },
+      });
+      return;
+    }
+
+    const operation = graphqlOperation(route.request());
+    if (operationName(operation) !== "CharacterDetail") {
+      await route.continue();
+      return;
+    }
+
+    if (detailEvidenceMode === "loading") {
+      const loadingKey = detailEvidenceKey;
+      await new Promise<void>((resolve) => {
+        pendingDetailResolvers.set(loadingKey, resolve);
+      });
+      pendingDetailResolvers.delete(loadingKey);
+      await route.continue();
+      return;
+    }
+
+    if (detailEvidenceMode === "not-found") {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/graphql-response+json",
+        headers: applicationCorsHeaders,
+        body: JSON.stringify({
+          data: { character: null },
+          errors: [
+            {
+              message: "Deterministic detail not found.",
+              extensions: { code: "NOT_FOUND" },
+            },
+          ],
+        }),
+      });
+      return;
+    }
+
+    if (detailEvidenceMode === "error") {
+      detailErrorAttempts += 1;
+      if (detailErrorAttempts === 1) {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/graphql-response+json",
+          headers: applicationCorsHeaders,
+          body: JSON.stringify({
+            errors: [{ message: "Deterministic detail request failure." }],
+          }),
+        });
+        return;
+      }
+    }
+
+    await route.continue();
+  });
+
+  async function exerciseDetailStates(
+    viewport: "1280x800" | "768x1024" | "375x812",
+    size: { readonly width: number; readonly height: number },
+  ) {
+    await page.setViewportSize(size);
+
+    detailEvidenceMode = "loading";
+    detailEvidenceKey = `detail-loading-${viewport}`;
+    await page.goto(`${applicationUrl}/characters/15`);
+    await expect(page.getByText("Loading character...")).toBeVisible();
+    await expect
+      .poll(() => pendingDetailResolvers.has(detailEvidenceKey))
+      .toBe(true);
+    await expectNoHorizontalOverflow(page);
+    const releaseLoading = pendingDetailResolvers.get(detailEvidenceKey);
+    if (releaseLoading === undefined) {
+      throw new Error("TASK_012_DETAIL_LOADING_BARRIER_MISSING");
+    }
+    releaseLoading();
+    await expectLoadedCharacterDetail(page, "15");
+
+    detailEvidenceMode = "not-found";
+    await page.goto(`${applicationUrl}/characters/404`);
+    await expect(page.getByText("Character not found.")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Back to characters" }),
+    ).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+
+    detailEvidenceMode = "error";
+    detailErrorAttempts = 0;
+    await page.goto(`${applicationUrl}/characters/15`);
+    await expect(page.getByText("Character could not be loaded.")).toBeVisible();
+    const retry = page.getByRole("button", { name: "Retry" });
+    await expect(retry).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+    await retry.click();
+    await expectLoadedCharacterDetail(page, "15");
+    expect(detailErrorAttempts).toBe(2);
+  }
+
+  await exerciseDetailStates("1280x800", { width: 1280, height: 800 });
+  await exerciseDetailStates("768x1024", { width: 768, height: 1024 });
+  await exerciseDetailStates("375x812", { width: 375, height: 812 });
+  await page.unroute(graphqlUrl);
+
+  const failedAvatarUrl =
+    "https://rickandmortyapi.com/api/character/avatar/15.jpeg";
+  failingAvatarUrls.add(failedAvatarUrl);
+
+  for (const viewport of [
+    { width: 1280, height: 800 },
+    { width: 768, height: 1024 },
+    { width: 375, height: 812 },
+  ]) {
+    await page.setViewportSize(viewport);
+    const failedRequestsBefore = avatarRequests.filter(
+      ({ url }) => url === failedAvatarUrl,
+    ).length;
+    await page.goto(applicationUrl);
+    await expect(page.getByRole("article")).toHaveCount(15);
+
+    const failedCard = page.getByRole("article").filter({
+      has: page.getByRole("heading", { name: "TASK-010 Character 15" }),
+    });
+    const cardFallback = failedCard.getByRole("img", {
+      name: "TASK-010 Character 15",
+    });
+    await expect(
+      cardFallback.getByText("Image unavailable", { exact: true }),
+    ).toBeVisible();
+    await expectSquareImageRegion(cardFallback);
+    await expectNoHorizontalOverflow(page);
+    expect(
+      avatarRequests.filter(({ url }) => url === failedAvatarUrl),
+    ).toHaveLength(failedRequestsBefore + 1);
+
+    const avatarRequestsBeforeDetail = avatarRequests.length;
+    await failedCard
+      .getByRole("link", { name: /TASK-010 Character 15/u })
+      .click();
+    const detailArticle = page.getByRole("article").filter({
+      has: page.getByRole("heading", {
+        level: 2,
+        name: "TASK-010 Character 15",
+      }),
+    });
+    const detailFallback = detailArticle.getByRole("img", {
+      name: "TASK-010 Character 15",
+    });
+    await expect(
+      detailFallback.getByText("Image unavailable", { exact: true }),
+    ).toBeVisible();
+    await expectSquareImageRegion(detailFallback);
+    await expectNoHorizontalOverflow(page);
+    const detailAvatarRequests = avatarRequests.slice(
+      avatarRequestsBeforeDetail,
+    );
+    expect(detailAvatarRequests.length).toBeLessThanOrEqual(1);
+    expect(
+      detailAvatarRequests.every(({ url }) => url === failedAvatarUrl),
+    ).toBe(true);
+  }
+
   const allowedGraphql503ConsoleErrors = consoleErrors.filter(
     isDeliberateGraphql503ConsoleError,
   );
@@ -1026,7 +1230,7 @@ test("shows the walking skeleton and reports API health", async ({
     (error) => !isDeliberateGraphql503ConsoleError(error),
   );
 
-  expect(deliberateGraphqlFailureCount).toBe(2);
+  expect(deliberateGraphqlFailureCount).toBe(3);
   expect(pageErrors).toEqual([]);
   expect(allowedGraphql503ConsoleErrors.length).toBeLessThanOrEqual(
     deliberateGraphqlFailureCount,

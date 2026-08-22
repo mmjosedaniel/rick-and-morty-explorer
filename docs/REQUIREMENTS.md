@@ -186,7 +186,7 @@ These observable criteria summarize the minimum assessment outcomes. They do not
 - [x] AC-003: Selecting a card displays the character's details and image.
 - [x] AC-004: A character can be marked as a favorite from the detail view.
 - [x] AC-005: Comments can be added to a character.
-- [ ] AC-006: The interface is responsive and uses Flexbox and Grid.
+- [x] AC-006: The interface is responsive and uses Flexbox and Grid.
 - [x] AC-007: The backend exposes a GraphQL API through Express.
 - [x] AC-008: The API filters characters by status, species, gender, name, and origin.
 - [x] AC-009: A MySQL or PostgreSQL application schema is created through Sequelize migrations and initialized with 15 characters obtained from the public Rick and Morty API.

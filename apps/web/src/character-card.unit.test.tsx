@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
@@ -46,5 +46,54 @@ describe("CharacterCard", () => {
     expect(
       within(card).getByRole("link", { name: /Rick Sanchez/u }),
     ).toHaveAttribute("href", "/characters/101");
+  });
+
+  it("keeps one accessible fallback for the current image URL and resets for a new URL", () => {
+    const character = {
+      id: "101",
+      name: "Rick Sanchez",
+      imageUrl:
+        "https://rickandmortyapi.com/api/character/avatar/101.jpeg",
+      species: "Human",
+    };
+    const { rerender } = render(
+      <MemoryRouter>
+        <CharacterCard character={character} />
+      </MemoryRouter>,
+    );
+
+    fireEvent.error(screen.getByRole("img", { name: character.name }));
+
+    const fallback = screen.getByRole("img", { name: character.name });
+    expect(within(fallback).getByText("Image unavailable")).toBeVisible();
+    expect(fallback).not.toHaveAttribute("src");
+    expect(screen.getByRole("link", { name: /Rick Sanchez/u })).toHaveAttribute(
+      "href",
+      "/characters/101",
+    );
+
+    rerender(
+      <MemoryRouter>
+        <CharacterCard character={{ ...character }} />
+      </MemoryRouter>,
+    );
+    expect(
+      within(screen.getByRole("img", { name: character.name })).getByText(
+        "Image unavailable",
+      ),
+    ).toBeVisible();
+
+    const nextImageUrl =
+      "https://rickandmortyapi.com/api/character/avatar/102.jpeg";
+    rerender(
+      <MemoryRouter>
+        <CharacterCard character={{ ...character, imageUrl: nextImageUrl }} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole("img", { name: character.name })).toHaveAttribute(
+      "src",
+      nextImageUrl,
+    );
+    expect(screen.queryByText("Image unavailable")).not.toBeInTheDocument();
   });
 });
